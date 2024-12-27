@@ -2,7 +2,7 @@
 //  AiWellnessUITests.swift
 //  AiWellnessUITests
 //
-//  Created by Filip Nikolic on 23.12.24..
+//  Created by Kazakuba on 23.12.24..
 //
 
 import XCTest
