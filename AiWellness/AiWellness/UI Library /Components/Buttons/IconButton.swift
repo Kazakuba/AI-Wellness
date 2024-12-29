@@ -24,9 +24,9 @@ struct IconButton: View {
                 }
             }
             .foregroundColor(ColorPalette.CustomPrimary)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(ColorPalette.surface)
+            //.padding(.horizontal, 12)
+            //.padding(.vertical, 8)
+            //.background(ColorPalette.surface)
             .cornerRadius(8)
         }
     }
