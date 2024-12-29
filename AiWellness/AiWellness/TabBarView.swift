@@ -18,14 +18,14 @@ struct TabBarView: View {
                             Image(systemName: "square.split.2x2")
                             Text("Dashboard")
                         }
-                    DashboardView()
+                    AiChat()
                         .tabItem{
                             Image(systemName: "person.bubble")
                             Text("AI chat")
                                 .foregroundColor(.white)
 
                         }
-                    DashboardView()
+                    CalendarView()
                         .tabItem{
                             Image(systemName:"note.text")
                             Text("Journal")

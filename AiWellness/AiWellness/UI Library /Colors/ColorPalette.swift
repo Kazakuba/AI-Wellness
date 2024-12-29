@@ -19,6 +19,7 @@ struct ColorPalette {
         static let primary = Color("TextPrimary")
         static let secondary = Color("TextSecondary")
         static let disabled = Color("TextDisabled")
+        static let white = Color("TextWhite")
     }
 
     struct Borders {

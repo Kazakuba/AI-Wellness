@@ -23,16 +23,11 @@ struct DashboardView: View {
     }
 }
 
-#Preview {
-    DashboardView()
-}
-
 struct WelcomeText: View {
     var body: some View {
-        Text("Welcome")
+        Text("Welcome [User]")
             .font(Typography.Font.heading1)
-            .foregroundColor(Color.color)
-        
+            .foregroundColor(ColorPalette.Text.white)
     }
 }
 struct ExampleImage: View {
@@ -42,4 +37,8 @@ struct ExampleImage: View {
             .ignoresSafeArea()
             .opacity(0.9)
     }
+}
+
+#Preview {
+    DashboardView()
 }
