@@ -8,38 +8,28 @@
 import SwiftUI
 
 struct TabBarView: View {
-    
     var body: some View {
-        VStack {
-            TabView {
-                Group {
-                    DashboardView()
-                        .tabItem {
-                            Image(systemName: "square.split.2x2")
-                            Text("Dashboard")
-                        }
-                    AiChat()
-                        .tabItem{
-                            Image(systemName: "person.bubble")
-                            Text("AI chat")
-                                .foregroundColor(.white)
-
-                        }
-                    CalendarView()
-                        .tabItem{
-                            Image(systemName:"note.text")
-                            Text("Journal")
-                                .foregroundColor(.white)
-                                
-                        }
+        TabView {
+            DashboardView()
+                .tabItem {
+                    Image(systemName: "square.split.2x2")
+                    Text("Dashboard")
                 }
-                .toolbarBackground(.black, for: .tabBar)
-                .toolbarBackground(.visible, for: .tabBar)
-            }
-            .navigationBarBackButtonHidden(true)
             
+            AiChat()
+                .tabItem {
+                    Image(systemName: "person.bubble")
+                    Text("AI Chat")
+                }
+            
+            CalendarView()
+                .tabItem {
+                    Image(systemName: "note.text")
+                    Text("Journal")
+                }
         }
-
+        .accentColor(.blue)
+        
     }
 }
 

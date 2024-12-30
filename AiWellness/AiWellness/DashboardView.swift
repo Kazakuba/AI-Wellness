@@ -10,6 +10,7 @@ import SwiftUI
 struct DashboardView: View {
     var body: some View {
         ZStack {
+            Color.black.edgesIgnoringSafeArea(.all)
             ExampleImage()
             VStack {
                 HStack {
@@ -34,7 +35,7 @@ struct ExampleImage: View {
     var body: some View {
         Image("exampleImage")
             .resizable()
-            .ignoresSafeArea()
+            .ignoresSafeArea(edges: .top)
             .opacity(0.9)
     }
 }
