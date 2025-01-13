@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		25ACA0EE2D24071D007B8B21 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 25ACA0ED2D24071D007B8B21 /* FirebaseAnalytics */; };
+		25ACA0F02D24071D007B8B21 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 25ACA0EF2D24071D007B8B21 /* FirebaseAuth */; };
+		25ACA0F22D24071D007B8B21 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 25ACA0F12D24071D007B8B21 /* FirebaseCore */; };
+		25ACA0F42D240762007B8B21 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 25ACA0F32D240762007B8B21 /* GoogleSignIn */; };
+		25ACA0F62D240762007B8B21 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 25ACA0F52D240762007B8B21 /* GoogleSignInSwift */; };
+		25ACA0FA2D2409CF007B8B21 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 25ACA0F92D2409CF007B8B21 /* FirebaseAnalyticsWithoutAdIdSupport */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		A68653602D19908500767B49 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,9 +38,22 @@
 		A68653692D19908500767B49 /* AiWellnessUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AiWellnessUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		253A15582D28C123004C6981 /* Exceptions for "AiWellness" folder in "AiWellness" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = A686534D2D19908400767B49 /* AiWellness */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A68653502D19908400767B49 /* AiWellness */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				253A15582D28C123004C6981 /* Exceptions for "AiWellness" folder in "AiWellness" target */,
+			);
 			path = AiWellness;
 			sourceTree = "<group>";
 		};
@@ -52,6 +74,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25ACA0F62D240762007B8B21 /* GoogleSignInSwift in Frameworks */,
+				25ACA0FA2D2409CF007B8B21 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
+				25ACA0EE2D24071D007B8B21 /* FirebaseAnalytics in Frameworks */,
+				25ACA0F42D240762007B8B21 /* GoogleSignIn in Frameworks */,
+				25ACA0F22D24071D007B8B21 /* FirebaseCore in Frameworks */,
+				25ACA0F02D24071D007B8B21 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +140,12 @@
 			);
 			name = AiWellness;
 			packageProductDependencies = (
+				25ACA0ED2D24071D007B8B21 /* FirebaseAnalytics */,
+				25ACA0EF2D24071D007B8B21 /* FirebaseAuth */,
+				25ACA0F12D24071D007B8B21 /* FirebaseCore */,
+				25ACA0F32D240762007B8B21 /* GoogleSignIn */,
+				25ACA0F52D240762007B8B21 /* GoogleSignInSwift */,
+				25ACA0F92D2409CF007B8B21 /* FirebaseAnalyticsWithoutAdIdSupport */,
 			);
 			productName = AiWellness;
 			productReference = A686534E2D19908400767B49 /* AiWellness.app */;
@@ -195,6 +229,10 @@
 			);
 			mainGroup = A68653452D19908400767B49;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				252C54D22D21AB3200D54059 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				252C54D32D21AC6400D54059 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A686534F2D19908400767B49 /* Products */;
 			projectDirPath = "";
@@ -398,10 +436,13 @@
 				DEVELOPMENT_TEAM = Y6ARYNWBXN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AiWellness/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
@@ -438,10 +479,13 @@
 				DEVELOPMENT_TEAM = Y6ARYNWBXN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AiWellness/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
@@ -591,6 +635,58 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		252C54D22D21AB3200D54059 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.6.0;
+			};
+		};
+		252C54D32D21AC6400D54059 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		25ACA0ED2D24071D007B8B21 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 252C54D22D21AB3200D54059 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		25ACA0EF2D24071D007B8B21 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 252C54D22D21AB3200D54059 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		25ACA0F12D24071D007B8B21 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 252C54D22D21AB3200D54059 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		25ACA0F32D240762007B8B21 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 252C54D32D21AC6400D54059 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		25ACA0F52D240762007B8B21 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 252C54D32D21AC6400D54059 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+		25ACA0F92D2409CF007B8B21 /* FirebaseAnalyticsWithoutAdIdSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 252C54D22D21AB3200D54059 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsWithoutAdIdSupport;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A68653462D19908400767B49 /* Project object */;
 }

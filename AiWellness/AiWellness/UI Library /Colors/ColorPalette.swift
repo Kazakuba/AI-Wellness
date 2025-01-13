@@ -14,6 +14,7 @@ struct ColorPalette {
     static let CTA = Color("CTA")
     static let background = Color("Background")
     static let surface = Color("Surface")
+    static let buttonBackground = Color("ButtonBackground")
 
     struct Text {
         static let primary = Color("TextPrimary")

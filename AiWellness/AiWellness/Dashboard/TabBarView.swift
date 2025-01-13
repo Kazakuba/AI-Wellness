@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct TabBarView: View {
+    @ObservedObject var authService: AuthenticationService // Shared service
     @State private var selectedTab = 0
 
     var body: some View {
-        TabView(selection: $selectedTab){
-            DashboardView()
+        TabView (selection: $selectedTab){
+            DashboardView(authService: authService)
                 .tabItem {
-                    Image(systemName: "square.split.2x2")
-                    Text("Dashboard")
+                    Label("Dashboard", systemImage: "house")
                 }
                 .tag(0)
-
             AiChat()
                 .tabItem {
                     Image(systemName: "person.bubble")
@@ -34,10 +33,10 @@ struct TabBarView: View {
                 .tag(2)
         }
         .accentColor(.blue)
-        
+
     }
 }
 
-#Preview {
-    TabBarView()
-}
+//#Preview {
+//    TabBarView(authService: authService)
+//}

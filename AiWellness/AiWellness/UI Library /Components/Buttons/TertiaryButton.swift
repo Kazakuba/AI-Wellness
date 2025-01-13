@@ -18,6 +18,7 @@ struct TertiaryButton: View {
                 .font(Typography.Font.button)
                 .foregroundColor(ColorPalette.CustomPrimary)
                 .padding(.vertical, 8)
+                .underline()
         }
     }
 }
