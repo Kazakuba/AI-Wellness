@@ -11,6 +11,7 @@ import GoogleSignIn
 
 struct DashboardView: View {
     @ObservedObject var authService: AuthenticationService // Observing the  shared service
+    @State private var showTimeCapsule: Bool = false //
 
     var body: some View {
         ZStack {
@@ -26,7 +27,17 @@ struct DashboardView: View {
                 }
                 .padding()
                 Spacer()
+                PrimaryButton(title: "Open Time Capsule") {
+                    withAnimation {
+                        showTimeCapsule = true
+                    }
+                }
+                .background(Color.gray)
+                .padding()
             }
+        }
+        .fullScreenCover(isPresented: $showTimeCapsule) {
+            TimeCapsuleView(isPresented: $showTimeCapsule)
         }
     }
 }
