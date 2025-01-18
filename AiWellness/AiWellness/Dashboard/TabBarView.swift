@@ -18,7 +18,7 @@ struct TabBarView: View {
                     Label("Dashboard", systemImage: "house")
                 }
                 .tag(0)
-            AiChat()
+            ChatListView()
                 .tabItem {
                     Image(systemName: "person.bubble")
                     Text("AI Chat")

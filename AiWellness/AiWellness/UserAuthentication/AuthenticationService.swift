@@ -94,6 +94,7 @@ class AuthenticationService: ObservableObject {
     func googleSignOut() {
         GIDSignIn.sharedInstance.signOut()
         print("Google Sign Out")
+        ChatStore.shared.chats = [] 
         DispatchQueue.main.async {
             self.isAuthenticated = false
         }

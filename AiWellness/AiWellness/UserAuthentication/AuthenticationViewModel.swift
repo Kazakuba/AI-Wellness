@@ -20,5 +20,6 @@ class AuthenticationViewModel {
 
     func googleSignOut() {
         autheticationService.googleSignOut()
+        ChatStore.shared.chats = [] 
     }
 }
