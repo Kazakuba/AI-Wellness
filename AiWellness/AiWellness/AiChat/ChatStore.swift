@@ -74,8 +74,8 @@ class ChatStore: ObservableObject {
     }
 
     func createNewChat(title: String) -> Chat {
-        var newChat = Chat(title: title)
-        newChat.messages.append(Message(content: "Welcome to \(title)!", sender: "System"))
+        let newChat = Chat(title: title)
+        //newChat.messages.append(Message(content: "Welcome to \(title)!", sender: "System"))
         chats.insert(newChat, at: 0)
         saveChatsToUserDefaults()
         return newChat
@@ -87,8 +87,37 @@ class ChatStore: ObservableObject {
         saveChatsToUserDefaults()
     }
 
-//    func deleteChat(at offsets: IndexSet) {
-//        chats.remove(atOffsets: offsets)
-//        saveChatsToUserDefaults()
-//    }
+    func sendMessageToOllama(content: String, sender: String, chatID: UUID) {
+        OllamaService.shared.sendMessage(chatID: chatID, message: content) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let receivedMessage):
+                    // Add user message
+                    self?.addMessage(content, sender: sender, to: chatID)
+                    // Add assistant response
+                    self?.addMessage(receivedMessage.content, sender: "Ollama", to: chatID)
+                case .failure(let error):
+                    // Display the error to the user
+                    self?.showErrorToUser(error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    private func showErrorToUser(_ message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+        // Find the top-most view controller to present the alert
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }),
+           let rootViewController = keyWindow.rootViewController {
+
+            var topController = rootViewController
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+            topController.present(alert, animated: true, completion: nil)
+        }
+    }
 }

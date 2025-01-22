@@ -12,11 +12,13 @@ struct Message: Identifiable, Codable {
     let content: String
     let sender: String
     let timestamp: Date
+    let role: String?
 
-    init(content: String, sender: String) {
+    init(content: String, sender: String, role: String? = nil) {
         self.id = UUID()
         self.content = content
         self.sender = sender
         self.timestamp = Date()
+        self.role = role
     }
 }

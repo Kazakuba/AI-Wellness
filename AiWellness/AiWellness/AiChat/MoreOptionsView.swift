@@ -14,6 +14,12 @@ struct MoreOptionsView: View {
                 .font(.title)
                 .padding()
             Spacer()
+            Text("To be added")
+            Spacer()
         }
     }
+}
+
+#Preview {
+    MoreOptionsView()
 }

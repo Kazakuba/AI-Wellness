@@ -10,7 +10,7 @@ import SwiftUI
 struct ChatDetailView: View {
     @ObservedObject var chatStore = ChatStore.shared
     let chat: Chat
-
+    @ObservedObject var serverStatusViewModel: ServerStatusViewModel
     @State private var messageText: String = ""
 
     var body: some View {
@@ -19,7 +19,7 @@ struct ChatDetailView: View {
                 ScrollViewReader { scrollViewProxy in
                     VStack(spacing: 8) {
                         ForEach(currentChat.messages) { message in
-                            // Different alignment based on who sent the message
+                            // Message bubbles
                             if message.sender == "Me" {
                                 HStack {
                                     Spacer()
@@ -55,7 +55,6 @@ struct ChatDetailView: View {
                         }
                     }
                     .onChange(of: currentChat.messages.count) {
-                        // Scroll to bottom when a new message is added
                         if let lastMessage = currentChat.messages.last {
                             withAnimation {
                                 scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
@@ -87,6 +86,18 @@ struct ChatDetailView: View {
             .padding()
         }
         .navigationTitle(chat.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                HStack(spacing: 4) {
+                    Circle()
+                        .fill(serverStatusViewModel.isServerUp == true ? Color.green : (serverStatusViewModel.isServerUp == false ? Color.red : Color.gray))
+                        .frame(width: 10, height: 10)
+                    Text(serverStatusViewModel.isServerUp == true ? "Server is Up" : "Server is Down")
+                        .font(.caption2)
+                }
+            }
+        }
     }
 
     private var currentChat: Chat {
@@ -98,7 +109,7 @@ struct ChatDetailView: View {
     }
 
     func sendMessage() {
-        chatStore.addMessage(messageText, sender: "Me", to: chat.id)
+        chatStore.sendMessageToOllama(content: messageText, sender: "Me", chatID: chat.id)
         messageText = ""
     }
 }

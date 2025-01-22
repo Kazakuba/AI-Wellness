@@ -28,12 +28,18 @@ struct CreateNewChatView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Create") {
-                        _ = chatStore.createNewChat(title: chatTitle)
-                        presentationMode.wrappedValue.dismiss()
+                        createChat()
                     }
                     .disabled(chatTitle.isEmpty)
                 }
             }
         }
+    }
+
+    private func createChat() {
+        _ = chatStore.createNewChat(title: chatTitle)
+//        let systemMessage = Message(content: "You are a helpful assistant.", sender: "System", role: "system")
+//        chatStore.addMessage(systemMessage.content, sender: systemMessage.sender, to: newChat.id)
+        presentationMode.wrappedValue.dismiss()
     }
 }
