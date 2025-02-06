@@ -43,11 +43,29 @@ struct TimeCapsuleView: View {
                         viewModel.showConfirmation = true
                     }
                 }
+                //TESTING - Remove notes button, will remove button later
+                PrimaryButton(title: "Remove all notes", action: {
+                    viewModel.debugResetUserDefaults()
+                })
                 .padding()
                 
                 if let errorMessage = viewModel.errorMessage {
                     Text(errorMessage)
                         .foregroundColor(ColorPalette.buttonBackground)
+                }
+                
+                //TESTING - A list of saved notes, will remove list later
+                List(viewModel.savedNotes) { note in
+                    VStack(alignment: .leading) {
+                        Text(note.content)
+                            .font(.headline)
+                        Text("Unlocks on \(note.unlockDate, formatter: DateFormatter.short)")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    }
+                }
+                .onAppear {
+                    viewModel.fetchNote() // TESTING
                 }
             }
             .padding()
@@ -66,6 +84,14 @@ struct TimeCapsuleView: View {
 
 #Preview {
     TimeCapsuleView(isPresented: .constant(true))
+}
+
+extension DateFormatter {
+    static var short: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        return formatter
+    }
 }
 
 struct BackgroundGradient: View {
