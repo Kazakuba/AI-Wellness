@@ -12,6 +12,25 @@ import GoogleSignIn
 
 class AuthenticationService: ObservableObject {
     @Published var isAuthenticated: Bool = false
+    @Published var user: User?
+    
+    init() {
+        checkAuthentication()
+    }
+    
+    func checkAuthentication() {
+        if let firebaseUser = Auth.auth().currentUser {
+            self.user = User(
+                profileImageURL: firebaseUser.photoURL?.absoluteString,
+                name: firebaseUser.displayName ?? "Unknown User",
+                email: firebaseUser.email ?? "No Email"
+            )
+            isAuthenticated = true
+        } else {
+            isAuthenticated = false
+            user = nil
+        }
+    }
 
     func googleSignIn() {
         guard FirebaseApp.app()?.options.clientID != nil else {
@@ -88,6 +107,8 @@ class AuthenticationService: ObservableObject {
                     }
                 }
             }
+            // Update user data after login
+            self.checkAuthentication()
         }
     }
 
@@ -100,27 +121,10 @@ class AuthenticationService: ObservableObject {
         }
     }
 }
-//import SwiftUI
-//import GoogleSignIn
-//import GoogleSignInSwift
-//
-//struct ContentView: View {
-//    var body: some View {
-//        GoogleSignInButton {
-//            // Handle sign-in action
-//            GIDSignIn.sharedInstance.signIn(withPresenting: getRootViewController()) { signInResult, error in
-//                // Check for errors and handle the sign-in result
-//            }
-//        }
-//        .frame(width: 200, height: 50)
-//    }
-//
-//    // Helper function to get the root view controller
-//    func getRootViewController() -> UIViewController {
-//        guard let screen = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-//              let root = screen.windows.first?.rootViewController else {
-//            fatalError("Unable to find root view controller")
-//        }
-//        return root
-//    }
-//}
+
+// User model
+struct User {
+    var profileImageURL: String?
+    var name: String
+    var email: String
+}

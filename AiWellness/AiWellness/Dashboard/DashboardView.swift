@@ -10,8 +10,9 @@ import FirebaseAuth
 import GoogleSignIn
 
 struct DashboardView: View {
-    @ObservedObject var authService: AuthenticationService // Observing the  shared service
-    @State private var showTimeCapsule: Bool = false //
+    @ObservedObject var authService = AuthenticationService() // Observing the  shared service
+    @State private var showTimeCapsule: Bool = false
+    @State private var showSettings: Bool = false
 
     var body: some View {
         ZStack {
@@ -22,8 +23,13 @@ struct DashboardView: View {
                     WelcomeText()
                     Spacer()
 
-                    // Sign Out Button
+//                    // Sign Out Button
                     AuthenticationSignOutButton(text: "Sign Out", action: authService.googleSignOut)
+                    IconButton(icon: "gear.circle", title: "") {
+                        withAnimation {
+                            showSettings = true
+                        }
+                    }
                 }
                 .padding()
                 Spacer()
@@ -39,6 +45,10 @@ struct DashboardView: View {
         .fullScreenCover(isPresented: $showTimeCapsule) {
             TimeCapsuleView(isPresented: $showTimeCapsule)
         }
+        .fullScreenCover(isPresented: $showSettings) {
+            SettingsView()
+        }
+
     }
 }
 
