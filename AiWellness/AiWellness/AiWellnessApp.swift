@@ -31,7 +31,7 @@ struct AiWellnessApp: App {
     var body: some Scene {
         WindowGroup {
             AppRootView()
-                .environmentObject(SettingsViewModel())  // Share ViewModel across views
+                .environmentObject(SettingsViewModel(authService: AuthenticationService()))  // Share ViewModel across views
                 .preferredColorScheme(isDarkMode ? .dark : .light)  // Apply globally
         }
     }

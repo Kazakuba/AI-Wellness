@@ -10,10 +10,10 @@ import SwiftUI
 
 struct ChatListView: View {
     @ObservedObject var chatStore = ChatStore.shared
-    @State private var isShowingNewChatSheet = false
     @State private var isShowingMoreOptions = false
     @StateObject private var serverStatusViewModel = ServerStatusViewModel()
     @State private var isShowingAlert = false
+    @State private var navigateToChat: Chat? = nil
 
     var body: some View {
         NavigationView {
@@ -31,13 +31,8 @@ struct ChatListView: View {
                             title: Text("Server Information"),
                             message: Text(
                                 serverStatusViewModel.isServerUp == true
-                                ? "The server is up and running."
-                                : """
-                                  The server is currently down. Make sure that:
-                                  1. You have Ollama downloaded and installed.
-                                  2. Open terminal and run: "ollama run llama3.2".
-                                  3. Open a new terminal and run: "ollama serve".
-                                  """
+                                ? "The AI system is up and running."
+                                : "The AI system is currently unavailable. Please try again later."
                             ),
                             dismissButton: .default(Text("OK"))
                         )
@@ -63,7 +58,9 @@ struct ChatListView: View {
                 .background(Color.black)
 
                 Button(action: {
-                    isShowingNewChatSheet = true
+                    // Create a new chat with a placeholder title and navigate to it
+                    let newChat = chatStore.createNewChat(title: "New Chat")
+                    navigateToChat = newChat
                 }) {
                     Text("Create New Chats")
                         .font(.headline)
@@ -98,7 +95,7 @@ struct ChatListView: View {
                 List {
                     Section(header: Text("Today")) {
                         ForEach(todayChats) { chat in
-                            NavigationLink(destination: ChatDetailView(chat: chat, serverStatusViewModel: serverStatusViewModel)) {
+                            NavigationLink(destination: ChatDetailView(chat: chat, serverStatusViewModel: serverStatusViewModel), tag: chat, selection: $navigateToChat) {
                                 Text(chat.title)
                             }
                         }
@@ -131,9 +128,6 @@ struct ChatListView: View {
                 }
             }
             .navigationBarHidden(true)
-        }
-        .sheet(isPresented: $isShowingNewChatSheet) {
-            CreateNewChatView()
         }
         .sheet(isPresented: $isShowingMoreOptions) {
             MoreOptionsView()

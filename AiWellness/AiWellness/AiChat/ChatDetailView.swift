@@ -12,9 +12,12 @@ struct ChatDetailView: View {
     let chat: Chat
     @ObservedObject var serverStatusViewModel: ServerStatusViewModel
     @State private var messageText: String = ""
+    @State private var isFirstMessageSent = false
+    @State private var isGeneratingTitle = false
 
     var body: some View {
         VStack {
+            // Remove duplicate title, rely on navigationTitle only
             ScrollView {
                 ScrollViewReader { scrollViewProxy in
                     VStack(spacing: 8) {
@@ -63,29 +66,46 @@ struct ChatDetailView: View {
                     }
                 }
             }
-
             Divider()
-
             HStack {
                 TextField("Type your message...", text: $messageText)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .padding(.horizontal, 10)
-                    .frame(height: 40)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(8)
-
-                Button(action: sendMessage) {
-                    Image(systemName: "paperplane.fill")
-                        .foregroundColor(.white)
-                        .padding(10)
-                        .background(messageText.isEmpty ? Color.gray : Color.blue)
-                        .cornerRadius(8)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .disabled(isGeneratingTitle)
+                Button(action: {
+                    guard !messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+                    if chat.messages.isEmpty {
+                        print("[DEBUG] Generating title for first message: \(messageText)")
+                        isGeneratingTitle = true
+                        GeminiAPIService.shared.generateTitle(for: messageText) { result in
+                            DispatchQueue.main.async {
+                                isGeneratingTitle = false
+                                switch result {
+                                case .success(let titles):
+                                    print("[DEBUG] Gemini returned titles: \(titles)")
+                                    let title = titles.randomElement()?.trimmingCharacters(in: .whitespacesAndNewlines)
+                                    if let title = title, !title.isEmpty, let idx = chatStore.chats.firstIndex(where: { $0.id == chat.id }) {
+                                        print("[DEBUG] Updating chat title to: \(title)")
+                                        chatStore.chats[idx].title = title
+                                        chatStore.saveChatsToUserDefaults()
+                                    } else {
+                                        print("[DEBUG] No valid title returned, keeping placeholder.")
+                                    }
+                                case .failure(let error):
+                                    print("[DEBUG] Failed to generate title: \(error)")
+                                }
+                            }
+                        }
+                    }
+                    chatStore.sendMessageUsingGeminiAPI(content: messageText, sender: "Me", chatID: chat.id)
+                    messageText = ""
+                }) {
+                    Text("Send")
                 }
-                .disabled(messageText.isEmpty)
+                .disabled(isGeneratingTitle)
             }
             .padding()
         }
-        .navigationTitle(chat.title)
+        .navigationTitle(currentChat.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -101,15 +121,11 @@ struct ChatDetailView: View {
     }
 
     private var currentChat: Chat {
-        if let updatedChat = chatStore.chats.first(where: { $0.id == chat.id }) {
-            return updatedChat
-        } else {
-            return chat
-        }
+        chatStore.chats.first(where: { $0.id == chat.id }) ?? chat
     }
 
     func sendMessage() {
-        chatStore.sendMessageToOllama(content: messageText, sender: "Me", chatID: chat.id)
+        chatStore.sendMessageUsingGeminiAPI(content: messageText, sender: "Me", chatID: chat.id)
         messageText = ""
     }
 }

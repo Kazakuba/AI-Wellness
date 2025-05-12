@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TabBarView: View {
-    @StateObject var authService = AuthenticationService() // Shared service
+    @ObservedObject var authService: AuthenticationService
     @State private var selectedTab = 0
     @State private var tabBarHidden: Bool = false
     @State private var showBreathingExercise: Bool = false

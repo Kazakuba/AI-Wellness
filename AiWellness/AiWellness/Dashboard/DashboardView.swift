@@ -10,7 +10,7 @@ import FirebaseAuth
 import GoogleSignIn
 
 struct DashboardView: View {
-    @ObservedObject var authService = AuthenticationService() // Observing the  shared service
+    @ObservedObject var authService: AuthenticationService
     @State private var showTimeCapsule: Bool = false
     @State private var showSettings: Bool = false
 
@@ -22,9 +22,6 @@ struct DashboardView: View {
                 HStack {
                     WelcomeText()
                     Spacer()
-
-//                    // Sign Out Button
-                    AuthenticationSignOutButton(text: "Sign Out", action: authService.googleSignOut)
                     IconButton(icon: "gear.circle", title: "") {
                         withAnimation {
                             showSettings = true
@@ -47,6 +44,7 @@ struct DashboardView: View {
         }
         .fullScreenCover(isPresented: $showSettings) {
             SettingsView()
+                .environmentObject(authService)
         }
 
     }

@@ -19,6 +19,7 @@ struct AppRootView: View {
                 AuthenticationView(viewModel: .init(autheticationService: authService))
             }
         }
+        .environmentObject(authService)
         .onAppear {
             checkAuthStatus()
         }

@@ -87,18 +87,31 @@ class ChatStore: ObservableObject {
         saveChatsToUserDefaults()
     }
 
-    func sendMessageToOllama(content: String, sender: String, chatID: UUID) {
-        OllamaService.shared.sendMessage(chatID: chatID, message: content) { [weak self] result in
+    func sendMessageUsingAppleAI(content: String, sender: String, chatID: UUID) {
+        // Add user message
+        addMessage(content, sender: sender, to: chatID)
+
+        // Simulate AI response using Natural Language framework or Core ML
+        let aiResponse = "This is a simulated response from Apple's AI."
+
+        // Add AI response
+        addMessage(aiResponse, sender: "AppleAI", to: chatID)
+    }
+
+    func sendMessageUsingGeminiAPI(content: String, sender: String, chatID: UUID) {
+        // Add user message
+        addMessage(content, sender: sender, to: chatID)
+
+        // Call Gemini API
+        GeminiAPIService.shared.sendMessage(content, chatHistory: chats.first(where: { $0.id == chatID })?.messages ?? []) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let receivedMessage):
-                    // Add user message
-                    self?.addMessage(content, sender: sender, to: chatID)
-                    // Add assistant response
-                    self?.addMessage(receivedMessage.content, sender: "Ollama", to: chatID)
+                case .success(let aiResponse):
+                    // Add AI response
+                    self?.addMessage(aiResponse, sender: "GeminiAI", to: chatID)
                 case .failure(let error):
-                    // Display the error to the user
-                    self?.showErrorToUser(error.localizedDescription)
+                    // Show error to the user
+                    self?.showErrorToUser("Failed to get response from Gemini API: \(error.localizedDescription)")
                 }
             }
         }

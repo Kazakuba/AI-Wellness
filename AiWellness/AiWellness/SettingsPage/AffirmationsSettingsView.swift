@@ -28,8 +28,9 @@ struct AffirmationsSettingsView: View {
     }
 }
 #Preview {
-    AffirmationsSettingsView(viewModel: SettingsViewModel())
-        .environmentObject(SettingsViewModel())
+    let sharedAuthService = AuthenticationService()
+    AffirmationsSettingsView(viewModel: SettingsViewModel(authService: sharedAuthService))
+        .environmentObject(SettingsViewModel(authService: sharedAuthService))
 }
 
 struct AffirmationTypesView: View {

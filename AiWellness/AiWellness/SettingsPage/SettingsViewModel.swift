@@ -10,7 +10,7 @@ import FirebaseAuth
 import GoogleSignIn
 
 class SettingsViewModel: ObservableObject {
-    @ObservedObject var authService = AuthenticationService()
+    @ObservedObject var authService: AuthenticationService
     @Published var user: User?
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = true
     
@@ -26,6 +26,9 @@ class SettingsViewModel: ObservableObject {
     let aiVoice = ["Filip","Lucija","Miso"]
     let languages = ["English", "Spanish"]
     
+    init(authService: AuthenticationService = AuthenticationService()) {
+        self.authService = authService
+    }
     
     func fetchUser() {
         guard let firebaseUser = Auth.auth().currentUser else {

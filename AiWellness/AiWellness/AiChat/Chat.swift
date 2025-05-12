@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Chat: Identifiable, Codable {
+struct Chat: Identifiable, Codable, Hashable {
     let id: UUID
     var title: String
     var messages: [Message]
@@ -18,5 +18,13 @@ struct Chat: Identifiable, Codable {
         self.title = title
         self.messages = []
         self.createdDate = Date()
+    }
+
+    static func == (lhs: Chat, rhs: Chat) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

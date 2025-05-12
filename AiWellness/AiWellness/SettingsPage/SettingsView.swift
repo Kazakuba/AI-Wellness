@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var viewModel: SettingsViewModel
+    @EnvironmentObject private var authService: AuthenticationService
     @State private var searchText: String = ""
     @Environment(\.dismiss) var dismiss
     
@@ -70,7 +71,7 @@ struct SettingsView: View {
                 //Account Management
                 Section(header: Text("Account Management")) {
                     NavigationRow(icon: "gearshape.fill", title: "Account Settings", destination: AccountSettingsView(), color: .gray)
-                    NavigationRow(icon: "exclamationmark.triangle.fill", title: "Danger Zone", destination: DangerZoneView(), color: .red)
+                    NavigationRow(icon: "exclamationmark.triangle.fill", title: "Danger Zone", destination: DangerZoneView().environmentObject(ChatStore.shared), color: .red)
                     NavigationRow(icon: "person.bubble.fill", title: "Personal Affirmations", destination: AffirmationsSettingsView(viewModel: SettingsViewModel()), color: .teal)
                 }
                 
@@ -83,7 +84,9 @@ struct SettingsView: View {
                
                 //Log Out
                 Section {
-                    Button(action : { viewModel.googleSignOut() }) {
+                    Button(action : { 
+                        authService.googleSignOut()
+                    }) {
                         HStack {
                             Spacer()
                             Text("Log Out")
@@ -112,7 +115,7 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView()
-        .environmentObject(SettingsViewModel())
+        .environmentObject(SettingsViewModel(authService: AuthenticationService()))
 }
 
 struct FadingViewModifier: ViewModifier {
