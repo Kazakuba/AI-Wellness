@@ -12,7 +12,12 @@ import GoogleSignIn
 
 class AuthenticationService: ObservableObject {
     @Published var isAuthenticated: Bool = false
-    @Published var user: User?
+    @Published var user: User? {
+        didSet {
+            // Notify journal to refresh notes if user changes
+            NotificationCenter.default.post(name: .journalUserDidChange, object: nil)
+        }
+    }
     
     init() {
         checkAuthentication()
@@ -127,4 +132,8 @@ struct User {
     var profileImageURL: String?
     var name: String
     var email: String
+}
+
+extension Notification.Name {
+    static let journalUserDidChange = Notification.Name("journalUserDidChange")
 }

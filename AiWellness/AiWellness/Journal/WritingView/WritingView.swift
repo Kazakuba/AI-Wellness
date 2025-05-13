@@ -5,6 +5,7 @@
 //  Created by Kazakuba on 27.12.24..
 //
 import SwiftUI
+import FirebaseAuth
 
 struct WritingView: View {
     // MARK: - Properties
@@ -21,6 +22,12 @@ struct WritingView: View {
         .padding()
         .background(ColorPalette.background)
         .onAppear(perform: loadText)
+        .onChange(of: selectedDate) { _, _ in
+            loadText()
+        }
+        .onChange(of: Auth.auth().currentUser?.uid) { _, _ in
+            loadText()
+        }
     }
     
     // MARK: - UI Components
