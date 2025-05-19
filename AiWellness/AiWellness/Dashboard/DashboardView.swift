@@ -86,7 +86,7 @@ private struct ExampleImage: View {
     var body: some View {
         Image("exampleImage")
             .resizable()
-            .ignoresSafeArea(edges: .top)
+            .ignoresSafeArea()
             .opacity(0.9)
     }
 }

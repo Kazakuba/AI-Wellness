@@ -1,0 +1,63 @@
+// Data layer: Google API and local persistence implementation
+import Foundation
+
+class AffirmationRepositoryImpl: AffirmationRepository {
+    private let apiService: AffirmationAPIService
+    private let persistence: AffirmationPersistence
+    
+    init(apiService: AffirmationAPIService = AffirmationAPIService(),
+         persistence: AffirmationPersistence = AffirmationPersistence()) {
+        self.apiService = apiService
+        self.persistence = persistence
+    }
+    
+    func fetchDailyAffirmation(completion: @escaping (Result<Affirmation, Error>) -> Void, topic: String? = nil) {
+        // Check if today's affirmation is cached for the topic
+        if let cached = persistence.getTodayAffirmation(for: topic) {
+            completion(.success(cached))
+            return
+        }
+        // Otherwise, fetch from API, ensuring uniqueness
+        let previousAffirmations = persistence.getSavedAffirmations().filter { $0.topic == topic }
+        func fetchUniqueAffirmation(retry: Int = 0) {
+            apiService.fetchAffirmation(completion: { result in
+                switch result {
+                case .success(let affirmation):
+                    // Ensure uniqueness for this topic
+                    if previousAffirmations.contains(where: { $0.text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == affirmation.text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }) {
+                        if retry < 5 {
+                            fetchUniqueAffirmation(retry: retry + 1)
+                        } else {
+                            // Give up after 5 tries, return anyway
+                            self.persistence.saveTodayAffirmation(affirmation)
+                            completion(.success(affirmation))
+                        }
+                    } else {
+                        self.persistence.saveTodayAffirmation(affirmation)
+                        completion(.success(affirmation))
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }, topic: topic)
+        }
+        fetchUniqueAffirmation()
+    }
+    
+    // Protocol conformance: keep this for protocol
+    func fetchDailyAffirmation(completion: @escaping (Result<Affirmation, Error>) -> Void) {
+        fetchDailyAffirmation(completion: completion, topic: nil)
+    }
+    
+    func saveAffirmation(_ affirmation: Affirmation) {
+        persistence.saveAffirmation(affirmation)
+    }
+    
+    func getSavedAffirmations() -> [Affirmation] {
+        persistence.getSavedAffirmations()
+    }
+    
+    func isAffirmationSaved(_ affirmation: Affirmation) -> Bool {
+        persistence.isAffirmationSaved(affirmation)
+    }
+}

@@ -36,6 +36,14 @@ struct TabBarView: View {
                     }
                     .tag(2)
                 
+                // Affirmations feature tab
+                AffirmationsEntryView()
+                    .tabItem {
+                        Image(systemName: "sun.max.fill")
+                        Text("Affirmations")
+                    }
+                    .tag(4)
+                
                 // Breathing exercise trigger
                 BreathingEntryView(showBreathingExercise: $showBreathingExercise)
                     .tabItem {
@@ -44,7 +52,8 @@ struct TabBarView: View {
                     }
                     .tag(3)
             }
-            .accentColor(.blue)
+            .accentColor(.white)
+            .toolbarBackground(.ultraThinMaterial, for: .tabBar)
             // Hide the TabView's built-in tab bar when tabBarHidden is true
             .opacity(tabBarHidden ? 0 : 1)
             
@@ -60,6 +69,15 @@ struct TabBarView: View {
         }
         .ignoresSafeArea(edges: .bottom)
         .onChange(of: selectedTab) { oldValue, newValue in
+            if newValue == 4 {
+                let tabBarAppearance = UITabBar.appearance()
+                tabBarAppearance.unselectedItemTintColor = UIColor.white
+                tabBarAppearance.tintColor = UIColor.white
+            } else {
+                let tabBarAppearance = UITabBar.appearance()
+                tabBarAppearance.unselectedItemTintColor = nil
+                tabBarAppearance.tintColor = nil
+            }
             if newValue == 3 {
                 // When Breathing tab is selected, trigger the full screen exercise view
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

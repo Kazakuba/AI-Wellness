@@ -10,6 +10,9 @@ struct CalendarGridView: View {
     @Binding var currentMonthOffset: Int
     var onDateSelected: (Date) -> Void
 
+    static let minMonthOffset = -12 // Example: 1 year back
+    static let maxMonthOffset = 12   // Example: 1 year forward
+
     var body: some View {
         let days = generateDaysForMonth(offset: monthOffset)
         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 15) {

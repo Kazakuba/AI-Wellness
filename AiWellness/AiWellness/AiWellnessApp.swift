@@ -27,6 +27,12 @@ struct AiWellnessApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @AppStorage("isDarkMode") private var isDarkMode = false
     
+    init() {
+        let tabBarAppearance = UITabBar.appearance()
+        tabBarAppearance.unselectedItemTintColor = UIColor.white
+        tabBarAppearance.tintColor = UIColor.white
+        tabBarAppearance.backgroundColor = UIColor(white: 1, alpha: 0.15)
+    }
     
     var body: some Scene {
         WindowGroup {
