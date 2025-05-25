@@ -39,9 +39,3 @@ struct AffirmationTypesView: View {
     }
 }
 
-struct DeliveryTimeView: View {
-    var body: some View {
-        Text("Select when to receive affirmations (Coming Soon)")
-    }
-}
-

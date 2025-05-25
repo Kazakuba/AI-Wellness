@@ -89,6 +89,19 @@ class AffirmationPersistence {
         }
         return result
     }
+    
+    //Deleting saved affirmation locally
+    func deleteAffirmation(_ affirmation: Affirmation) {
+        var affirmations = getSavedAffirmations()
+        if let index = affirmations.firstIndex(of: affirmation) {
+            affirmations.remove(at: index)
+            saveAffirmations(affirmations)
+        }
+    }
+    
+    func clearAllAffirmations() {
+        UserDefaults.standard.removeObject(forKey: savedKey)
+    }
 
     // Helper struct for decoding
     private struct AffirmationOrDate: Codable {

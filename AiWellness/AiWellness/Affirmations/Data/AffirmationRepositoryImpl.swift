@@ -5,6 +5,9 @@ class AffirmationRepositoryImpl: AffirmationRepository {
     private let apiService: AffirmationAPIService
     private let persistence: AffirmationPersistence
     
+    @Published var searchText: String = ""
+    @Published var affirmations: [Affirmation] = []
+    
     init(apiService: AffirmationAPIService = AffirmationAPIService(),
          persistence: AffirmationPersistence = AffirmationPersistence()) {
         self.apiService = apiService
@@ -51,6 +54,16 @@ class AffirmationRepositoryImpl: AffirmationRepository {
     
     func saveAffirmation(_ affirmation: Affirmation) {
         persistence.saveAffirmation(affirmation)
+        
+        // Checking if this calls FirestoreManager.shared.uploadAffirmation
+        FirestoreManager.shared.uploadAffirmation(affirmation) { result in
+            switch result {
+            case .success():
+                print("Saved to Firestore")
+            case .failure(let error):
+                print("Error saving to Firestore: \(error.localizedDescription)")
+            }
+        }
     }
     
     func getSavedAffirmations() -> [Affirmation] {

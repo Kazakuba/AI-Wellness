@@ -11,8 +11,13 @@ import GoogleSignIn
 
 struct DashboardView: View {
     @ObservedObject var authService: AuthenticationService
+    @ObservedObject var notificationService = NotificationService()
     @State private var showTimeCapsule: Bool = false
     @State private var showSettings: Bool = false
+    @State private var showTestNotifictions = false
+    @State private var showAffirmationHistory = false
+    @State private var showTodayAffirmation = false
+    @State private var todayAffirmation: Affirmation?
 
     var body: some View {
         ZStack {
@@ -30,12 +35,18 @@ struct DashboardView: View {
                 }
                 .padding()
                 Spacer()
-                PrimaryButton(title: "Open Time Capsule") {
-                    withAnimation {
-                        showTimeCapsule = true
+                VStack {
+                    PrimaryButton(title: "Open Time Capsule") {
+                        withAnimation {
+                            showTimeCapsule = true
+                        }
+                    }
+                    PrimaryButton(title: "Test Notification") {
+                        withAnimation {
+                            showTestNotifictions = true
+                        }
                     }
                 }
-                .background(Color.gray)
                 .padding()
             }
         }
@@ -46,7 +57,9 @@ struct DashboardView: View {
             SettingsView()
                 .environmentObject(authService)
         }
-
+        .fullScreenCover(isPresented: $showTestNotifictions) {
+            NotificationTestView(isPresented: $showTestNotifictions)
+        }
     }
 }
 
@@ -93,4 +106,5 @@ private struct ExampleImage: View {
 
 #Preview {
     DashboardView(authService: AuthenticationService())
+        .environmentObject(SettingsViewModel())
 }

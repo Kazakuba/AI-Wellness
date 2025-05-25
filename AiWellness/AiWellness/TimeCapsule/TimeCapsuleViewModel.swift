@@ -57,8 +57,8 @@ class TimeCapsuleViewModel {
         }
     }
     
-    func saveNoteAndScheduleNotification(for note: TimeCapsuleNote) {
-        NotificationService.shared.scheduleNotification(for: note) { result in
+    func saveNoteAndScheduleNotification(for note: TimeCapsuleNote, at date: Date) {
+        NotificationService.shared.scheduleNotification(for: note, at: date) { result in
             switch result {
             case .success:
                 print("Notifications scheduled successfully!")

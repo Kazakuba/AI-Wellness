@@ -4,8 +4,11 @@ import SwiftUI
 struct AffirmationsView: View {
     @Binding var hasOpenedAffirmations: Bool
     @StateObject private var viewModel = AffirmationsViewModel()
+    @StateObject private var savedViewModel = SavedAffirmationViewModel()
     @StateObject private var motionManager = MotionManager()
     @State private var showThemeSheet = false
+    @State private var showTodayAffirmation: Bool = false
+    @State private var todayAffirmation: Affirmation?
     @AppStorage("selectedThemeId") private var selectedThemeId: String = ThemeLibrary.defaultTheme.id
 
     var body: some View {
@@ -143,7 +146,7 @@ struct AffirmationsView: View {
                 }
             }
             .sheet(isPresented: $viewModel.showSavedSheet) {
-                SavedAffirmationsView(affirmations: viewModel.savedAffirmations)
+                SavedAffirmationView(viewModel: savedViewModel)
             }
             .sheet(isPresented: $viewModel.showTopicSheet) {
                 TopicSelectionSheet(isPresented: $viewModel.showTopicSheet, selectedTopic: $viewModel.selectedTopic, topics: AffirmationTopicsProvider.topics) { topic in
@@ -162,29 +165,11 @@ struct AffirmationsView: View {
                     viewModel.unlockAffirmation()
                 }
             }
-        }
-    }
-
-    struct SavedAffirmationsView: View {
-        let affirmations: [Affirmation]
-        var body: some View {
-            NavigationView {
-                List(affirmations.sorted { $0.date > $1.date }) { affirmation in
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(affirmation.text)
-                            .font(.body)
-                        if let topic = affirmation.topic {
-                            Text(topic)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        Text(affirmation.date, style: .date)
-                            .font(.caption2)
-                            .foregroundColor(.gray)
-                    }
-                    .padding(.vertical, 8)
+            .onReceive(NotificationCenter.default.publisher(for: .didReceiveAffirmationNotification)) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    viewModel.loadDailyAffirmation()
+                    showTodayAffirmation = true
                 }
-                .navigationTitle("Saved Affirmations")
             }
         }
     }

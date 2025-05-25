@@ -9,6 +9,6 @@ class GetSavedAffirmationsUseCase {
     }
     
     func execute() -> [Affirmation] {
-        repository.getSavedAffirmations()
+        return repository.getSavedAffirmations()
     }
 }
