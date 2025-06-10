@@ -56,6 +56,18 @@ struct DashboardView: View {
                     }
                 }
                 .padding()
+                VStack(spacing: 20) {
+                    GamifiedDashboardHeaderView()
+                    // Achievements horizontal scroll
+                    AchievementsHorizontalScrollView()
+                    // Badges horizontal scroll
+                    BadgesHorizontalScrollView()
+                    // Weekly Recap collapsible
+                    CollapsibleSectionView(title: "📆 Weekly Recap") {
+                        WeeklyRecapView()
+                    }
+                    Spacer()
+                }
             }
         }
         .fullScreenCover(isPresented: $showTimeCapsule) {

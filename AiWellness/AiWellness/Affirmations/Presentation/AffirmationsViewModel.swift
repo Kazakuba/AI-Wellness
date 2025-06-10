@@ -73,6 +73,8 @@ class AffirmationsViewModel: ObservableObject {
 
     func saveAffirmation(_ affirmation: Affirmation) {
         saveAffirmationUseCase.execute(affirmation)
+        // Unlock "First Affirmation" achievement if not already unlocked
+        GamificationManager.shared.incrementAchievement("first_affirmation")
         loadSavedAffirmations()
     }
 
