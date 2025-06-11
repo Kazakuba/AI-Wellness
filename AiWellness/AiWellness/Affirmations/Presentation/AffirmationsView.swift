@@ -54,6 +54,7 @@ struct AffirmationsView: View {
                         }
                         Button(action: {
                             viewModel.unlockAffirmation()
+                            handleAffirmationUnlock()
                         }) {
                             Text("Shake or Tap to Unlock")
                                 .font(.headline)
@@ -94,6 +95,31 @@ struct AffirmationsView: View {
                             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                                let rootVC = windowScene.windows.first?.rootViewController {
                                 rootVC.present(av, animated: true, completion: nil)
+                                // --- Sharing logic ---
+                                let uid = GamificationManager.shared.getUserUID() ?? "default"
+                                let shareKey = "sharing_is_caring_count_\(uid)"
+                                let defaults = UserDefaults.standard
+                                var shareCount = defaults.integer(forKey: shareKey)
+                                shareCount += 1
+                                defaults.set(shareCount, forKey: shareKey)
+                                // Update achievement progress (goal: 5)
+                                if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "sharing_is_caring" }) {
+                                    GamificationManager.shared.achievements[idx].progress = shareCount
+                                    GamificationManager.shared.achievements[idx].isUnlocked = (shareCount >= 5)
+                                }
+                                // Update badge progress and level (5, 15, 30)
+                                if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "social_sharer" }) {
+                                    GamificationManager.shared.badges[idx].progress = shareCount
+                                    if shareCount == 5 || shareCount == 15 || shareCount == 30 {
+                                        GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
+                                    }
+                                }
+                                // --- First Share achievement (share at least once) ---
+                                if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "first_share" }) {
+                                    GamificationManager.shared.achievements[idx].progress = min(1, shareCount)
+                                    GamificationManager.shared.achievements[idx].isUnlocked = (shareCount >= 1)
+                                }
+                                GamificationManager.shared.save()
                             }
                         }) {
                             Image(systemName: "square.and.arrow.up")
@@ -170,6 +196,7 @@ struct AffirmationsView: View {
             .onChange(of: motionManager.didShake) { _, didShake in
                 if didShake && viewModel.isLocked {
                     viewModel.unlockAffirmation()
+                    handleAffirmationUnlock(fromShake: true)
                 }
             }
             .onReceive(NotificationCenter.default.publisher(for: .didReceiveAffirmationNotification)) { _ in
@@ -179,5 +206,78 @@ struct AffirmationsView: View {
                 }
             }
         }
+    }
+
+    private func handleAffirmationUnlock(fromShake: Bool = false) {
+        if fromShake {
+            GamificationManager.shared.incrementAchievement("shake_it_up")
+            GamificationManager.shared.incrementBadge("shaker")
+        }
+        // --- Streak logic ---
+        let uid = GamificationManager.shared.getUserUID() ?? "default"
+        let streakKey = "affirmation_streak_\(uid)"
+        let lastDateKey = "affirmation_streak_last_\(uid)"
+        let defaults = UserDefaults.standard
+        let today = Calendar.current.startOfDay(for: Date())
+        let lastDate = defaults.object(forKey: lastDateKey) as? Date
+        var streak = defaults.integer(forKey: streakKey)
+        if let last = lastDate {
+            let days = Calendar.current.dateComponents([.day], from: last, to: today).day ?? 0
+            if days == 1 {
+                streak += 1
+            } else if days > 1 {
+                streak = 1
+            } else if days == 0 {
+                // Already unlocked today, do not increment streak
+            }
+        } else {
+            streak = 1
+        }
+        defaults.set(today, forKey: lastDateKey)
+        defaults.set(streak, forKey: streakKey)
+        // Update achievement and badge progress directly
+        if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "streak_starter" }) {
+            GamificationManager.shared.achievements[idx].progress = streak
+            GamificationManager.shared.achievements[idx].isUnlocked = (streak >= 3)
+        }
+        if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "consistency" }) {
+            GamificationManager.shared.badges[idx].progress = streak
+            if streak == 3 || streak == 7 || streak == 30 {
+                GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
+            }
+        }
+        // --- Streak Slayer badge ---
+        if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "streak_slayer" }) {
+            GamificationManager.shared.badges[idx].progress = streak
+            if streak == 3 || streak == 7 || streak == 30 {
+                GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
+            }
+        }
+        // --- Affirmation Streak achievement (7-day streak) ---
+        if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "affirmation_streak" }) {
+            GamificationManager.shared.achievements[idx].progress = streak
+            GamificationManager.shared.achievements[idx].isUnlocked = (streak >= 7)
+        }
+        // --- Sharing is Caring achievement (share 5x) ---
+        let shareKey = "sharing_is_caring_count_\(uid)"
+        let shareCount = defaults.integer(forKey: shareKey)
+        // Update achievement progress (goal: 5)
+        if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "sharing_is_caring" }) {
+            GamificationManager.shared.achievements[idx].progress = shareCount
+            GamificationManager.shared.achievements[idx].isUnlocked = (shareCount >= 5)
+        }
+        // --- Social Sharer badge (share 5x, 15x, 30x) ---
+        if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "social_sharer" }) {
+            GamificationManager.shared.badges[idx].progress = shareCount
+            if shareCount == 5 || shareCount == 15 || shareCount == 30 {
+                GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
+            }
+        }
+        // --- First Share achievement (share at least once) ---
+        if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "first_share" }) {
+            GamificationManager.shared.achievements[idx].progress = min(1, shareCount)
+            GamificationManager.shared.achievements[idx].isUnlocked = (shareCount >= 1)
+        }
+        GamificationManager.shared.save()
     }
 }

@@ -52,6 +52,30 @@ class AffirmationsViewModel: ObservableObject {
     
     func selectTopic(_ topic: AffirmationTopic) {
         selectedTopic = topic
+        // --- Explorer logic ---
+        let uid = GamificationManager.shared.getUserUID() ?? "default"
+        let explorerKey = "explorer_topics_\(uid)"
+        let defaults = UserDefaults.standard
+        var topics = Set(defaults.stringArray(forKey: explorerKey) ?? [])
+        let topicId = topic.id
+        let wasInserted = topics.insert(topicId).inserted
+        if wasInserted {
+            defaults.set(Array(topics), forKey: explorerKey)
+            let count = topics.count
+            // Update achievement progress (goal: 5)
+            if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "explorer" }) {
+                GamificationManager.shared.achievements[idx].progress = count
+                GamificationManager.shared.achievements[idx].isUnlocked = (count >= 5)
+            }
+            // Update badge progress and level (5, 10, 20)
+            if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "explorer" }) {
+                GamificationManager.shared.badges[idx].progress = count
+                if count == 5 || count == 10 || count == 20 {
+                    GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
+                }
+            }
+            GamificationManager.shared.save()
+        }
         // Do NOT lock again when changing topic
         loadDailyAffirmationForTopic(topic)
     }
@@ -75,6 +99,29 @@ class AffirmationsViewModel: ObservableObject {
         saveAffirmationUseCase.execute(affirmation)
         // Unlock "First Affirmation" achievement if not already unlocked
         GamificationManager.shared.incrementAchievement("first_affirmation")
+        // --- Collector logic ---
+        let uid = GamificationManager.shared.getUserUID() ?? "default"
+        let collectorKey = "collector_count_\(uid)"
+        let defaults = UserDefaults.standard
+        var count = defaults.integer(forKey: collectorKey)
+        // Only increment if this is a new save
+        if !savedAffirmations.contains(where: { $0.id == affirmation.id }) {
+            count += 1
+            defaults.set(count, forKey: collectorKey)
+        }
+        // Update achievement progress (goal: 10)
+        if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "collector" }) {
+            GamificationManager.shared.achievements[idx].progress = count
+            GamificationManager.shared.achievements[idx].isUnlocked = (count >= 10)
+        }
+        // Update badge progress and level (10, 25, 50)
+        if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "collector" }) {
+            GamificationManager.shared.badges[idx].progress = count
+            if count == 10 || count == 25 || count == 50 {
+                GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
+            }
+        }
+        GamificationManager.shared.save()
         loadSavedAffirmations()
     }
 

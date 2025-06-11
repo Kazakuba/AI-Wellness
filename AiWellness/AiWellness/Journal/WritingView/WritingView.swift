@@ -70,6 +70,24 @@ struct WritingView: View {
             .frame(maxHeight: .infinity)
             .onChange(of: text) { oldValue, newValue in
                 saveText(newValue)
+                // --- Journal Hero achievement logic ---
+                let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !trimmed.isEmpty else { return }
+                let uid = GamificationManager.shared.getUserUID() ?? "default"
+                let journalKey = "journal_hero_dates_\(uid)"
+                let defaults = UserDefaults.standard
+                var completedDates = Set(defaults.stringArray(forKey: journalKey) ?? [])
+                let dateString = ISO8601DateFormatter().string(from: selectedDate)
+                if !completedDates.contains(dateString) {
+                    completedDates.insert(dateString)
+                    defaults.set(Array(completedDates), forKey: journalKey)
+                    // Update achievement progress (goal: 5)
+                    if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "journal_hero" }) {
+                        GamificationManager.shared.achievements[idx].progress = completedDates.count
+                        GamificationManager.shared.achievements[idx].isUnlocked = (completedDates.count >= 5)
+                    }
+                    GamificationManager.shared.save()
+                }
             }
     }
     

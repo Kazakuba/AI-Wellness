@@ -46,8 +46,6 @@ class GamificationManager: ObservableObject {
         "sharing_is_caring": 15,
         "explorer": 10,
         "journal_hero": 20,
-        "motion_mastery": 15,
-        "first_save": 10,
         "first_share": 10
     ]
     private let badgeXP: [String: Int] = [
@@ -70,12 +68,12 @@ class GamificationManager: ObservableObject {
     
     // MARK: - Achievement Definitions
     private let achievementTemplates: [Achievement] = [
-        Achievement(id: "first_affirmation", title: "First Affirm...", systemImage: "sparkles", description: "Unlock one affirmation", isUnlocked: false, progress: 0, goal: 1),
+        Achievement(id: "first_affirmation", title: "First Affirmation", systemImage: "sparkles", description: "Unlock one affirmation", isUnlocked: false, progress: 0, goal: 1),
         Achievement(id: "shake_it_up", title: "Shake it Up!", systemImage: "waveform.path.ecg", description: "Shake gesture 3×", isUnlocked: false, progress: 0, goal: 3),
-        Achievement(id: "streak_starter", title: "Streak Star...", systemImage: "flame", description: "3-day streak", isUnlocked: false, progress: 0, goal: 3),
-        Achievement(id: "affirmation_streak", title: "Affirmation...", systemImage: "calendar", description: "7-day streak", isUnlocked: false, progress: 0, goal: 7),
+        Achievement(id: "streak_starter", title: "Streak Starter", systemImage: "flame", description: "3-day streak", isUnlocked: false, progress: 0, goal: 3),
+        Achievement(id: "affirmation_streak", title: "Affirmation Streak", systemImage: "calendar", description: "7-day streak", isUnlocked: false, progress: 0, goal: 7),
         Achievement(id: "collector", title: "Collector", systemImage: "tray.full", description: "Save 10 affirmations", isUnlocked: false, progress: 0, goal: 10),
-        Achievement(id: "sharing_is_caring", title: "Sharing is...", systemImage: "square.and.arrow.up", description: "Share 5×", isUnlocked: false, progress: 0, goal: 5),
+        Achievement(id: "sharing_is_caring", title: "Sharing is Caring", systemImage: "square.and.arrow.up", description: "Share 5×", isUnlocked: false, progress: 0, goal: 5),
         Achievement(id: "explorer", title: "Explorer", systemImage: "globe", description: "View 5 topics", isUnlocked: false, progress: 0, goal: 5),
         Achievement(id: "journal_hero", title: "Journal Hero", systemImage: "book", description: "Complete 5 journal prompts", isUnlocked: false, progress: 0, goal: 5),
         Achievement(id: "first_share", title: "First Share", systemImage: "arrowshape.turn.up.right", description: "Share one affirmation", isUnlocked: false, progress: 0, goal: 1)
@@ -124,10 +122,26 @@ class GamificationManager: ObservableObject {
     
     // MARK: - XP/Level Logic
     private func addXP(_ amount: Int) {
+        let oldLevel = level
         xp += amount
         while xp >= xpForNextLevel() {
             xp -= xpForNextLevel()
             level += 1
+        }
+        // --- Level Up! badge logic ---
+        if level > oldLevel {
+            if let idx = badges.firstIndex(where: { $0.id == "level_up" }) {
+                // Award badge at level 2, 5, 10 (bronze, silver, gold)
+                let newLevel = level
+                var badge = badges[idx]
+                if (badge.level < 1 && newLevel >= 2) || (badge.level < 2 && newLevel >= 5) || (badge.level < 3 && newLevel >= 10) {
+                    badge.level = min(3, [0, 2, 5, 10].filter { newLevel >= $0 }.count - 1)
+                    badge.progress = 0
+                } else {
+                    badge.progress = newLevel
+                }
+                badges[idx] = badge
+            }
         }
         save()
     }
@@ -156,7 +170,7 @@ class GamificationManager: ObservableObject {
     }
     
     // MARK: - Persistence (override)
-    private func save() {
+    func save() {
         let uid = getUserUID() ?? "default"
         UserDefaults.standard.set(uid, forKey: userKey)
         if let data = try? JSONEncoder().encode(achievements) {
