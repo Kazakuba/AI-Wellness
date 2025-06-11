@@ -4,9 +4,13 @@ struct AchievementsHorizontalScrollView: View {
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
     @ObservedObject var gamification = GamificationManager.shared
     @State private var showInfoSheet = false
-    @State private var infoTitle = ""
-    @State private var infoDescription = ""
-    @State private var infoCompleted = false
+    @State private var selectedAchievement: Achievement? = nil
+    var showAchievementSheet: Binding<Bool> {
+        Binding(
+            get: { selectedAchievement != nil },
+            set: { newValue in if !newValue { selectedAchievement = nil } }
+        )
+    }
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Achievements")
@@ -17,10 +21,7 @@ struct AchievementsHorizontalScrollView: View {
                 HStack(spacing: 16) {
                     ForEach(gamification.achievements) { ach in
                         Button(action: {
-                            infoTitle = ach.title
-                            infoDescription = ach.isUnlocked ? "You unlocked this achievement!" : ach.description
-                            infoCompleted = ach.isUnlocked
-                            showInfoSheet = true
+                            selectedAchievement = ach
                         }) {
                             VStack(spacing: 8) {
                                 Image(systemName: ach.systemImage)
@@ -38,8 +39,7 @@ struct AchievementsHorizontalScrollView: View {
                             .frame(width: 90, height: 90)
                             .background(
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(LinearGradient(gradient: Gradient(colors: isDarkMode ? [Color.indigo.opacity(0.25), Color.black.opacity(0.18)] : [Color.mint.opacity(0.18), Color.cyan.opacity(0.18)]), startPoint: .topLeading, endPoint: .bottomTrailing))
-                            )
+                                    .fill(LinearGradient(gradient: Gradient(colors: isDarkMode ? [Color.indigo.opacity(0.25), Color.black.opacity(0.18)] : [Color.mint.opacity(0.18), Color.cyan.opacity(0.18)]), startPoint: .topLeading, endPoint: .bottomTrailing)))
                         }
                     }
                 }
@@ -47,20 +47,30 @@ struct AchievementsHorizontalScrollView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .halfSheet(isPresented: $showInfoSheet) {
-            VStack(spacing: 20) {
-                Text(infoTitle)
-                    .font(.title2).bold()
-                Text(infoDescription)
-                    .font(.body)
-                    .foregroundColor(infoCompleted ? .green : .primary)
-                if !infoCompleted {
-                    Text("Complete to earn XP and unlock this achievement!")
+        .halfSheet(isPresented: showAchievementSheet) {
+            VStack(spacing: 24) {
+                if let ach = selectedAchievement {
+                    Text(ach.title)
+                        .font(.title2).bold()
+                        .padding(.top, 16)
+                    Text(ach.isUnlocked ? "You unlocked this achievement!" : ach.description)
+                        .font(.body)
+                        .foregroundColor(ach.isUnlocked ? .green : .primary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 16)
+                    ProgressView(value: Float(ach.progress), total: Float(ach.goal))
+                        .progressViewStyle(LinearProgressViewStyle(tint: ach.isUnlocked ? .green : .blue))
+                        .frame(width: 180, height: 12)
+                        .background(Color.gray.opacity(0.15).cornerRadius(6))
+                        .padding(.top, 12)
+                    Text("Progress: \(ach.progress)/\(ach.goal)")
                         .font(.caption)
                         .foregroundColor(.secondary)
+                        .padding(.bottom, 16)
                 }
             }
-            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color(.systemBackground))
         }
     }
 }
