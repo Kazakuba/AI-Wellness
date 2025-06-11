@@ -78,8 +78,6 @@ class GamificationManager: ObservableObject {
         Achievement(id: "sharing_is_caring", title: "Sharing is...", systemImage: "square.and.arrow.up", description: "Share 5×", isUnlocked: false, progress: 0, goal: 5),
         Achievement(id: "explorer", title: "Explorer", systemImage: "globe", description: "View 5 topics", isUnlocked: false, progress: 0, goal: 5),
         Achievement(id: "journal_hero", title: "Journal Hero", systemImage: "book", description: "Complete 5 journal prompts", isUnlocked: false, progress: 0, goal: 5),
-        Achievement(id: "motion_mastery", title: "Motion Mast...", systemImage: "figure.walk", description: "Proximity gesture 5×", isUnlocked: false, progress: 0, goal: 5),
-        Achievement(id: "first_save", title: "First Save", systemImage: "bookmark", description: "Save one affirmation", isUnlocked: false, progress: 0, goal: 1),
         Achievement(id: "first_share", title: "First Share", systemImage: "arrowshape.turn.up.right", description: "Share one affirmation", isUnlocked: false, progress: 0, goal: 1)
     ]
     
@@ -135,9 +133,14 @@ class GamificationManager: ObservableObject {
     }
     
     // MARK: - User UID Storage
+    /// Call this after login, before showing any gamification UI.
+    /// This will update the user, reload all gamification data, and notify the UI.
     func setUser(uid: String) {
         UserDefaults.standard.set(uid, forKey: userKey)
-        save()
+        load() // Reload data for the new user
+        DispatchQueue.main.async {
+            self.objectWillChange.send() // Force UI update if needed
+        }
     }
     func getUserUID() -> String? {
         UserDefaults.standard.string(forKey: userKey)

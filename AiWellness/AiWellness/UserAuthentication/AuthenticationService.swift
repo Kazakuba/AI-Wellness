@@ -109,6 +109,10 @@ class AuthenticationService: ObservableObject {
                     // Update authentication state
                     DispatchQueue.main.async {
                         self.isAuthenticated = true
+                        // Set gamification user UID after successful sign in
+                        if let uid = authResult?.user.uid {
+                            GamificationManager.shared.setUser(uid: uid)
+                        }
                     }
                 }
             }
