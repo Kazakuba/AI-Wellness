@@ -94,32 +94,34 @@ struct AffirmationsView: View {
                             let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
                             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                                let rootVC = windowScene.windows.first?.rootViewController {
-                                rootVC.present(av, animated: true, completion: nil)
-                                // --- Sharing logic ---
-                                let uid = GamificationManager.shared.getUserUID() ?? "default"
-                                let shareKey = "sharing_is_caring_count_\(uid)"
-                                let defaults = UserDefaults.standard
-                                var shareCount = defaults.integer(forKey: shareKey)
-                                shareCount += 1
-                                defaults.set(shareCount, forKey: shareKey)
-                                // Update achievement progress (goal: 5)
-                                if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "sharing_is_caring" }) {
-                                    GamificationManager.shared.achievements[idx].progress = shareCount
-                                    GamificationManager.shared.achievements[idx].isUnlocked = (shareCount >= 5)
-                                }
-                                // Update badge progress and level (5, 15, 30)
-                                if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "social_sharer" }) {
-                                    GamificationManager.shared.badges[idx].progress = shareCount
-                                    if shareCount == 5 || shareCount == 15 || shareCount == 30 {
-                                        GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
+                                av.completionWithItemsHandler = { activityType, completed, returnedItems, error in
+                                    guard completed else { return }
+                                    // --- Sharing logic ---
+                                    let uid = GamificationManager.shared.getUserUID() ?? "default"
+                                    let shareKey = "sharing_is_caring_count_\(uid)"
+                                    let defaults = UserDefaults.standard
+                                    let previousShareCount = defaults.integer(forKey: shareKey)
+                                    let newShareCount = previousShareCount + 1
+                                    defaults.set(newShareCount, forKey: shareKey)
+                                    // Increment achievement progress by 1 for each share
+                                    GamificationManager.shared.incrementAchievement("sharing_is_caring", by: 1)
+                                    // Update badge progress and level (5, 15, 30)
+                                    if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "social_sharer" }) {
+                                        GamificationManager.shared.incrementBadge("social_sharer", by: 1)
+                                        if GamificationManager.shared.badges[idx].progress == 0 && (newShareCount == 5 || newShareCount == 15 || newShareCount == 30) {
+                                            GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
+                                        }
                                     }
+                                    // --- First Share achievement (share at least once) ---
+                                    if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "first_share" }) {
+                                        if !GamificationManager.shared.achievements[idx].isUnlocked {
+                                            GamificationManager.shared.achievements[idx].progress = 1
+                                            GamificationManager.shared.achievements[idx].isUnlocked = true
+                                        }
+                                    }
+                                    GamificationManager.shared.save()
                                 }
-                                // --- First Share achievement (share at least once) ---
-                                if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "first_share" }) {
-                                    GamificationManager.shared.achievements[idx].progress = min(1, shareCount)
-                                    GamificationManager.shared.achievements[idx].isUnlocked = (shareCount >= 1)
-                                }
-                                GamificationManager.shared.save()
+                                rootVC.present(av, animated: true, completion: nil)
                             }
                         }) {
                             Image(systemName: "square.and.arrow.up")
@@ -257,26 +259,6 @@ struct AffirmationsView: View {
         if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "affirmation_streak" }) {
             GamificationManager.shared.achievements[idx].progress = streak
             GamificationManager.shared.achievements[idx].isUnlocked = (streak >= 7)
-        }
-        // --- Sharing is Caring achievement (share 5x) ---
-        let shareKey = "sharing_is_caring_count_\(uid)"
-        let shareCount = defaults.integer(forKey: shareKey)
-        // Update achievement progress (goal: 5)
-        if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "sharing_is_caring" }) {
-            GamificationManager.shared.achievements[idx].progress = shareCount
-            GamificationManager.shared.achievements[idx].isUnlocked = (shareCount >= 5)
-        }
-        // --- Social Sharer badge (share 5x, 15x, 30x) ---
-        if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "social_sharer" }) {
-            GamificationManager.shared.badges[idx].progress = shareCount
-            if shareCount == 5 || shareCount == 15 || shareCount == 30 {
-                GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
-            }
-        }
-        // --- First Share achievement (share at least once) ---
-        if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "first_share" }) {
-            GamificationManager.shared.achievements[idx].progress = min(1, shareCount)
-            GamificationManager.shared.achievements[idx].isUnlocked = (shareCount >= 1)
         }
         GamificationManager.shared.save()
     }

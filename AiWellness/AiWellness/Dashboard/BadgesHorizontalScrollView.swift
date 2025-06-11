@@ -35,7 +35,8 @@ struct BadgesHorizontalScrollView: View {
                                     .foregroundColor(badge.level > 0 ? (isDarkMode ? .white : .black) : (isDarkMode ? .white.opacity(0.7) : .black.opacity(0.7)))
                                     .lineLimit(1)
                                 if badge.level == 0 {
-                                    ProgressView(value: Float(badge.progress), total: Float(badge.goal))
+                                    let clampedProgress = min(max(badge.progress, 0), badge.goal)
+                                    ProgressView(value: Float(clampedProgress), total: Float(badge.goal))
                                         .frame(width: 60)
                                 } else {
                                     Text("Lvl \(badge.level)")
@@ -65,15 +66,57 @@ struct BadgesHorizontalScrollView: View {
                         .foregroundColor(badge.level > 0 ? .green : .primary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 16)
-                    ProgressView(value: Float(badge.progress), total: Float(badge.goal))
-                        .progressViewStyle(LinearProgressViewStyle(tint: badge.level > 0 ? .green : .blue))
-                        .frame(width: 180, height: 12)
-                        .background(Color.gray.opacity(0.15).cornerRadius(6))
-                        .padding(.top, 12)
-                    Text("Progress: \(badge.progress)/\(badge.goal)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.bottom, 16)
+                    // Level Up! badge: show milestone progress
+                    if badge.id == "level_up" {
+                        let milestones = [2, 5, 10, 20, 100]
+                        let currentLevel = gamification.level
+                        let nextMilestone = milestones.first(where: { $0 > currentLevel })
+                        if let next = nextMilestone {
+                            let clampedLevel = min(max(currentLevel, 0), next)
+                            ProgressView(value: Float(clampedLevel), total: Float(next))
+                                .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                                .frame(width: 180, height: 12)
+                                .background(Color.gray.opacity(0.15).cornerRadius(6))
+                                .padding(.top, 12)
+                            Text("Progress to next milestone (Lvl \(next)): \(clampedLevel)/\(next)")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.bottom, 16)
+                        } else {
+                            Text("All milestones reached!")
+                                .font(.caption)
+                                .foregroundColor(.green)
+                                .padding(.top, 12)
+                        }
+                        Text("Current Level: \(currentLevel)")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    } else if badge.level > 0 {
+                        let clampedProgress = min(max(badge.progress, 0), badge.goal)
+                        ProgressView(value: Float(clampedProgress), total: Float(badge.goal))
+                            .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                            .frame(width: 180, height: 12)
+                            .background(Color.gray.opacity(0.15).cornerRadius(6))
+                            .padding(.top, 12)
+                        Text("Progress to next level: \(clampedProgress)/\(badge.goal)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .padding(.bottom, 16)
+                        Text("Current Level: \(badge.level)")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    } else {
+                        let clampedProgress = min(max(badge.progress, 0), badge.goal)
+                        ProgressView(value: Float(clampedProgress), total: Float(badge.goal))
+                            .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                            .frame(width: 180, height: 12)
+                            .background(Color.gray.opacity(0.15).cornerRadius(6))
+                            .padding(.top, 12)
+                        Text("Progress: \(clampedProgress)/\(badge.goal)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .padding(.bottom, 16)
+                    }
                 }
             }
             .frame(maxWidth: .infinity)
