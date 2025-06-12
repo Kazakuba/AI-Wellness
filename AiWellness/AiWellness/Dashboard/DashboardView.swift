@@ -11,6 +11,7 @@ import GoogleSignIn
 
 struct DashboardView: View {
     @ObservedObject var authService: AuthenticationService
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
     @ObservedObject var notificationService = NotificationService()
     @State private var showTimeCapsule: Bool = false
     @State private var showSettings: Bool = false
@@ -19,13 +20,20 @@ struct DashboardView: View {
     @State private var showTodayAffirmation = false
     @State private var todayAffirmation: Affirmation?
 
+    var gradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: isDarkMode ? [Color.indigo, Color.black] : [Color.mint, Color.cyan]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+
     var body: some View {
         ZStack {
-            Color.white.edgesIgnoringSafeArea(.all)
-            ExampleImage()
+            gradient.ignoresSafeArea()
             VStack {
                 HStack {
-                    WelcomeText()
+                    WelcomeText(isDarkMode: isDarkMode)
                     Spacer()
                     IconButton(icon: "gear.circle", title: "") {
                         withAnimation {
@@ -64,11 +72,12 @@ struct DashboardView: View {
 }
 
 private struct WelcomeText: View {
+    var isDarkMode: Bool = false
     @State var userName: String = "User"
     var body: some View {
         Text("Welcome \(userName)")
             .font(.title)
-            .foregroundColor(.black)
+            .foregroundColor(isDarkMode ? .white : .black)
             .onAppear {
                 fetchUserName()
             }
@@ -92,15 +101,6 @@ private struct WelcomeText: View {
     func extractFirstName(from fullName: String) -> String {
         let components = fullName.split(separator: " ")
         return components.first.map { String($0) } ?? fullName
-    }
-}
-
-private struct ExampleImage: View {
-    var body: some View {
-        Image("exampleImage")
-            .resizable()
-            .ignoresSafeArea()
-            .opacity(0.9)
     }
 }
 

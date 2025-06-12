@@ -28,3 +28,4 @@ struct Chat: Identifiable, Codable, Hashable {
         hasher.combine(id)
     }
 }
+

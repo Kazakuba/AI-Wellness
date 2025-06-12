@@ -13,8 +13,7 @@ class SettingsViewModel: ObservableObject {
     @ObservedObject var authService: AuthenticationService
     @Published var user: User?
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = true
-    
-    @Published var isDarkMode: Bool = false
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
     @Published var notificationsEnabled: Bool = true
     @Published var selectedAIVoice: String = "Filip"
     @Published var selectedLanguage: String = "English"

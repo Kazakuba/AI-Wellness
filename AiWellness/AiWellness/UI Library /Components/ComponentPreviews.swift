@@ -18,7 +18,7 @@ struct ComponentPreviews: View {
                 // MARK: - Buttons
                 Text("Buttons")
                     .font(Typography.Font.heading2)
-                    .foregroundColor(ColorPalette.Text.primary)
+                    .foregroundColor(Color(.label))
                 
                 PrimaryButton(title: "Primary Button") {
                     print("Primary Button tapped")
@@ -43,7 +43,7 @@ struct ComponentPreviews: View {
                 // MARK: - Text Fields
                 Text("Text Fields")
                     .font(Typography.Font.heading2)
-                    .foregroundColor(ColorPalette.Text.primary)
+                    .foregroundColor(Color(.label))
                 
                 TextFieldComponent(text: $textInput, placeholder: "Enter something")
                     .padding()
@@ -59,7 +59,7 @@ struct ComponentPreviews: View {
                 // MARK: - Images
                 Text("Images")
                     .font(Typography.Font.heading2)
-                    .foregroundColor(ColorPalette.Text.primary)
+                    .foregroundColor(Color(.label))
                 
                 RoundedImageView(
                     image: Image(systemName: "photo"),
@@ -77,7 +77,7 @@ struct ComponentPreviews: View {
             }
             .padding()
         }
-        .background(ColorPalette.background.ignoresSafeArea())
+        .background(Color(.systemBackground).ignoresSafeArea())
     }
 }
 

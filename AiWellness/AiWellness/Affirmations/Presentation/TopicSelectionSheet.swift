@@ -8,6 +8,7 @@ struct TopicSelectionSheet: View {
     var onSelect: (AffirmationTopic) -> Void
     
     @State private var searchText = ""
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
     
     var filteredTopics: [AffirmationTopic] {
         if searchText.isEmpty { return topics }
@@ -60,6 +61,7 @@ struct TopicCardView: View {
     let topic: AffirmationTopic
     let isSelected: Bool
     let onTap: () -> Void
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
     
     var body: some View {
         Button(action: onTap) {
@@ -71,17 +73,17 @@ struct TopicCardView: View {
                         VStack(spacing: 10) {
                             Image(systemName: topic.iconName)
                                 .font(.system(size: 36))
-                                .foregroundColor(.accentColor)
+                                .foregroundColor(isDarkMode ? .white : .black)
                             Text(topic.title)
                                 .font(.headline)
-                                .foregroundColor(.primary)
+                                .foregroundColor(isDarkMode ? .white : .black)
                         }
                     )
                     .overlay(
                         Group {
                             if isSelected {
                                 Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(isDarkMode ? .white : .black)
                                     .offset(x: -8, y: 8)
                             }
                         }, alignment: .topTrailing

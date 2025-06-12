@@ -14,18 +14,20 @@ struct ToggleRow: View {
     var color: Color
 
     @State private var iconScale: CGFloat = 1.0
-    
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
+
     var body: some View {
         HStack {
             Image(systemName: icon)
-                .foregroundColor(color)
+                .foregroundColor(isDarkMode ? .white : .black)
                 .frame(width: 30, height: 30)
-                .background(color.opacity(0.2))
+                .background(Color(.tertiarySystemFill))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .scaleEffect(iconScale) // Apply scale effect
                 .animation(.spring(response: 0.3, dampingFraction: 0.5), value: isOn) // Animate when toggled
           
             Toggle(title, isOn: $isOn)
+                .foregroundColor(isDarkMode ? .white : .black)
                 .onChange(of: isOn) {
                     iconScale = 1.2
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {

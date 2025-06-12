@@ -8,11 +8,13 @@ import SwiftUI
 
 struct TimeCapsuleView: View {
     @Binding var isPresented: Bool
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
     @State private var viewModel = TimeCapsuleViewModel()
 
     var body: some View {
         ZStack {
-            BackgroundGradient()
+            (isDarkMode ? LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.black]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color.mint, Color.cyan]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                .edgesIgnoringSafeArea(.all)
             VStack(spacing: 20) {
                 HStack {
                     IconButton(icon: "xmark", title: "") {
@@ -24,9 +26,11 @@ struct TimeCapsuleView: View {
                 Text("Write A Note To Your Future Self ")
                     .font(Typography.Font.heading2)
                     .padding()
+                    .foregroundColor(isDarkMode ? .white : .black)
                 //Text Input Field
                 TextFieldComponent(text: $viewModel.noteContent , placeholder: "Type your note here...")
                     .padding()
+                    .foregroundColor(isDarkMode ? .white : .black)
                 // Picker for Timeframe
                 Picker("Select Timeframe", selection: $viewModel.selectedTimeframe) {
                     ForEach(viewModel.timeframes, id: \.self) { timeframe in
@@ -59,6 +63,7 @@ struct TimeCapsuleView: View {
                     VStack(alignment: .leading) {
                         Text(note.content)
                             .font(.headline)
+                            .foregroundColor(isDarkMode ? .white : .black)
                         Text("Unlocks on \(note.unlockDate, formatter: DateFormatter.short)")
                             .font(.subheadline)
                             .foregroundColor(.gray)

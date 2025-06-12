@@ -9,6 +9,7 @@ struct CalendarGridView: View {
     let today: Date
     @Binding var currentMonthOffset: Int
     var onDateSelected: (Date) -> Void
+    var isDarkMode: Bool // <-- Accept as parameter
 
     static let minMonthOffset = -12 // Example: 1 year back
     static let maxMonthOffset = 12   // Example: 1 year forward
@@ -18,7 +19,7 @@ struct CalendarGridView: View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 15) {
             ForEach(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], id: \.self) { day in
                 Text(day)
-                    .foregroundColor(ColorPalette.Text.secondary)
+                    .foregroundColor(isDarkMode ? .white : .black)
             }
 
             ForEach(days.indices, id: \.self) { index in
@@ -34,7 +35,10 @@ struct CalendarGridView: View {
                         .padding(10)
                         .background(isCurrentDay ? Color.red : Color.clear) // Red circle for today
                         .clipShape(Circle())
-                        .foregroundColor(isCurrentDay ? Color.white : (hasContent ? Color.green : Color.primary)) // Green for content, white for today's number
+                        .foregroundColor(
+                            isCurrentDay ? Color.white :
+                            (isDarkMode ? (hasContent ? Color.green : Color.white) : (hasContent ? Color.green : Color.black))
+                        )
                         .onTapGesture {
                             onDateSelected(date)
                         }

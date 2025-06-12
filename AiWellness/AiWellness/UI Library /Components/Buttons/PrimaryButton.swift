@@ -11,17 +11,18 @@ import SwiftUI
 struct PrimaryButton: View {
     let title: String
     let action: () -> Void
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
 
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(Typography.Font.button)
-                .foregroundColor(.white)
-                .padding()
+                .font(.system(size: 16, weight: .bold))
+                .foregroundColor(isDarkMode ? .white : .black)
+                .padding(12)
                 .frame(maxWidth: .infinity)
+                .background(Color.buttonBackground)
+                .cornerRadius(8)
         }
-        .background(ColorPalette.CustomPrimary)
-        .cornerRadius(8)
     }
 }
 

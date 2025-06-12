@@ -52,7 +52,7 @@ private struct AIImage: View {
             .aspectRatio(contentMode: .fill)
             .frame(width: 120, height: 120)
             .clipShape(Circle())
-            .overlay(Circle().stroke(Color.gray, lineWidth: 2))
+            .overlay(Circle().stroke(Color(.separator), lineWidth: 2))
             .padding(.bottom, 20)
     }
 }
@@ -68,7 +68,7 @@ private struct MotivationalWelcomeText: View {
     var body: some View {
         Text("Where your feelings are understood")
             .font(.subheadline)
-            .foregroundColor(.gray)
+            .foregroundColor(Color(.secondaryLabel))
             .multilineTextAlignment(.center)
             .padding(.horizontal, 40)
             .padding(.bottom, 30)

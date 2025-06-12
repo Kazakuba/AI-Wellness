@@ -15,13 +15,14 @@ struct PickerRow: View {
     var color: Color
     
     @State private var scaleEffect: CGFloat = 1.0
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
 
     var body: some View {
         HStack {
             Image(systemName: icon)
-                .foregroundColor(color)
+                .foregroundColor(isDarkMode ? .white : .black)
                 .frame(width: 30, height: 30)
-                .background(color.opacity(0.2))
+                .background(Color(.tertiarySystemFill))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .scaleEffect(scaleEffect)
                 .animation(.spring(), value: selection)
@@ -29,6 +30,7 @@ struct PickerRow: View {
             Picker(title, selection: $selection) {
                 ForEach(options, id: \.self) { option in
                     Text(option)
+                        .foregroundColor(isDarkMode ? .white : .black)
                 }
             }
             .pickerStyle(MenuPickerStyle())

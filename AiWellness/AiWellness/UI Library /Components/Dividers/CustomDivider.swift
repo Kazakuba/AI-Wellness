@@ -12,7 +12,7 @@ struct CustomDivider: View {
     var body: some View {
         Rectangle()
             .frame(height: 1)
-            .foregroundColor(ColorPalette.Borders.light)
+            .foregroundColor(Color(.separator))
             .padding(.horizontal)
     }
 }

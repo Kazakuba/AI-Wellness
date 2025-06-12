@@ -22,6 +22,8 @@ struct CalendarView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     @Binding var selectedTab: Int
+    var isDarkMode: Bool = false
+    @AppStorage("isDarkMode") var appStorageDarkMode: Bool = false
 
     let futureMonthsToShow = 6
     private let today = Date()
@@ -31,112 +33,125 @@ struct CalendarView: View {
         let date: Date
     }
 
+    var gradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: isDarkMode ? [Color.indigo, Color.black] : [Color.mint, Color.cyan]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+
     var body: some View {
-        let monthRange = calculateMonthRange()
-        VStack {
-            if selectedTab == 2 {
-                if isUnlocked {
-                    // Main Calendar View
-                    VStack(spacing: 10) {
-                        // Header with title and controls
-                        HStack {
-                            Text(getMonthYear(for: currentMonthOffset))
-                                .font(Typography.Font.heading2)
+        ZStack {
+            gradient.ignoresSafeArea()
+            VStack {
+                if selectedTab == 2 {
+                    if isUnlocked {
+                        let monthRange = calculateMonthRange()
+                        VStack(spacing: 10) {
+                            // Header with title and controls
+                            HStack {
+                                Text(getMonthYear(for: currentMonthOffset))
+                                    .font(Typography.Font.heading2)
+                                    .foregroundColor(appStorageDarkMode ? .white : .black)
 
-                            Spacer()
+                                Spacer()
 
-                            HStack(spacing: 20) {
-                                IconButton(icon: "chevron.left", title: nil) {
-                                    changeMonth(by: -1)
+                                HStack(spacing: 20) {
+                                    IconButton(icon: "chevron.left", title: nil) {
+                                        changeMonth(by: -1)
+                                    }
+                                    .disabled(isButtonDisabled || currentMonthOffset <= monthRange.lowerBound)
+
+                                    TertiaryButton(title: "Today", action: {
+                                        moveToToday()
+                                    })
+                                    .foregroundColor(appStorageDarkMode ? .white : .black)
+                                    .disabled(isButtonDisabled)
+
+                                    IconButton(icon: "chevron.right", title: nil) {
+                                        changeMonth(by: 1)
+                                    }
+                                    .disabled(isButtonDisabled || currentMonthOffset >= monthRange.upperBound)
                                 }
-                                .disabled(isButtonDisabled || currentMonthOffset <= monthRange.lowerBound)
+                            }
+                            .padding()
 
-                                TertiaryButton(title: "Today", action: {
-                                    moveToToday()
-                                })
-                                .disabled(isButtonDisabled)
-
-                                IconButton(icon: "chevron.right", title: nil) {
-                                    changeMonth(by: 1)
+                            // Scrollable calendar
+                            GeometryReader { geometry in
+                                ScrollView(.vertical) {
+                                    ScrollViewReader { proxy in
+                                        VStack(spacing: 30) {
+                                            Spacer()
+                                                .frame(height: 50)
+                                            ForEach(calculateMonthRange(), id: \.self) { offset in
+                                                GeometryReader { innerGeometry in
+                                                    CalendarGridView(
+                                                        monthOffset: offset,
+                                                        today: today,
+                                                        currentMonthOffset: $currentMonthOffset,
+                                                        onDateSelected: { date in
+                                                            selectedDate = IdentifiableDate(date: date)
+                                                        },
+                                                        isDarkMode: appStorageDarkMode // Pass dark mode state
+                                                    )
+                                                    .frame(height: geometry.size.height / 3) // Adjust grid size
+                                                    .opacity(opacityForMonth(innerGeometry: innerGeometry, parentGeometry: geometry))
+                                                    .id(offset)
+                                                    .onAppear {
+                                                        updateCurrentMonth(innerGeometry: innerGeometry, offset: offset, parentGeometry: geometry)
+                                                    }
+                                                    .onChange(of: innerGeometry.frame(in: .global).midY) {
+                                                        updateCurrentMonth(innerGeometry: innerGeometry, offset: offset, parentGeometry: geometry)
+                                                    }
+                                                }
+                                                .frame(height: geometry.size.height / 1.8)
+                                            }
+                                        }
+                                        .onAppear {
+                                            currentMonthOffset = 0
+                                            withAnimation {
+                                                proxy.scrollTo(currentMonthOffset, anchor: .center)
+                                            }
+                                        }
+                                        .onChange(of: currentMonthOffset) { _, newValue in
+                                            if isManuallyChangingMonth {
+                                                withAnimation {
+                                                    proxy.scrollTo(newValue, anchor: .center)
+                                                }
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                    isManuallyChangingMonth = false
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                                .disabled(isButtonDisabled || currentMonthOffset >= monthRange.upperBound)
+                                .gesture(
+                                    DragGesture()
+                                        .onEnded { value in
+                                            let threshold: CGFloat = 100
+                                            if value.translation.height < -threshold {
+                                                changeMonth(by: 1)
+                                            } else if value.translation.height > threshold {
+                                                changeMonth(by: -1)
+                                            }
+                                        }
+                                )
                             }
                         }
                         .padding()
-
-                        // Scrollable calendar
-                        GeometryReader { geometry in
-                            ScrollView(.vertical) {
-                                ScrollViewReader { proxy in
-                                    VStack(spacing: 30) {
-                                        Spacer()
-                                            .frame(height: 50)
-                                        ForEach(calculateMonthRange(), id: \.self) { offset in
-                                            GeometryReader { innerGeometry in
-                                                CalendarGridView(
-                                                    monthOffset: offset,
-                                                    today: today,
-                                                    currentMonthOffset: $currentMonthOffset,
-                                                    onDateSelected: { date in
-                                                        selectedDate = IdentifiableDate(date: date)
-                                                    }
-                                                )
-                                                .frame(height: geometry.size.height / 3) // Adjust grid size
-                                                .opacity(opacityForMonth(innerGeometry: innerGeometry, parentGeometry: geometry))
-                                                .id(offset)
-                                                .onAppear {
-                                                    updateCurrentMonth(innerGeometry: innerGeometry, offset: offset, parentGeometry: geometry)
-                                                }
-                                                .onChange(of: innerGeometry.frame(in: .global).midY) {
-                                                    updateCurrentMonth(innerGeometry: innerGeometry, offset: offset, parentGeometry: geometry)
-                                                }
-                                            }
-                                            .frame(height: geometry.size.height / 1.8)
-                                        }
-                                    }
-                                    .onAppear {
-                                        currentMonthOffset = 0
-                                        withAnimation {
-                                            proxy.scrollTo(currentMonthOffset, anchor: .center)
-                                        }
-                                    }
-                                    .onChange(of: currentMonthOffset) { _, newValue in
-                                        if isManuallyChangingMonth {
-                                            withAnimation {
-                                                proxy.scrollTo(newValue, anchor: .center)
-                                            }
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                                isManuallyChangingMonth = false
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            .gesture(
-                                DragGesture()
-                                    .onEnded { value in
-                                        let threshold: CGFloat = 100
-                                        if value.translation.height < -threshold {
-                                            changeMonth(by: 1)
-                                        } else if value.translation.height > threshold {
-                                            changeMonth(by: -1)
-                                        }
-                                    }
-                            )
+                        .sheet(item: $selectedDate) { identifiableDate in
+                            WritingView(selectedDate: identifiableDate.date)
                         }
-                    }
-                    .padding()
-                    .sheet(item: $selectedDate) { identifiableDate in
-                        WritingView(selectedDate: identifiableDate.date)
-                    }
-                } else {
-                    // Placeholder view before authentication
-                    VStack {
-                        Image ("lockedScreen")
-                            .resizable()
-                            .ignoresSafeArea()
-                    }
+                    } else {
+                        // Placeholder view before authentication
+                        VStack {
+                            Image ("lockedScreen")
+                                .resizable()
+                                .ignoresSafeArea()
+                        }
 
+                    }
                 }
             }
         }

@@ -16,9 +16,9 @@ struct AuthenticationSignOutButton: View {
             HStack {
                 Text(text)
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(.red)
+                    .foregroundColor(Color(.systemRed))
                     .padding(8)
-                    .background(Color.white)
+                    .background(Color(.systemBackground))
                     .cornerRadius(5)
                     .shadow(radius: 2)
             }

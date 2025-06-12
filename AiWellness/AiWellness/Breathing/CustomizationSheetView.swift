@@ -12,6 +12,8 @@ struct CustomizationSheetView: View {
     private let categories = ["All", "Stress Relief", "Sleep", "Energy", "Focus", "Beginner"]
     private let durations = [60.0, 180.0, 300.0, 600.0] // 1, 3, 5, 10 minutes
     
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
+    
     init(viewModel: BreathingExerciseViewModel, onStart: @escaping () -> Void) {
         self.viewModel = viewModel
         self.onStart = onStart
@@ -29,7 +31,7 @@ struct CustomizationSheetView: View {
                     }) {
                         Image(systemName: "xmark")
                             .font(.title2)
-                            .foregroundColor(.black)
+                            .foregroundColor(isDarkMode ? .white : .black)
                     },
                     trailing: Button("Start") {
                         // Signal intent to start, then dismiss
@@ -39,7 +41,11 @@ struct CustomizationSheetView: View {
                     .font(Typography.Font.button)
                 )
         }
-        .accentColor(.black)
+        .accentColor(isDarkMode ? .white : .black)
+        .background(
+            (isDarkMode ? LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.black]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color.mint, Color.cyan]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                .edgesIgnoringSafeArea(.all)
+        )
         .onAppear {
             // Initialize with all animations
             filteredAnimations = viewModel.getThemesForCategory(selectedCategory)
@@ -59,7 +65,7 @@ struct CustomizationSheetView: View {
                 // Animation themes
                 Text("Theme mixes")
                     .font(.system(size: 28, weight: .semibold))
-                    .foregroundColor(.black)
+                    .foregroundColor(isDarkMode ? .white : .black)
                     .padding(.horizontal)
                 
                 // Animation selection grid
@@ -68,7 +74,7 @@ struct CustomizationSheetView: View {
                 // Duration selection
                 Text("Exercise Duration")
                     .font(.system(size: 22, weight: .semibold))
-                    .foregroundColor(.black)
+                    .foregroundColor(isDarkMode ? .white : .black)
                     .padding(.horizontal)
                     .padding(.top)
                 

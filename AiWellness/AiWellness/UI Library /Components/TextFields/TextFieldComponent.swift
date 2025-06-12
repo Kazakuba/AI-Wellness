@@ -15,7 +15,7 @@ struct TextFieldComponent: View {
     var body: some View {
         TextField(placeholder, text: $text)
             .padding()
-            .background(ColorPalette.surface)
+            .background(Color(.secondarySystemBackground))
             .cornerRadius(8)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)

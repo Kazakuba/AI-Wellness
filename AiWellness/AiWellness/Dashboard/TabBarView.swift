@@ -9,89 +9,83 @@ import SwiftUI
 
 struct TabBarView: View {
     @ObservedObject var authService: AuthenticationService
+    @AppStorage("isDarkMode") private var isDarkMode: Bool = false
     @State private var selectedTab = 0
     @State private var tabBarHidden: Bool = false
     @State private var showBreathingExercise: Bool = false
-    
+
+    init(authService: AuthenticationService) {
+        self.authService = authService
+        UITabBar.appearance().backgroundColor = .clear
+        UITabBar.appearance().barTintColor = .clear
+        UITabBar.appearance().isTranslucent = true
+        UITabBar.appearance().backgroundImage = UIImage()
+        UITabBar.appearance().shadowImage = UIImage()
+    }
+
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
-                DashboardView(authService: authService)
+                DashboardView(authService: authService, isDarkMode: isDarkMode)
                     .tabItem {
                         Label("Dashboard", systemImage: "house")
                     }
                     .tag(0)
-                
-                ChatListView()
+
+                // This view already has its own gradient background and is ready.
+                ChatListView() // Removed the isDarkMode prop since it's inside the view now
                     .tabItem {
                         Image(systemName: "person.bubble")
                         Text("AI Chat")
                     }
                     .tag(1)
-                
-                CalendarView(selectedTab: $selectedTab)
+
+                CalendarView(selectedTab: $selectedTab, isDarkMode: isDarkMode)
                     .tabItem {
                         Image(systemName: "note.text")
                         Text("Journal")
                     }
                     .tag(2)
-                
-                // Affirmations feature tab
-                AffirmationsEntryView()
+
+                AffirmationsEntryView(isDarkMode: isDarkMode)
                     .tabItem {
                         Image(systemName: "sun.max.fill")
                         Text("Affirmations")
                     }
                     .tag(4)
-                
-                // Breathing exercise trigger
-                BreathingEntryView(showBreathingExercise: $showBreathingExercise)
+
+                BreathingEntryView(showBreathingExercise: $showBreathingExercise, isDarkMode: isDarkMode)
                     .tabItem {
                         Image(systemName: "lungs.fill")
                         Text("Breathe")
                     }
                     .tag(3)
             }
-            .accentColor(.white)
-            .toolbarBackground(.ultraThinMaterial, for: .tabBar)
-            // Hide the TabView's built-in tab bar when tabBarHidden is true
+            .toolbarBackground(.hidden, for: .tabBar)
             .opacity(tabBarHidden ? 0 : 1)
-            
+
             // Conditionally display the breathing exercise as a full screen cover
             if showBreathingExercise {
                 BreathingExerciseView(tabBarHidden: $tabBarHidden)
-                    .ignoresSafeArea()
                     .transition(.opacity)
                     .onDisappear {
                         selectedTab = 0 // Go back to Dashboard tab
                     }
             }
         }
-        .ignoresSafeArea(edges: .bottom)
         .onChange(of: selectedTab) { oldValue, newValue in
-            if newValue == 4 {
-                let tabBarAppearance = UITabBar.appearance()
-                tabBarAppearance.unselectedItemTintColor = UIColor.white
-                tabBarAppearance.tintColor = UIColor.white
-            } else {
-                let tabBarAppearance = UITabBar.appearance()
-                tabBarAppearance.unselectedItemTintColor = nil
-                tabBarAppearance.tintColor = nil
-            }
             if newValue == 3 {
-                // When Breathing tab is selected, trigger the full screen exercise view
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     showBreathingExercise = true
                 }
             }
         }
         .onAppear {
-            // Listen for the dismiss notification from BreathingExerciseView
-            NotificationCenter.default.addObserver(forName: NSNotification.Name("DismissBreathingExercise"), 
-                                                  object: nil, 
+            NotificationCenter.default.addObserver(forName: NSNotification.Name("DismissBreathingExercise"),
+                                                  object: nil,
                                                   queue: .main) { _ in
                 showBreathingExercise = false
-                selectedTab = 0 // Return to Home tab
+                selectedTab = 0
             }
         }
     }
@@ -100,16 +94,20 @@ struct TabBarView: View {
 // Simple view that just acts as an entry point for the breathing exercise
 struct BreathingEntryView: View {
     @Binding var showBreathingExercise: Bool
+    var isDarkMode: Bool = false
     
     var body: some View {
         VStack {
             Text("Loading breathing exercise...")
                 .font(.title2)
-                .foregroundColor(.gray)
+                .foregroundColor(isDarkMode ? .white : Color(.secondaryLabel))
             ProgressView()
         }
+        .background(
+            (isDarkMode ? LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.black]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color.mint, Color.cyan]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                .edgesIgnoringSafeArea(.all)
+        )
         .onAppear {
-            // Automatically show the breathing exercise when this tab is selected
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 showBreathingExercise = true
             }

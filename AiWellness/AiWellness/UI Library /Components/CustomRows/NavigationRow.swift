@@ -12,17 +12,18 @@ struct NavigationRow<Destination: View>: View {
     let title: String
     let destination: Destination
     var color: Color
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
 
     var body: some View {
         NavigationLink(destination: destination) {
             HStack {
                 Image(systemName: icon)
-                    .foregroundColor(color)
+                    .foregroundColor(isDarkMode ? .white : .black)
                     .frame(width: 30, height: 30)
-                    .background(color.opacity(0.2))
+                    .background(Color(.tertiarySystemFill))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                 Text(title)
-                    .foregroundColor(.primary)
+                    .foregroundColor(isDarkMode ? .white : .black)
             }
         }
     }

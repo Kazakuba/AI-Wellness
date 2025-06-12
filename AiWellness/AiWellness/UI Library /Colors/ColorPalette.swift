@@ -61,3 +61,6 @@ struct ColorPaletteExample: View {
 #Preview {
     ColorPaletteExample()
 }
+
+// NOTE: For dark mode support, always use system colors (e.g., Color(.systemBackground), Color(.label))
+// or color assets with both light and dark variants. Avoid hardcoded .white, .black, etc.

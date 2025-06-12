@@ -29,10 +29,14 @@ struct BreathingExerciseView: View {
         self._tabBarHidden = tabBarHidden
     }
     
+    // New property to control dark mode appearance
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
+    
     var body: some View {
         ZStack {
-            // Background
-            ColorPalette.background.edgesIgnoringSafeArea(.all)
+            // Background gradient
+            (isDarkMode ? LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.black]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color.mint, Color.cyan]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                .edgesIgnoringSafeArea(.all)
             
             // Loading overlay - show this immediately before anything else renders
             if showCustomizationSheet {
@@ -53,7 +57,7 @@ struct BreathingExerciseView: View {
                                     Text("Back")
                                         .font(Typography.Font.body2)
                                 }
-                                .foregroundColor(ColorPalette.Text.primary)
+                                .foregroundColor(isDarkMode ? .white : .black)
                                 .padding(10)
                                 .background(Color.white.opacity(0.2))
                                 .cornerRadius(20)
@@ -67,7 +71,7 @@ struct BreathingExerciseView: View {
                             }) {
                                 Image(systemName: "slider.horizontal.3")
                                     .font(.title2)
-                                    .foregroundColor(ColorPalette.Text.primary)
+                                    .foregroundColor(isDarkMode ? .white : .black)
                                     .padding()
                             }
                         }
@@ -83,7 +87,7 @@ struct BreathingExerciseView: View {
                     if showText {
                         Text(viewModel.currentInstructions)
                             .font(Typography.Font.body1)
-                            .foregroundColor(ColorPalette.Text.primary)
+                            .foregroundColor(isDarkMode ? .white : .black)
                             .multilineTextAlignment(.center)
                             .padding()
                             .background(
@@ -452,4 +456,4 @@ extension EnvironmentValues {
 // Preview
 #Preview {
     BreathingExerciseView()
-} 
+}

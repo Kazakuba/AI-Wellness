@@ -3,6 +3,7 @@ import SwiftUI
 
 struct AffirmationsView: View {
     @Binding var hasOpenedAffirmations: Bool
+    var isDarkMode: Bool = false
     @StateObject private var viewModel = AffirmationsViewModel()
     @StateObject private var savedViewModel = SavedAffirmationViewModel()
     @StateObject private var motionManager = MotionManager()
@@ -11,12 +12,17 @@ struct AffirmationsView: View {
     @State private var todayAffirmation: Affirmation?
     @AppStorage("selectedThemeId") private var selectedThemeId: String = ThemeLibrary.defaultTheme.id
 
+    var gradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: isDarkMode ? [Color.indigo, Color.black] : [Color.mint, Color.cyan]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+
     var body: some View {
         ZStack {
-            // Gradient background matching reference
-            let theme = ThemeLibrary.allThemes.first(where: { $0.id == selectedThemeId }) ?? ThemeLibrary.defaultTheme
-            theme.gradient
-                .ignoresSafeArea()
+            gradient.ignoresSafeArea()
             VStack {
                 HStack {
                     Spacer()
@@ -24,6 +30,7 @@ struct AffirmationsView: View {
                         Image(systemName: "bookmark.fill")
                             .font(.title2)
                             .padding()
+                            .foregroundColor(isDarkMode ? .white : .black)
                     }
                 }
                 Spacer()
@@ -76,7 +83,7 @@ struct AffirmationsView: View {
                     Text(affirmation.text)
                         .font(.system(size: 28, weight: .bold, design: .serif))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(theme.isDark ? .white : Color(red: 44/255, green: 51/255, blue: 71/255))
+                        .foregroundColor(isDarkMode ? .white : .black)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 24)
                     Spacer()
@@ -91,7 +98,7 @@ struct AffirmationsView: View {
                         }) {
                             Image(systemName: "square.and.arrow.up")
                                 .font(.system(size: 28))
-                                .foregroundColor(theme.isDark ? .white : Color(red: 44/255, green: 51/255, blue: 71/255))
+                                .foregroundColor(isDarkMode ? .white : .black)
                         }
                         Button(action: {
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
@@ -100,7 +107,7 @@ struct AffirmationsView: View {
                         }) {
                             Image(systemName: viewModel.savedAffirmations.contains(where: { $0.text == affirmation.text }) ? "heart.fill" : "heart")
                                 .font(.system(size: 28))
-                                .foregroundColor(theme.isDark ? .white : Color(red: 44/255, green: 51/255, blue: 71/255))
+                                .foregroundColor(isDarkMode ? .white : .black)
                         }
                     }
                     .padding(.top, 16)
@@ -117,7 +124,7 @@ struct AffirmationsView: View {
                             .foregroundColor(theme.isDark ? .white : Color(red: 44/255, green: 51/255, blue: 71/255))
                             .padding(.horizontal, 18)
                             .padding(.vertical, 12)
-                            .background(theme.isDark ? Color.white.opacity(0.18) : Color.white)
+                            .background(isDarkMode ? Color.white.opacity(0.18) : Color.white)
                             .cornerRadius(20)
                             .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
                         }
@@ -125,19 +132,19 @@ struct AffirmationsView: View {
                         Button(action: { showThemeSheet = true }) {
                             Image(systemName: "paintbrush")
                                 .font(.system(size: 22))
-                                .foregroundColor(theme.isDark ? .white : Color(red: 44/255, green: 51/255, blue: 71/255))
+                                .foregroundColor(isDarkMode ? .white : .black)
                                 .frame(width: 48, height: 48)
                         }
-                        .background(theme.isDark ? Color.white.opacity(0.18) : Color.white)
+                        .background(isDarkMode ? Color.white.opacity(0.18) : Color.white)
                         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                         .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
                         Button(action: {}) {
                             Image(systemName: "person.crop.circle")
                                 .font(.system(size: 22))
-                                .foregroundColor(theme.isDark ? .white : Color(red: 44/255, green: 51/255, blue: 71/255))
+                                .foregroundColor(isDarkMode ? .white : .black)
                                 .frame(width: 48, height: 48)
                         }
-                        .background(theme.isDark ? Color.white.opacity(0.18) : Color.white)
+                        .background(isDarkMode ? Color.white.opacity(0.18) : Color.white)
                         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                         .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
                     }

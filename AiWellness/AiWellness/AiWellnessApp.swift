@@ -39,21 +39,23 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 struct AiWellnessApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @AppStorage("isDarkMode") private var isDarkMode = false
-    
+
     init() {
-        let tabBarAppearance = UITabBar.appearance()
-        tabBarAppearance.unselectedItemTintColor = UIColor.white
-        tabBarAppearance.tintColor = UIColor.white
-        tabBarAppearance.backgroundColor = UIColor(white: 1, alpha: 0.15)
-        
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundEffect = nil
+        tabBarAppearance.backgroundColor = .clear
+        UITabBar.appearance().tintColor = UIColor.white
+        UITabBar.appearance().unselectedItemTintColor = UIColor(white: 1.0, alpha: 0.6)
+
+
         requestNotificationPermissions()
     }
-    
+
     var body: some Scene {
         WindowGroup {
             AppRootView()
-                .environmentObject(SettingsViewModel(authService: AuthenticationService()))  // Share ViewModel across views
-                .preferredColorScheme(isDarkMode ? .dark : .light)  // Apply globally
+                .environmentObject(SettingsViewModel(authService: AuthenticationService()))
         }
     }
     

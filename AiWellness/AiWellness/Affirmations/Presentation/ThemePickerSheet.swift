@@ -3,6 +3,7 @@ import SwiftUI
 struct ThemePickerSheet: View {
     @Binding var isPresented: Bool
     @AppStorage("selectedThemeId") private var selectedThemeId: String = ThemeLibrary.defaultTheme.id
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
     @State private var selectedCategory: Theme.Category = .all
     @State private var tempSelectedThemeId: String = ThemeLibrary.defaultTheme.id
     let themes = ThemeLibrary.allThemes
@@ -19,6 +20,7 @@ struct ThemePickerSheet: View {
                 Text("Themes")
                     .font(.largeTitle).bold()
                     .padding(.top, 16)
+                    .foregroundColor(isDarkMode ? .white : .black)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
                         ForEach(Theme.Category.allCases) { cat in

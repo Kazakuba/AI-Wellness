@@ -22,14 +22,6 @@ struct AppRootView: View {
         .environmentObject(authService)
         .onAppear {
             checkAuthStatus()
-            // Remove tab bar background so theme is visible on the whole screen
-            let tabBarAppearance = UITabBar.appearance()
-            tabBarAppearance.unselectedItemTintColor = UIColor.white
-            tabBarAppearance.tintColor = UIColor.white
-            tabBarAppearance.backgroundImage = UIImage()
-            tabBarAppearance.shadowImage = UIImage()
-            tabBarAppearance.backgroundColor = .clear
-            tabBarAppearance.isTranslucent = true
         }
     }
     

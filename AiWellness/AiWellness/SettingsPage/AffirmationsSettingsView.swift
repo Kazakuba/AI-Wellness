@@ -9,22 +9,24 @@ import SwiftUI
 
 struct AffirmationsSettingsView: View {
     @ObservedObject var viewModel: SettingsViewModel
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
     
     var body: some View {
         List {
             // Affirmation Preferences
-            Section(header: Text("Affirmation Preferences")) {
+            Section(header: Text("Affirmation Preferences").foregroundColor(isDarkMode ? .white : .black)) {
                 NavigationRow(icon: "camera.macro.circle", title: "Select Affirmation Types", destination: AffirmationTypesView(), color: .gray)
                 NavigationRow(icon: "clock.arrow.trianglehead.counterclockwise.rotate.90", title: "Set Delivery Time", destination: DeliveryTimeView(), color: .yellow)
             }
             
             //Visual & Interaction Settings
-            Section (header: Text("Visual & Interaction Settings")) {
+            Section (header: Text("Visual & Interaction Settings").foregroundColor(isDarkMode ? .white : .black)) {
                 ToggleRow(icon: "circle.dotted.and.circle", title: "Enable Animation", isOn:  $viewModel.enableAffirmationAnimations, color: .purple)
                 ToggleRow(icon: "circle.dotted", title: "Enable Motion Effects", isOn: $viewModel.enableMotionEffects, color: .mint)
             }
         }
         .navigationTitle("Affirmations")
+        .foregroundColor(isDarkMode ? .white : .black)
     }
 }
 #Preview {
