@@ -67,13 +67,8 @@ class AffirmationsViewModel: ObservableObject {
                 GamificationManager.shared.achievements[idx].progress = count
                 GamificationManager.shared.achievements[idx].isUnlocked = (count >= 5)
             }
-            // Update badge progress and level (5, 10, 20)
-            if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "explorer" }) {
-                GamificationManager.shared.badges[idx].progress = count
-                if count == 5 || count == 10 || count == 20 {
-                    GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
-                }
-            }
+            // Update badge progress using milestone-based system
+            GamificationManager.shared.incrementBadge("explorer")
             GamificationManager.shared.save()
         }
         // Do NOT lock again when changing topic
@@ -114,13 +109,8 @@ class AffirmationsViewModel: ObservableObject {
             GamificationManager.shared.achievements[idx].progress = count
             GamificationManager.shared.achievements[idx].isUnlocked = (count >= 10)
         }
-        // Update badge progress and level (10, 25, 50)
-        if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "collector" }) {
-            GamificationManager.shared.badges[idx].progress = count
-            if count == 10 || count == 25 || count == 50 {
-                GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
-            }
-        }
+        // Update badge progress using milestone-based system
+        GamificationManager.shared.incrementBadge("collector")
         GamificationManager.shared.save()
         loadSavedAffirmations()
     }

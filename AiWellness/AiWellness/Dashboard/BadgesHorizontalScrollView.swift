@@ -41,7 +41,7 @@ struct BadgesHorizontalScrollView: View {
                                 } else {
                                     Text("Lvl \(badge.level)")
                                         .font(.caption2)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(.white)
                                 }
                             }
                             .frame(width: 90, height: 90)
@@ -61,7 +61,7 @@ struct BadgesHorizontalScrollView: View {
                     Text(badge.title)
                         .font(.title2).bold()
                         .padding(.top, 16)
-                    Text(badge.level > 0 ? "You unlocked this badge!" : badge.description)
+//                    Text(badge.level > 0 ? "You unlocked this badge!" : badge.description)
                         .font(.body)
                         .foregroundColor(badge.level > 0 ? .green : .primary)
                         .multilineTextAlignment(.center)

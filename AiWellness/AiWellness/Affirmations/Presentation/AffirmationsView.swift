@@ -105,13 +105,8 @@ struct AffirmationsView: View {
                                     defaults.set(newShareCount, forKey: shareKey)
                                     // Increment achievement progress by 1 for each share
                                     GamificationManager.shared.incrementAchievement("sharing_is_caring", by: 1)
-                                    // Update badge progress and level (5, 15, 30)
-                                    if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "social_sharer" }) {
-                                        GamificationManager.shared.incrementBadge("social_sharer", by: 1)
-                                        if GamificationManager.shared.badges[idx].progress == 0 && (newShareCount == 5 || newShareCount == 15 || newShareCount == 30) {
-                                            GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
-                                        }
-                                    }
+                                    // Update badge progress using milestone-based system
+                                    GamificationManager.shared.incrementBadge("social_sharer", by: 1)
                                     // --- First Share achievement (share at least once) ---
                                     if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "first_share" }) {
                                         if !GamificationManager.shared.achievements[idx].isUnlocked {
@@ -242,12 +237,8 @@ struct AffirmationsView: View {
             GamificationManager.shared.achievements[idx].progress = streak
             GamificationManager.shared.achievements[idx].isUnlocked = (streak >= 3)
         }
-        if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "consistency" }) {
-            GamificationManager.shared.badges[idx].progress = streak
-            if streak == 3 || streak == 7 || streak == 30 {
-                GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
-            }
-        }
+        // Update badge progress using milestone-based system
+        GamificationManager.shared.incrementBadge("consistency")
         // --- Streak Slayer badge ---
         if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "streak_slayer" }) {
             GamificationManager.shared.badges[idx].progress = streak

@@ -21,6 +21,7 @@ struct Badge: Identifiable, Codable, Equatable {
     var level: Int // 0 = locked, 1 = bronze, 2 = silver, 3 = gold
     var progress: Int
     var goal: Int
+    var milestones: [Int]? // Optional: milestone thresholds for each level
 }
 
 // MARK: - Gamification Manager
@@ -81,13 +82,13 @@ class GamificationManager: ObservableObject {
     
     // MARK: - Badge Definitions
     private let badgeTemplates: [Badge] = [
-        Badge(id: "level_up", title: "Level Up!", systemImage: "star", description: "New level reached", level: 0, progress: 0, goal: 1),
-        Badge(id: "consistency", title: "Consistency", systemImage: "clock", description: "Streaks (3, 7, 30 days)", level: 0, progress: 0, goal: 3),
-        Badge(id: "streak_slayer", title: "Streak Slayer", systemImage: "flame", description: "Streaks", level: 0, progress: 0, goal: 3),
-        Badge(id: "collector", title: "Collector", systemImage: "tray.full", description: "10+ saves", level: 0, progress: 0, goal: 10),
-        Badge(id: "shaker", title: "Shaker", systemImage: "waveform.path.ecg", description: "Multiple shake actions", level: 0, progress: 0, goal: 3),
-        Badge(id: "explorer", title: "Explorer", systemImage: "globe", description: "Variety of topics explored", level: 0, progress: 0, goal: 5),
-        Badge(id: "social_sharer", title: "Social Sharer", systemImage: "person.2.wave.2", description: "Share actions", level: 0, progress: 0, goal: 5)
+        Badge(id: "level_up", title: "Level Up!", systemImage: "star", description: "New level reached", level: 0, progress: 0, goal: 1, milestones: [2, 5, 10]),
+        Badge(id: "consistency", title: "Consistency", systemImage: "clock", description: "Streaks (3, 7, 30 days)", level: 0, progress: 0, goal: 3, milestones: [3, 7, 30]),
+        Badge(id: "streak_slayer", title: "Streak Slayer", systemImage: "flame", description: "Streaks", level: 0, progress: 0, goal: 3, milestones: [3, 7, 30]),
+        Badge(id: "collector", title: "Collector", systemImage: "tray.full", description: "10+ saves", level: 0, progress: 0, goal: 10, milestones: [10, 25, 50]),
+        Badge(id: "shaker", title: "Shaker", systemImage: "waveform.path.ecg", description: "Multiple shake actions", level: 0, progress: 0, goal: 3, milestones: [3, 10, 25]),
+        Badge(id: "explorer", title: "Explorer", systemImage: "globe", description: "Variety of topics explored", level: 0, progress: 0, goal: 5, milestones: [5, 10, 20]),
+        Badge(id: "social_sharer", title: "Social Sharer", systemImage: "person.2.wave.2", description: "Share actions", level: 0, progress: 0, goal: 5, milestones: [5, 15, 30])
     ]
     
     // MARK: - Public API
@@ -110,8 +111,13 @@ class GamificationManager: ObservableObject {
         if let idx = badges.firstIndex(where: { $0.id == id }) {
             var badge = badges[idx]
             badge.progress += amount
-            if badge.progress >= badge.goal {
-                badge.level = min(3, badge.level + 1)
+            let milestones = badge.milestones ?? [badge.goal]
+            var newLevel = badge.level
+            for (i, milestone) in milestones.enumerated() where badge.progress >= milestone && badge.level < i + 1 {
+                newLevel = i + 1
+            }
+            if newLevel > badge.level {
+                badge.level = min(3, newLevel)
                 badge.progress = 0
                 addXP(badgeXP[id] ?? 10)
             }
