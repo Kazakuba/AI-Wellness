@@ -8,19 +8,22 @@
 import SwiftUI
 
 struct AboutUsView: View {
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
     var body: some View {
         List {
-            Section(header: Text("About Team")) {
+            Section(header: Text("About Team").foregroundColor(isDarkMode ? .white : .black)) {
                 SettingsRow(icon: "person.crop.circle", title: "About Filip", color: .green)
                 SettingsRow(icon: "person.crop.circle", title: "About Lucija", color: .teal)
                 SettingsRow(icon: "person.crop.circle", title: "About Mišo", color: .indigo)
             }
             
-            Section(header: Text("Social media links")) {
+            Section(header: Text("Social media links").foregroundColor(isDarkMode ? .white : .black)) {
                 SettingsRow(icon: "cat", title: "GitHub", color: .yellow)
             }
         }
         .navigationTitle("About us")
+        .background(isDarkMode ? Color.black : Color.white)
+        .scrollContentBackground(.hidden)
     }
 }
 

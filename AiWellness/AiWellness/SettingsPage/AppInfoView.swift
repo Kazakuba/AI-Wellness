@@ -8,18 +8,23 @@
 import SwiftUI
 
 struct AppInfoView: View {
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
     var body: some View {
         List {
-            Section(header: Text("Version Info")) {
-                Text("App Version: 1.0.0")
-                Text("Build: 1001")
-            }
-            
-            Section(header: Text("Data & Security")) {
-                Text("Data is securely stored and encrypted.")
+            Section(header: Text("App Info").foregroundColor(isDarkMode ? .white : .black)) {
+                Text("Version 1.0.0")
+                    .foregroundColor(isDarkMode ? .white : .black)
+                    .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                Text("Build 100")
+                    .foregroundColor(isDarkMode ? .white : .black)
+                    .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
             }
         }
         .navigationTitle("App Info")
+        .background(isDarkMode ? Color.black : Color.white)
+        .scrollContentBackground(.hidden)
+        .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
     }
 }
 #Preview {

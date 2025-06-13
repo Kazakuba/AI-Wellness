@@ -10,10 +10,19 @@ import SwiftUI
 struct NotificationTestView: View {
     var viewModel = NotificationService()
     @Binding var isPresented: Bool
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
+    
+    var gradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: isDarkMode ? [Color.indigo, Color.black] : [Color.mint, Color.cyan]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
     
     var body: some View {
         ZStack {
-            BackgroundGradient()
+            gradient.ignoresSafeArea()
             VStack(spacing: 20) {
                 HStack {
                     IconButton(icon: "xmark", title: "") {
@@ -28,6 +37,7 @@ struct NotificationTestView: View {
                     .font(Typography.Font.heading2)
                     .foregroundColor(.white)
                     .padding()
+                    .foregroundColor(isDarkMode ? .white : .black)
                 
                 // Button for notification perrmission
                 RequestNotificationButton()

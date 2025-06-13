@@ -27,6 +27,10 @@ struct AffirmationsSettingsView: View {
         }
         .navigationTitle("Affirmations")
         .foregroundColor(isDarkMode ? .white : .black)
+        .background(isDarkMode ? Color.black : Color.white)
+        .scrollContentBackground(.hidden)
+        .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
     }
 }
 #Preview {

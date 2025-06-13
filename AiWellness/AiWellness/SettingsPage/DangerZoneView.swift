@@ -18,15 +18,17 @@ struct DangerZoneView: View {
                 Button("Delete Account", role: .destructive) {
                     print("Delete Account")
                 }
-                .foregroundColor(isDarkMode ? .white : .black)
+                .foregroundColor(isDarkMode ? .white : .red)
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
                 Button("Delete All Chats", role: .destructive) {
                     showDeleteChatsAlert = true
                 }
-                .foregroundColor(isDarkMode ? .white : .black)
+                .foregroundColor(isDarkMode ? .white : .red)
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
                 .alert(isPresented: $showDeleteChatsAlert) {
                     Alert(
                         title: Text("Delete All Chats"),
-                        message: Text("Are you sure you want to delete all chats? This action cannot be undone."),
+                        message: Text("Are you sure you want to delete all chats? This action cannot be undone.").foregroundColor(isDarkMode ? .white : .black),
                         primaryButton: .destructive(Text("Delete")) {
                             chatStore.chats = []
                             chatStore.saveChatsToUserDefaults()
@@ -43,9 +45,15 @@ struct DangerZoneView: View {
                 Button("Delete All Journal Entries", role: .destructive) {
                     print("Delete All Journal Entries")
                 }
+                .foregroundColor(isDarkMode ? .white : .red)
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
             }
         }
         .navigationTitle("Account Management")
+        .background(isDarkMode ? Color.black : Color.white)
+        .scrollContentBackground(.hidden)
+        .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
     }
 }
 
