@@ -10,6 +10,18 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    CustomSearchBar(
+                        text: $searchText,
+                        isDarkMode: isDarkMode
+                        //textColor: dynamicTextColor
+                    )
+                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listSectionSpacing(50)
+                }
+
                 // Account Section
                 if let user = viewModel.user, isMatch(searchText: searchText, text: user.name + " " + user.email) {
                     accountRow(user: user)
@@ -17,7 +29,7 @@ struct SettingsView: View {
                     accountRow(user: viewModel.user)
                 }
 
-                // Preferences
+                // Preferences...
                 Section(header: isMatch(searchText: searchText, text: "Preferences") ? Text("Preferences").foregroundColor(dynamicTextColor) : nil) {
                     if isMatch(searchText: searchText, text: "Color Scheme") {
                         SettingsRow(icon: "paintbrush.fill", title: "Color Scheme", color: .brown)
@@ -117,10 +129,13 @@ struct SettingsView: View {
                     }
                 }
             }
+            .toolbarBackground(viewModel.isDarkMode ? Color.black : Color.white, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+
             .onAppear {
                 viewModel.fetchUser()
             }
-            .searchable(text: $searchText, placement: .automatic, prompt: "Search")
+
         }
     }
 
@@ -166,7 +181,41 @@ struct SettingsView: View {
     private var dynamicRowBackground: Color {
         viewModel.isDarkMode ? Color(.systemGray5) : Color(.systemGroupedBackground)
     }
-    
+
+    struct CustomSearchBar: View {
+        @Binding var text: String
+        var isDarkMode: Bool
+
+        var body: some View {
+            let placeholderColor = isDarkMode ? Color.white : Color.black
+            let backgroundColor = isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6)
+
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(placeholderColor)
+
+                ZStack(alignment: .leading) {
+                    if text.isEmpty {
+                        Text("Search")
+                            .foregroundColor(placeholderColor)
+                    }
+                    TextField("", text: $text)
+                        .foregroundColor(placeholderColor)
+                }
+
+                if !text.isEmpty {
+                    Button(action: { text = "" }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(isDarkMode ? .white.opacity(0.4) : .gray)
+                    }
+                }
+            }
+            .padding(8)
+            .background(backgroundColor)
+            .cornerRadius(10)
+            .padding(.horizontal, -4)
+        }
+    }
 
 }
 
