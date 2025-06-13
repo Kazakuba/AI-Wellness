@@ -27,7 +27,9 @@ struct PickerRow: View {
                 .scaleEffect(scaleEffect)
                 .animation(.spring(), value: selection)
             
-            Picker(title, selection: $selection) {
+            Text(title)
+                .foregroundColor(isDarkMode ? .white : .black)
+            Picker("", selection: $selection) { // Empty label to avoid duplicate title
                 ForEach(options, id: \.self) { option in
                     Text(option)
                         .foregroundColor(isDarkMode ? .white : .black)
@@ -41,7 +43,9 @@ struct PickerRow: View {
                 }
             }
         }
+        .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
     }
+
 }
 
 //#Preview {
