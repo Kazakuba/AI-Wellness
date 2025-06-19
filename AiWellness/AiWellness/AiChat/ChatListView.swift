@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ConfettiSwiftUI
 
 struct ChatListView: View {
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
@@ -14,6 +15,7 @@ struct ChatListView: View {
     @StateObject private var serverStatusViewModel = ServerStatusViewModel()
     @State private var isShowingAlert = false
     @State private var navigateToChat: Chat? = nil
+    @StateObject private var confettiManager = ConfettiManager.shared
 
     var gradient: LinearGradient {
         LinearGradient(
@@ -97,6 +99,7 @@ struct ChatListView: View {
             }
             .background(gradient.ignoresSafeArea())
             .navigationBarHidden(true)
+            .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
         }
 
         .background(Color.clear)

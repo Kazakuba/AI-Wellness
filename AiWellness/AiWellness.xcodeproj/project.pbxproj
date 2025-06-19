@@ -14,6 +14,7 @@
 		25B1DC702DD2180900A0C229 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 25B1DC6F2DD2180900A0C229 /* FirebaseCore */; };
 		25B1DC722DD2180900A0C229 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 25B1DC712DD2180900A0C229 /* FirebaseFirestore */; };
 		25B1DC742DD2180900A0C229 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 25B1DC732DD2180900A0C229 /* FirebaseStorage */; };
+		A69524C32E03E27700EA132A /* ConfettiSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = A69524C22E03E27700EA132A /* ConfettiSwiftUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,7 @@
 				25B1DC6C2DD2180900A0C229 /* FirebaseAnalytics in Frameworks */,
 				25B1DC742DD2180900A0C229 /* FirebaseStorage in Frameworks */,
 				25B1DC6E2DD2180900A0C229 /* FirebaseAuth in Frameworks */,
+				A69524C32E03E27700EA132A /* ConfettiSwiftUI in Frameworks */,
 				25B1DC722DD2180900A0C229 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -149,6 +151,7 @@
 				25B1DC6F2DD2180900A0C229 /* FirebaseCore */,
 				25B1DC712DD2180900A0C229 /* FirebaseFirestore */,
 				25B1DC732DD2180900A0C229 /* FirebaseStorage */,
+				A69524C22E03E27700EA132A /* ConfettiSwiftUI */,
 			);
 			productName = AiWellness;
 			productReference = A686534E2D19908400767B49 /* AiWellness.app */;
@@ -235,6 +238,7 @@
 			packageReferences = (
 				252C54D32D21AC6400D54059 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				25B1DC6A2DD2180900A0C229 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				A69524C12E03E27700EA132A /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A686534F2D19908400767B49 /* Products */;
@@ -660,6 +664,14 @@
 				minimumVersion = 11.12.0;
 			};
 		};
+		A69524C12E03E27700EA132A /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/simibac/ConfettiSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -697,6 +709,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 25B1DC6A2DD2180900A0C229 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		A69524C22E03E27700EA132A /* ConfettiSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A69524C12E03E27700EA132A /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
+			productName = ConfettiSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

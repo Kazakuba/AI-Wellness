@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ConfettiSwiftUI
 
 struct BreathingExerciseView: View {
     @StateObject private var viewModel = BreathingExerciseViewModel()
@@ -31,6 +32,8 @@ struct BreathingExerciseView: View {
     
     // New property to control dark mode appearance
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
+    
+    @StateObject private var confettiManager = ConfettiManager.shared
     
     var body: some View {
         ZStack {
@@ -280,6 +283,7 @@ struct BreathingExerciseView: View {
             showText = true
             startInstructionsTimer()
         }
+        .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
     }
     
     // Start instructions timer to hide instructions after a delay

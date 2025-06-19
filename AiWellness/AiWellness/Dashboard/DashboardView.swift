@@ -8,6 +8,7 @@
 import SwiftUI
 import FirebaseAuth
 import GoogleSignIn
+import ConfettiSwiftUI
 
 struct DashboardView: View {
     @ObservedObject var authService: AuthenticationService
@@ -19,6 +20,7 @@ struct DashboardView: View {
     @State private var showAffirmationHistory = false
     @State private var showTodayAffirmation = false
     @State private var todayAffirmation: Affirmation?
+    @StateObject private var confettiManager = ConfettiManager.shared
 
     var gradient: LinearGradient {
         LinearGradient(
@@ -70,6 +72,7 @@ struct DashboardView: View {
                 }
             }
         }
+        .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
         .fullScreenCover(isPresented: $showTimeCapsule) {
             TimeCapsuleView(isPresented: $showTimeCapsule)
         }

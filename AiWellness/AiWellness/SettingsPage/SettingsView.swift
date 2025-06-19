@@ -1,4 +1,5 @@
 import SwiftUI
+import ConfettiSwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var viewModel: SettingsViewModel
@@ -6,6 +7,7 @@ struct SettingsView: View {
     @State private var searchText: String = ""
     @Environment(\.dismiss) var dismiss
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
+    @StateObject private var confettiManager = ConfettiManager.shared
 
     var body: some View {
         NavigationStack {
@@ -139,6 +141,7 @@ struct SettingsView: View {
             }
 
         }
+        .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
     }
 
     private func accountRow(user: User?) -> some View {

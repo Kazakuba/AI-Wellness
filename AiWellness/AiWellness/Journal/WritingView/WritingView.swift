@@ -6,12 +6,14 @@
 //
 import SwiftUI
 import FirebaseAuth
+import ConfettiSwiftUI
 
 struct WritingView: View {
     // MARK: - Properties
     let selectedDate: Date
     @State private var text: String = ""
     @Environment(\.colorScheme) private var colorScheme
+    @StateObject private var confettiManager = ConfettiManager.shared
     
     // MARK: - Body
     var body: some View {
@@ -28,6 +30,7 @@ struct WritingView: View {
         .onChange(of: Auth.auth().currentUser?.uid) { _, _ in
             loadText()
         }
+        .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
     }
     
     // MARK: - UI Components

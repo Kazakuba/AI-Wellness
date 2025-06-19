@@ -133,6 +133,9 @@ class GamificationManager: ObservableObject {
         while xp >= xpForNextLevel() {
             xp -= xpForNextLevel()
             level += 1
+            if level > oldLevel {
+                ConfettiManager.shared.celebrate()
+            }
         }
         // --- Level Up! badge logic ---
         if level > oldLevel {

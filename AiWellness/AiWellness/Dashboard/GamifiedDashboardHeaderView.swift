@@ -1,4 +1,5 @@
 import SwiftUI
+import ConfettiSwiftUI
 
 struct GamifiedDashboardHeaderView: View {
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
@@ -9,6 +10,8 @@ struct GamifiedDashboardHeaderView: View {
     @State private var infoDescription = ""
     @State private var infoCompleted = false
     @State private var dailyStreak: Int = 0
+    @State private var confettiTrigger: Int = 0
+    @State private var lastCelebratedLevel: Int = 1
     // Placeholder values for now
     var level: Int = 3
     var currentXP: Int = 120
@@ -55,8 +58,29 @@ struct GamifiedDashboardHeaderView: View {
                 .fill(LinearGradient(gradient: Gradient(colors: isDarkMode ? [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] : [Color.mint.opacity(0.5), Color.cyan.opacity(0.5)]), startPoint: .topLeading, endPoint: .bottomTrailing))
         )
         .padding(.horizontal)
+        .confettiCannon(trigger: $confettiTrigger, num: 40, colors: [.yellow, .green, .blue, .orange])
         .onAppear {
             updateStreak()
+            let uid = gamification.getUserUID() ?? "default"
+            let lastLevelKey = "lastCelebratedLevel_\(uid)"
+            let defaults = UserDefaults.standard
+            let storedLevel = defaults.integer(forKey: lastLevelKey)
+            lastCelebratedLevel = storedLevel > 0 ? storedLevel : gamification.level
+            if gamification.level > lastCelebratedLevel {
+                confettiTrigger += 1
+                lastCelebratedLevel = gamification.level
+                defaults.set(lastCelebratedLevel, forKey: lastLevelKey)
+            }
+        }
+        .onChange(of: gamification.level) { newLevel in
+            let uid = gamification.getUserUID() ?? "default"
+            let lastLevelKey = "lastCelebratedLevel_\(uid)"
+            let defaults = UserDefaults.standard
+            if newLevel > lastCelebratedLevel {
+                confettiTrigger += 1
+                lastCelebratedLevel = newLevel
+                defaults.set(lastCelebratedLevel, forKey: lastLevelKey)
+            }
         }
     }
 
