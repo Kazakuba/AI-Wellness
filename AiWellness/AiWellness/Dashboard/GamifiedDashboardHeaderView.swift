@@ -8,11 +8,11 @@ struct GamifiedDashboardHeaderView: View {
     @State private var infoTitle = ""
     @State private var infoDescription = ""
     @State private var infoCompleted = false
+    @State private var dailyStreak: Int = 0
     // Placeholder values for now
     var level: Int = 3
     var currentXP: Int = 120
     var nextLevelXP: Int = 200
-    var dailyStreak: Int = 0
     var body: some View {
         VStack(spacing: 12) {
             HStack {
@@ -28,13 +28,14 @@ struct GamifiedDashboardHeaderView: View {
                 .alert(isPresented: $showResetAlert) {
                     Alert(title: Text("Reset Progress?"), message: Text("This will clear all achievements, badges, XP, and level for this user."), primaryButton: .destructive(Text("Reset")) {
                         gamification.resetAll()
+                        updateStreak()
                     }, secondaryButton: .cancel())
                 }
                 Spacer()
                 HStack(spacing: 6) {
                     Image(systemName: "flame.fill")
                         .foregroundColor(.orange)
-                    Text("\(0) days") // TODO: Connect streak
+                    Text("\(dailyStreak) days")
                         .font(.headline)
                         .foregroundColor(isDarkMode ? .white : .black)
                 }
@@ -54,6 +55,32 @@ struct GamifiedDashboardHeaderView: View {
                 .fill(LinearGradient(gradient: Gradient(colors: isDarkMode ? [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] : [Color.mint.opacity(0.5), Color.cyan.opacity(0.5)]), startPoint: .topLeading, endPoint: .bottomTrailing))
         )
         .padding(.horizontal)
+        .onAppear {
+            updateStreak()
+        }
+    }
+
+    private func updateStreak() {
+        let uid = gamification.getUserUID() ?? "default"
+        let streakKey = "app_open_streak_\(uid)"
+        let lastDateKey = "app_open_streak_last_\(uid)"
+        let defaults = UserDefaults.standard
+        let today = Calendar.current.startOfDay(for: Date())
+        let lastDate = defaults.object(forKey: lastDateKey) as? Date
+        var streak = defaults.integer(forKey: streakKey)
+        if let last = lastDate {
+            let days = Calendar.current.dateComponents([.day], from: last, to: today).day ?? 0
+            if days == 1 {
+                streak += 1
+            } else if days > 1 {
+                streak = 1
+            } // else days == 0, already opened today
+        } else {
+            streak = 1
+        }
+        defaults.set(today, forKey: lastDateKey)
+        defaults.set(streak, forKey: streakKey)
+        dailyStreak = streak
     }
 }
 
