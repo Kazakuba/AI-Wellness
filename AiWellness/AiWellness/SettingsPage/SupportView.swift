@@ -53,6 +53,7 @@ struct SupportView: View {
         .scrollContentBackground(.hidden)
         .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(isDarkMode ? .dark : .light, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text("Support & Feedback")

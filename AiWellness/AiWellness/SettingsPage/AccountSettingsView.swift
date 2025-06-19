@@ -12,11 +12,25 @@ struct AccountSettingsView: View {
     var body: some View {
         List {
             Section(header: Text("Account Settings").foregroundColor(isDarkMode ? .white : .black)) {
-                NavigationLink(destination: Text("Email & Password Update Coming Soon").foregroundColor(isDarkMode ? .white : .black).background(isDarkMode ? Color.black : Color.white)) {
+                NavigationLink(destination: Text("Email & Password Update Coming Soon")
+                    .foregroundColor(isDarkMode ? .white : .black)
+                    .background(isDarkMode ? Color.black : Color.white)
+                    .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
+                    .toolbarBackground(.visible, for: .navigationBar)
+                    .toolbarColorScheme(isDarkMode ? .dark : .light, for: .navigationBar)
+                    .tint(isDarkMode ? .white : .black)
+                ) {
                     Text("Update Email / Password").foregroundColor(isDarkMode ? .white : .black)
                 }
                 .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
-                NavigationLink(destination: Text("Currently only Google Sign-In Available").foregroundColor(isDarkMode ? .white : .black).background(isDarkMode ? Color.black : Color.white)) {
+                NavigationLink(destination: Text("Currently only Google Sign-In Available")
+                    .foregroundColor(isDarkMode ? .white : .black)
+                    .background(isDarkMode ? Color.black : Color.white)
+                    .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
+                    .toolbarBackground(.visible, for: .navigationBar)
+                    .toolbarColorScheme(isDarkMode ? .dark : .light, for: .navigationBar)
+                    .tint(isDarkMode ? .white : .black)
+                ) {
                     Text("Link / Unlink Accounts").foregroundColor(isDarkMode ? .white : .black)
                 }
                 .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
@@ -25,6 +39,10 @@ struct AccountSettingsView: View {
         .navigationTitle("Account Management")
         .background(isDarkMode ? Color.black : Color.white)
         .scrollContentBackground(.hidden)
+        .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(isDarkMode ? .dark : .light, for: .navigationBar)
+        .tint(isDarkMode ? .white : .black)
     }
 }
 

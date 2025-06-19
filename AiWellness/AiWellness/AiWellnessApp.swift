@@ -71,6 +71,15 @@ struct AiWellnessApp: App {
         UITabBar.appearance().tintColor = UIColor.white
         UITabBar.appearance().unselectedItemTintColor = UIColor(white: 1.0, alpha: 0.6)
 
+        // Set initial navigation bar tint color based on isDarkMode
+        let isDarkMode = UserDefaults.standard.bool(forKey: "isDarkMode")
+        UINavigationBar.appearance().tintColor = isDarkMode ? .white : .black
+
+        // Listen for changes to isDarkMode and update navigation bar tint color
+        NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { _ in
+            let isDarkMode = UserDefaults.standard.bool(forKey: "isDarkMode")
+            UINavigationBar.appearance().tintColor = isDarkMode ? .white : .black
+        }
 
         requestNotificationPermissions()
     }

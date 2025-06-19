@@ -131,6 +131,8 @@ struct SettingsView: View {
             }
             .toolbarBackground(viewModel.isDarkMode ? Color.black : Color.white, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(isDarkMode ? .dark : .light, for: .navigationBar)
+            .tint(isDarkMode ? .white : .black)
 
             .onAppear {
                 viewModel.fetchUser()

@@ -54,6 +54,8 @@ struct DangerZoneView: View {
         .scrollContentBackground(.hidden)
         .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(isDarkMode ? .dark : .light, for: .navigationBar)
+        .tint(isDarkMode ? .white : .black)
     }
 }
 
