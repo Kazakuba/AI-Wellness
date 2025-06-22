@@ -38,8 +38,23 @@ struct BreathingExerciseView: View {
     var body: some View {
         ZStack {
             // Background gradient
-            (isDarkMode ? LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.black]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color.mint, Color.cyan]), startPoint: .topLeading, endPoint: .bottomTrailing))
-                .edgesIgnoringSafeArea(.all)
+            (isDarkMode ?
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.indigo, Color.black]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ) :
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(red: 1.0, green: 0.85, blue: 0.75),  // Peach
+                        Color(red: 1.0, green: 0.72, blue: 0.58)   // Apricot
+                    ]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .edgesIgnoringSafeArea(.all)
+
             
             // Loading overlay - show this immediately before anything else renders
             if showCustomizationSheet {

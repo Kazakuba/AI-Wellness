@@ -39,8 +39,16 @@ struct AchievementsHorizontalScrollView: View {
                             .frame(width: 90, height: 90)
                             .background(
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(LinearGradient(gradient: Gradient(colors: isDarkMode ? [Color.indigo.opacity(0.25), Color.black.opacity(0.18)] : [Color.mint.opacity(0.18), Color.cyan.opacity(0.18)]), startPoint: .topLeading, endPoint: .bottomTrailing)))
-                        }
+                                    .fill(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: isDarkMode ?
+                                                               [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
+                                                                [Color(red: 1.0, green: 0.6, blue: 0.4) .opacity(0.5), Color(red: 1.0, green: 0.8, blue: 0.6) .opacity(0.5)]),
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                        )}
                     }
                 }
                 .padding(.horizontal, 8)

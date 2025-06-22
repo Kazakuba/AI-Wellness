@@ -5,14 +5,14 @@ struct BadgesHorizontalScrollView: View {
     @ObservedObject var gamification = GamificationManager.shared
     @State private var showInfoSheet = false
     @State private var selectedBadge: Badge? = nil
-    
+
     var showBadgeSheet: Binding<Bool> {
         Binding(
             get: { selectedBadge != nil },
             set: { newValue in if !newValue { selectedBadge = nil } }
         )
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Badges")
@@ -47,8 +47,17 @@ struct BadgesHorizontalScrollView: View {
                             .frame(width: 90, height: 90)
                             .background(
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(LinearGradient(gradient: Gradient(colors: isDarkMode ? [Color.indigo.opacity(0.25), Color.black.opacity(0.18)] : [Color.mint.opacity(0.18), Color.cyan.opacity(0.18)]), startPoint: .topLeading, endPoint: .bottomTrailing)))
-                            }
+                                    .fill(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: isDarkMode ?
+                                                               [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
+                                                                [Color(red: 1.0, green: 0.6, blue: 0.4) .opacity(0.5), Color(red: 1.0, green: 0.8, blue: 0.6) .opacity(0.5)]
+                                                              ),
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                            )}
                     }
                 }
                 .padding(.horizontal, 8)
@@ -61,7 +70,7 @@ struct BadgesHorizontalScrollView: View {
                     Text(badge.title)
                         .font(.title2).bold()
                         .padding(.top, 16)
-//                    Text(badge.level > 0 ? "You unlocked this badge!" : badge.description)
+                    //                    Text(badge.level > 0 ? "You unlocked this badge!" : badge.description)
                         .font(.body)
                         .foregroundColor(badge.level > 0 ? .green : .primary)
                         .multilineTextAlignment(.center)
