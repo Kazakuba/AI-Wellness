@@ -26,6 +26,7 @@ struct NotificationTestView: View {
                 //Title
                 Text("Test Notification")
                     .font(Typography.Font.heading2)
+                    .foregroundColor(.white)
                     .padding()
                 
                 // Button for notification perrmission
@@ -72,7 +73,7 @@ struct ScheduleNotificationButton: View {
             }
         }
         .padding()
-        .background(Color.brown)
+        .background(Color.secondary)
         .foregroundStyle(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
@@ -90,7 +91,7 @@ struct RequestNotificationButton: View {
             }
         }
         .padding()
-        .background(Color.brown)
+        .background(Color.secondary)
         .foregroundStyle(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }

@@ -9,10 +9,12 @@ import SwiftUI
 
 struct TabBarView: View {
     @ObservedObject var authService: AuthenticationService
+    @EnvironmentObject var appState: AppState
     @AppStorage("isDarkMode") private var isDarkMode: Bool = false
     @State private var selectedTab = 0
     @State private var tabBarHidden: Bool = false
     @State private var showBreathingExercise: Bool = false
+    @State private var unlockedNote: TimeCapsuleNote? = nil
 
     init(authService: AuthenticationService) {
         self.authService = authService
@@ -87,6 +89,23 @@ struct TabBarView: View {
                 showBreathingExercise = false
                 selectedTab = 0
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .didTapTimeCapsuleNotification)) { notification in
+            
+            print("Notification received")
+            
+            if let note = notification.object as? TimeCapsuleNote {
+                print("Decoded note: \(note.content)")
+                self.unlockedNote = note
+                self.selectedTab = 0
+            } else {
+                print("Failed to decode TimeCapsuleNote")
+            }
+        }
+        .sheet(item: $unlockedNote, onDismiss: {
+            unlockedNote = nil //Reset to prevent repeated presentation
+        }) { note in
+            TimeCapsuleUnlockedView(note: note)
         }
     }
 }
