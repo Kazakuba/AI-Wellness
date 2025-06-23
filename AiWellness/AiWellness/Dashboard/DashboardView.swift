@@ -27,7 +27,6 @@ struct DashboardView: View {
             gradient: Gradient(colors: isDarkMode ?
                 [Color.indigo, Color.black] :
 
-                // 1. Peach → Apricot
             [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]
 
             ),

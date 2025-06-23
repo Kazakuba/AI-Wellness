@@ -60,13 +60,14 @@ struct GamifiedDashboardHeaderView: View {
                         .fill(
                             LinearGradient(
                                 gradient: Gradient(colors: isDarkMode ?
-                                                   [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
-                                                    [Color(red: 1.0, green: 0.6, blue: 0.4) .opacity(0.5), Color(red: 1.0, green: 0.8, blue: 0.6) .opacity(0.5)]
-                                                  ),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
+                                    [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
+                                    [Color(red: 1.0, green: 0.6, blue: 0.4), Color(red: 1.0, green: 0.8, blue: 0.6)]
+                                ),
+                                startPoint: .topTrailing,
+                                endPoint: .bottom
                             )
                         )
+                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
                 )
             }
             .padding(.horizontal, 8)
@@ -79,14 +80,14 @@ struct GamifiedDashboardHeaderView: View {
                 .fill(
                     LinearGradient(
                         gradient: Gradient(colors: isDarkMode ?
-                                           [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
-                                            [Color(red: 1.0, green: 0.6, blue: 0.4) .opacity(0.5), Color(red: 1.0, green: 0.8, blue: 0.6) .opacity(0.5)]
-                                           //                            [Color(red: 0.88, green: 0.55, blue: 0.45).opacity(0.5), Color(red: 0.95, green: 0.75, blue: 0.65).opacity(0.5)]
-                                          ),
+                            [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
+                            [Color(red: 1.0, green: 0.6, blue: 0.4), Color(red: 1.0, green: 0.8, blue: 0.6)]
+                        ),
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                 )
+                .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
         )
         .padding(.horizontal)
         .confettiCannon(trigger: $confettiTrigger, num: 40, colors: [.yellow, .green, .blue, .orange])
@@ -146,12 +147,11 @@ struct XPProgressBar: View {
         VStack(alignment: .leading, spacing: 4) {
             ZStack(alignment: .leading) {
                 Capsule()
-                    .fill(Color.gray.opacity(0.2))
+                    .fill(Color.gray.opacity(0.5))
                     .frame(height: 14)
                 Capsule()
                     .fill(LinearGradient(gradient: Gradient(colors: [Color(red: 1.0, green: 0.65, blue: 0.4),
                                                                      Color(red: 1.0, green: 0.45, blue: 0.4)]), startPoint: .leading, endPoint: .trailing))
-                //Color(red: 1.0, green: 0.85, blue: 0.4), Color(red: 1.0, green: 0.7, blue: 0.3)
                     .frame(width: CGFloat(currentXP) / CGFloat(nextLevelXP) * 220, height: 14)
                     .animation(.easeInOut, value: currentXP)
             }
