@@ -14,15 +14,14 @@ struct ChatListView: View {
     @State private var isShowingMoreOptions = false
     @StateObject private var serverStatusViewModel = ServerStatusViewModel()
     @State private var isShowingAlert = false
-    @State private var navigateToChat: Chat? = nil
     @StateObject private var confettiManager = ConfettiManager.shared
+    @State private var path = NavigationPath()
 
     var gradient: LinearGradient {
         LinearGradient(
             gradient: Gradient(colors: isDarkMode ?
                                [Color.indigo, Color.black] :
                                 [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]
-
                               ),
             startPoint: .topLeading,
             endPoint: .bottomTrailing
@@ -30,13 +29,13 @@ struct ChatListView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $path) {
             VStack {
                 header
 
                 Button(action: {
                     let newChat = chatStore.createNewChat(title: "New Chat")
-                    navigateToChat = newChat
+                    path.append(newChat)
                 }) {
                     Text("Create New Chats")
                         .font(.headline)
@@ -54,7 +53,7 @@ struct ChatListView: View {
                 List {
                     Section(header: Text("Today").foregroundColor(.white.opacity(0.7))) {
                         ForEach(todayChats) { chat in
-                            NavigationLink(destination: ChatDetailView(chat: chat, serverStatusViewModel: serverStatusViewModel), tag: chat, selection: $navigateToChat) {
+                            NavigationLink(value: chat) {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
@@ -65,7 +64,7 @@ struct ChatListView: View {
 
                     Section(header: Text("7 DAYS").foregroundColor(.white.opacity(0.7))) {
                         ForEach(sevenDayChats) { chat in
-                            NavigationLink(destination: ChatDetailView(chat: chat, serverStatusViewModel: serverStatusViewModel)) {
+                            NavigationLink(value: chat) {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
@@ -76,7 +75,7 @@ struct ChatListView: View {
 
                     Section(header: Text("30 DAYS").foregroundColor(.white.opacity(0.7))) {
                         ForEach(thirtyDayChats) { chat in
-                            NavigationLink(destination: ChatDetailView(chat: chat, serverStatusViewModel: serverStatusViewModel)) {
+                            NavigationLink(value: chat) {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
@@ -104,6 +103,9 @@ struct ChatListView: View {
             .background(gradient.ignoresSafeArea())
             .navigationBarHidden(true)
             .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
+            .navigationDestination(for: Chat.self) { chat in
+                ChatDetailView(chat: chat, serverStatusViewModel: serverStatusViewModel)
+            }
         }
 
         .background(Color.clear)
