@@ -12,11 +12,11 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                // Search Bar at the very top
                 Section {
                     CustomSearchBar(
                         text: $searchText,
                         isDarkMode: isDarkMode
-                        //textColor: dynamicTextColor
                     )
                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     .listRowBackground(Color.clear)
@@ -24,50 +24,26 @@ struct SettingsView: View {
                     .listSectionSpacing(50)
                 }
 
-                // Account Section
+                // Account Row below search
                 if let user = viewModel.user, isMatch(searchText: searchText, text: user.name + " " + user.email) {
                     accountRow(user: user)
                 } else if searchText.isEmpty {
                     accountRow(user: viewModel.user)
                 }
 
-                // Preferences...
-                Section(header: isMatch(searchText: searchText, text: "Preferences") ? Text("Preferences").foregroundColor(dynamicTextColor) : nil) {
-                    if isMatch(searchText: searchText, text: "Color Scheme") {
-                        SettingsRow(icon: "paintbrush.fill", title: "Color Scheme", color: .brown)
-                    }
-                    if isMatch(searchText: searchText, text: "App Icon " + viewModel.selectedAppIcon) {
-                        PickerRow(icon: "paintpalette.fill", title: "App Icon", selection: $viewModel.selectedAppIcon, options: viewModel.appIcons, color: .orange)
-                    }
-                    if isMatch(searchText: searchText, text: "Dark Mode " + (viewModel.isDarkMode ? "On" : "Off")) {
-                        ToggleRow(icon: "moon.fill", title: "Dark Mode", isOn: $viewModel.isDarkMode, color: .gray)
-                    }
-                    if isMatch(searchText: searchText, text: "Voice " + viewModel.selectedAIVoice) {
-                        PickerRow(icon: "waveform", title: "Voice", selection: $viewModel.selectedAIVoice, options: viewModel.aiVoice, color: .cyan)
-                    }
-                }
-
-                // Notifications
-                Section(header: isMatch(searchText: searchText, text: "Notifications") ? Text("Notifications").foregroundColor(dynamicTextColor) : nil) {
-                    if isMatch(searchText: searchText, text: "Enable Notifications " + (viewModel.notificationsEnabled ? "On" : "Off")) {
-                        ToggleRow(icon: "bell.fill", title: "Enable Notifications", isOn: $viewModel.notificationsEnabled, color: .pink)
-                    }
-                    if viewModel.notificationsEnabled && isMatch(searchText: searchText, text: "Manage Specific Notifications") {
+                // Preferences Section (NEW)
+                Section(header: Text("Preferences").foregroundColor(dynamicTextColor)) {
+                    ToggleRow(icon: "moon.fill", title: "Dark Mode", isOn: $viewModel.isDarkMode, color: .gray)
+                    ToggleRow(icon: "bell.fill", title: "Enable Notifications", isOn: $viewModel.notificationsEnabled, color: .pink)
+                    if viewModel.notificationsEnabled {
                         NavigationLink("Manage Specific Notifications") {
                             Text("Notification Preferences Coming Soon")
                                 .foregroundColor(dynamicTextColor)
-
                         }
                         .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
                         .foregroundColor(dynamicTextColor)
                     }
-                }
-
-                // Language Settings
-                Section(header: isMatch(searchText: searchText, text: "Language Settings") ? Text("Language Settings").foregroundColor(dynamicTextColor) : nil) {
-                    if isMatch(searchText: searchText, text: "Language " + viewModel.selectedLanguage) {
-                        PickerRow(icon: "globe", title: "Language", selection: $viewModel.selectedLanguage, options: viewModel.languages, color: .blue)
-                    }
+                    PickerRow(icon: "globe", title: "Language", selection: $viewModel.selectedLanguage, options: viewModel.languages, color: .blue)
                 }
 
                 // Account Management
