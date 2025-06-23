@@ -5,6 +5,7 @@ struct GamifiedDashboardHeaderView: View {
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
     @ObservedObject var gamification = GamificationManager.shared
     @State private var showResetAlert = false
+    @State private var showResetFlagsAlert = false
     @State private var showInfoSheet = false
     @State private var infoTitle = ""
     @State private var infoDescription = ""
@@ -32,6 +33,17 @@ struct GamifiedDashboardHeaderView: View {
                     Alert(title: Text("Reset Progress?"), message: Text("This will clear all achievements, badges, XP, and level for this user."), primaryButton: .destructive(Text("Reset")) {
                         gamification.resetAll()
                         updateStreak()
+                    }, secondaryButton: .cancel())
+                }
+                Button(action: { showResetFlagsAlert = true }) {
+                    Text("[F]")
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                        .padding(.leading, 4)
+                }
+                .alert(isPresented: $showResetFlagsAlert) {
+                    Alert(title: Text("Reset Achievement Flags?"), message: Text("This will reset all achievement flags, allowing you to unlock achievements again for testing."), primaryButton: .destructive(Text("Reset Flags")) {
+                        gamification.resetAchievementFlags()
                     }, secondaryButton: .cancel())
                 }
                 Spacer()

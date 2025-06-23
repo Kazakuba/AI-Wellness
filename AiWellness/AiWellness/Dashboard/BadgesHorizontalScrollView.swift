@@ -12,6 +12,26 @@ struct BadgesHorizontalScrollView: View {
             set: { newValue in if !newValue { selectedBadge = nil } }
         )
     }
+    
+    // Badge color based on level
+    private func badgeColor(for level: Int) -> Color {
+        switch level {
+        case 1: return .orange // Bronze
+        case 2: return .gray // Silver
+        case 3: return .yellow // Gold
+        default: return isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5) // Locked
+        }
+    }
+    
+    // Badge level text
+    private func badgeLevelText(for level: Int) -> String {
+        switch level {
+        case 1: return "Bronze"
+        case 2: return "Silver"
+        case 3: return "Gold"
+        default: return "Locked"
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -29,7 +49,7 @@ struct BadgesHorizontalScrollView: View {
                             VStack(spacing: 8) {
                                 Image(systemName: badge.systemImage)
                                     .font(.system(size: 28))
-                                    .foregroundColor(badge.level > 0 ? (badge.level == 3 ? .yellow : badge.level == 2 ? .blue : .green) : (isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
+                                    .foregroundColor(badgeColor(for: badge.level))
                                 Text(badge.title)
                                     .font(.caption)
                                     .foregroundColor(badge.level > 0 ? (isDarkMode ? .white : .black) : (isDarkMode ? .white.opacity(0.7) : .black.opacity(0.7)))
@@ -39,9 +59,13 @@ struct BadgesHorizontalScrollView: View {
                                     ProgressView(value: Float(clampedProgress), total: Float(badge.goal))
                                         .frame(width: 60)
                                 } else {
-                                    Text("Lvl \(badge.level)")
+                                    Text(badgeLevelText(for: badge.level))
                                         .font(.caption2)
                                         .foregroundColor(.white)
+                                        .padding(.horizontal, 4)
+                                        .padding(.vertical, 2)
+                                        .background(badgeColor(for: badge.level))
+                                        .cornerRadius(4)
                                 }
                             }
                             .frame(width: 90, height: 90)
@@ -70,11 +94,13 @@ struct BadgesHorizontalScrollView: View {
                     Text(badge.title)
                         .font(.title2).bold()
                         .padding(.top, 16)
-                    //                    Text(badge.level > 0 ? "You unlocked this badge!" : badge.description)
+                    
+                    Text(badge.description)
                         .font(.body)
-                        .foregroundColor(badge.level > 0 ? .green : .primary)
+                        .foregroundColor(.primary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 16)
+                    
                     // Level Up! badge: show milestone progress
                     if badge.id == "level_up" {
                         let milestones = [2, 5, 10, 20, 100]
@@ -97,9 +123,6 @@ struct BadgesHorizontalScrollView: View {
                                 .foregroundColor(.green)
                                 .padding(.top, 12)
                         }
-                        Text("Current Level: \(currentLevel)")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
                     } else if badge.level > 0 {
                         let clampedProgress = min(max(badge.progress, 0), badge.goal)
                         ProgressView(value: Float(clampedProgress), total: Float(badge.goal))
@@ -111,7 +134,7 @@ struct BadgesHorizontalScrollView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .padding(.bottom, 16)
-                        Text("Current Level: \(badge.level)")
+                        Text("Current Level: \(badgeLevelText(for: badge.level))")
                             .font(.caption2)
                             .foregroundColor(.secondary)
                     } else {

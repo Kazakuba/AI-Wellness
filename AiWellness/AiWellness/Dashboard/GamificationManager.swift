@@ -41,22 +41,20 @@ class GamificationManager: ObservableObject {
     private let achievementXP: [String: Int] = [
         "first_affirmation": 20,
         "shake_it_up": 15,
-        "streak_starter": 25,
-        "affirmation_streak": 30,
-        "collector": 20,
-        "sharing_is_caring": 15,
-        "explorer": 10,
-        "journal_hero": 20,
-        "first_share": 10
+        "journal_initiate": 20,
+        "ai_chat_starter": 25,
+        "first_breath": 20
     ]
     private let badgeXP: [String: Int] = [
         "level_up": 30,
         "consistency": 20,
-        "streak_slayer": 25,
         "collector": 20,
         "shaker": 15,
         "explorer": 10,
-        "social_sharer": 15
+        "social_sharer": 15,
+        "journal_master": 20,
+        "breathwork_pro": 20,
+        "ai_conversationalist": 25
     ]
     
     // XP needed per level (simple formula: 100 * level)
@@ -67,43 +65,55 @@ class GamificationManager: ObservableObject {
         load()
     }
     
-    // MARK: - Achievement Definitions
+    // MARK: - Achievement Definitions (Final List)
     private let achievementTemplates: [Achievement] = [
-        Achievement(id: "first_affirmation", title: "First Affirmation", systemImage: "sparkles", description: "Unlock one affirmation", isUnlocked: false, progress: 0, goal: 1),
-        Achievement(id: "shake_it_up", title: "Shake it Up!", systemImage: "waveform.path.ecg", description: "Shake gesture 3×", isUnlocked: false, progress: 0, goal: 3),
-        Achievement(id: "streak_starter", title: "Streak Starter", systemImage: "flame", description: "3-day streak", isUnlocked: false, progress: 0, goal: 3),
-        Achievement(id: "affirmation_streak", title: "Affirmation Streak", systemImage: "calendar", description: "7-day streak", isUnlocked: false, progress: 0, goal: 7),
-        Achievement(id: "collector", title: "Collector", systemImage: "tray.full", description: "Save 10 affirmations", isUnlocked: false, progress: 0, goal: 10),
-        Achievement(id: "sharing_is_caring", title: "Sharing is Caring", systemImage: "square.and.arrow.up", description: "Share 5×", isUnlocked: false, progress: 0, goal: 5),
-        Achievement(id: "explorer", title: "Explorer", systemImage: "globe", description: "View 5 topics", isUnlocked: false, progress: 0, goal: 5),
-        Achievement(id: "journal_hero", title: "Journal Hero", systemImage: "book", description: "Complete 5 journal prompts", isUnlocked: false, progress: 0, goal: 5),
-        Achievement(id: "first_share", title: "First Share", systemImage: "arrowshape.turn.up.right", description: "Share one affirmation", isUnlocked: false, progress: 0, goal: 1)
+        Achievement(id: "first_affirmation", title: "First Affirmation", systemImage: "sparkles", description: "Saved your first affirmation", isUnlocked: false, progress: 0, goal: 1),
+        Achievement(id: "shake_it_up", title: "Shake it Up!", systemImage: "waveform.path.ecg", description: "Tried the shake feature", isUnlocked: false, progress: 0, goal: 1),
+        Achievement(id: "journal_initiate", title: "Journal Initiate", systemImage: "book", description: "Wrote your first journal entry", isUnlocked: false, progress: 0, goal: 1),
+        Achievement(id: "ai_chat_starter", title: "AI Chat Starter", systemImage: "message.circle", description: "First time chatting with the AI", isUnlocked: false, progress: 0, goal: 1),
+        Achievement(id: "first_breath", title: "First Breath", systemImage: "lungs", description: "Completed your first breathing session", isUnlocked: false, progress: 0, goal: 1)
     ]
     
-    // MARK: - Badge Definitions
+    // MARK: - Badge Definitions (Complete Badge System)
     private let badgeTemplates: [Badge] = [
-        Badge(id: "level_up", title: "Level Up!", systemImage: "star", description: "New level reached", level: 0, progress: 0, goal: 1, milestones: [2, 5, 10]),
-        Badge(id: "consistency", title: "Consistency", systemImage: "clock", description: "Streaks (3, 7, 30 days)", level: 0, progress: 0, goal: 3, milestones: [3, 7, 30]),
-        Badge(id: "streak_slayer", title: "Streak Slayer", systemImage: "flame", description: "Streaks", level: 0, progress: 0, goal: 3, milestones: [3, 7, 30]),
-        Badge(id: "collector", title: "Collector", systemImage: "tray.full", description: "10+ saves", level: 0, progress: 0, goal: 10, milestones: [10, 25, 50]),
-        Badge(id: "shaker", title: "Shaker", systemImage: "waveform.path.ecg", description: "Multiple shake actions", level: 0, progress: 0, goal: 3, milestones: [3, 10, 25]),
-        Badge(id: "explorer", title: "Explorer", systemImage: "globe", description: "Variety of topics explored", level: 0, progress: 0, goal: 5, milestones: [5, 10, 20]),
-        Badge(id: "social_sharer", title: "Social Sharer", systemImage: "person.2.wave.2", description: "Share actions", level: 0, progress: 0, goal: 5, milestones: [5, 15, 30])
+        Badge(id: "consistency", title: "Consistency", systemImage: "clock", description: "Daily streaks", level: 0, progress: 0, goal: 3, milestones: [3, 7, 30]),
+        Badge(id: "collector", title: "Collector", systemImage: "tray.full", description: "Affirmations saved", level: 0, progress: 0, goal: 10, milestones: [10, 25, 50]),
+        Badge(id: "shaker", title: "Shaker", systemImage: "waveform.path.ecg", description: "Device shakes", level: 0, progress: 0, goal: 3, milestones: [3, 10, 25]),
+        Badge(id: "explorer", title: "Explorer", systemImage: "globe", description: "Topics viewed", level: 0, progress: 0, goal: 5, milestones: [5, 10, 20]),
+        Badge(id: "social_sharer", title: "Social Sharer", systemImage: "person.2.wave.2", description: "Affirmations shared", level: 0, progress: 0, goal: 5, milestones: [5, 15, 30]),
+        Badge(id: "journal_master", title: "Journal Master", systemImage: "book.closed", description: "Journal entries completed", level: 0, progress: 0, goal: 5, milestones: [5, 15, 30]),
+        Badge(id: "breathwork_pro", title: "Breathwork Pro", systemImage: "lungs.fill", description: "Breathing exercises completed", level: 0, progress: 0, goal: 3, milestones: [3, 10, 25]),
+        Badge(id: "ai_conversationalist", title: "AI Conversationalist", systemImage: "message", description: "AI therapy sessions", level: 0, progress: 0, goal: 3, milestones: [3, 10, 20]),
+        Badge(id: "level_up", title: "Level Up!", systemImage: "star.fill", description: "App level reached", level: 0, progress: 0, goal: 1, milestones: [2, 5, 10])
     ]
     
     // MARK: - Public API
     func incrementAchievement(_ id: String, by amount: Int = 1) {
+        print("DEBUG: incrementAchievement called for \(id) with amount \(amount)")
+        print("DEBUG: Current achievements count: \(achievements.count)")
+        print("DEBUG: Available achievement IDs: \(achievements.map { $0.id })")
+        
         if let idx = achievements.firstIndex(where: { $0.id == id }) {
             var ach = achievements[idx]
+            print("DEBUG: Current achievement state - unlocked: \(ach.isUnlocked), progress: \(ach.progress), goal: \(ach.goal)")
             if !ach.isUnlocked {
                 ach.progress += amount
+                print("DEBUG: New progress: \(ach.progress)")
                 if ach.progress >= ach.goal {
                     ach.isUnlocked = true
                     addXP(achievementXP[id] ?? 10)
+                    print("DEBUG: Achievement \(id) unlocked!")
                 }
                 achievements[idx] = ach
+                print("DEBUG: About to save achievement \(id)")
                 save()
+                print("DEBUG: Save completed for achievement \(id)")
+            } else {
+                print("DEBUG: Achievement \(id) already unlocked")
             }
+        } else {
+            print("DEBUG: Achievement \(id) not found!")
+            print("DEBUG: Available achievements: \(achievements.map { "\($0.id): unlocked=\($0.isUnlocked)" })")
         }
     }
     
@@ -126,8 +136,49 @@ class GamificationManager: ObservableObject {
         }
     }
     
+    // Special method for consistency badge that tracks streak value
+    func updateConsistencyBadge(streak: Int) {
+        print("DEBUG: updateConsistencyBadge called with streak: \(streak)")
+        if let idx = badges.firstIndex(where: { $0.id == "consistency" }) {
+            var badge = badges[idx]
+            print("DEBUG: Current badge level: \(badge.level), progress: \(badge.progress)")
+            
+            // Set progress to current streak
+            badge.progress = streak
+            
+            // Check if we should level up based on milestones
+            let milestones = badge.milestones ?? [3, 7, 30]
+            print("DEBUG: Milestones: \(milestones)")
+            
+            // Determine what level this streak should be
+            var targetLevel = 0
+            for (i, milestone) in milestones.enumerated() {
+                if streak >= milestone {
+                    targetLevel = i + 1
+                }
+            }
+            
+            print("DEBUG: Target level for streak \(streak): \(targetLevel)")
+            
+            // Only level up if we're going to a higher level
+            if targetLevel > badge.level {
+                badge.level = targetLevel
+                addXP(badgeXP["consistency"] ?? 10)
+                print("DEBUG: Badge leveled up to \(badge.level)")
+            }
+            
+            badges[idx] = badge
+            save()
+        }
+    }
+    
+    // Public method to get badge XP
+    func getBadgeXP(for id: String) -> Int {
+        return badgeXP[id] ?? 10
+    }
+    
     // MARK: - XP/Level Logic
-    private func addXP(_ amount: Int) {
+    func addXP(_ amount: Int) {
         let oldLevel = level
         xp += amount
         while xp >= xpForNextLevel() {
@@ -178,35 +229,70 @@ class GamificationManager: ObservableObject {
         save()
     }
     
+    // MARK: - Reset Achievement Flags (for testing)
+    func resetAchievementFlags() {
+        let uid = getUserUID() ?? "default"
+        let defaults = UserDefaults.standard
+        
+        // Reset all achievement flags
+        defaults.removeObject(forKey: "shake_it_up_\(uid)")
+        defaults.removeObject(forKey: "journal_initiate_\(uid)")
+        defaults.removeObject(forKey: "ai_chat_starter_\(uid)")
+        defaults.removeObject(forKey: "first_breath_\(uid)")
+        
+        print("DEBUG: Reset all achievement flags for user: \(uid)")
+    }
+    
     // MARK: - Persistence (override)
     func save() {
         let uid = getUserUID() ?? "default"
+        print("DEBUG: Saving gamification data for user: \(uid)")
+        
         UserDefaults.standard.set(uid, forKey: userKey)
         if let data = try? JSONEncoder().encode(achievements) {
             UserDefaults.standard.set(data, forKey: "\(achievementsKey)_\(uid)")
+            print("DEBUG: Saved \(achievements.count) achievements")
+        } else {
+            print("DEBUG: Failed to encode achievements")
         }
         if let data = try? JSONEncoder().encode(badges) {
             UserDefaults.standard.set(data, forKey: "\(badgesKey)_\(uid)")
+            print("DEBUG: Saved \(badges.count) badges")
+        } else {
+            print("DEBUG: Failed to encode badges")
         }
         UserDefaults.standard.set(xp, forKey: "\(xpKey)_\(uid)")
         UserDefaults.standard.set(level, forKey: "\(levelKey)_\(uid)")
+        
+        print("DEBUG: Save completed - XP: \(xp), Level: \(level)")
     }
     private func load() {
         let uid = getUserUID() ?? "default"
+        print("DEBUG: Loading gamification data for user: \(uid)")
+        
         if let data = UserDefaults.standard.data(forKey: "\(achievementsKey)_\(uid)"),
            let decoded = try? JSONDecoder().decode([Achievement].self, from: data) {
             achievements = decoded
+            print("DEBUG: Loaded \(achievements.count) achievements from UserDefaults")
         } else {
             achievements = achievementTemplates
+            print("DEBUG: Initialized \(achievements.count) achievements from templates")
         }
+        
         if let data = UserDefaults.standard.data(forKey: "\(badgesKey)_\(uid)"),
            let decoded = try? JSONDecoder().decode([Badge].self, from: data) {
             badges = decoded
+            print("DEBUG: Loaded \(badges.count) badges from UserDefaults")
         } else {
             badges = badgeTemplates
+            print("DEBUG: Initialized \(badges.count) badges from templates")
         }
+        
         xp = UserDefaults.standard.integer(forKey: "\(xpKey)_\(uid)")
         level = UserDefaults.standard.integer(forKey: "\(levelKey)_\(uid)")
         if level < 1 { level = 1 }
+        
+        print("DEBUG: Final state - XP: \(xp), Level: \(level)")
+        print("DEBUG: Achievements: \(achievements.map { "\($0.id): unlocked=\($0.isUnlocked), progress=\($0.progress)/\($0.goal)" })")
     }
 }

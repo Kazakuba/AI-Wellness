@@ -60,6 +60,28 @@ class BreathingExerciseViewModel: ObservableObject {
                     if time >= self.totalDuration {
                         self.pause()
                         self.elapsedTime = 0
+                        
+                        // --- First Breath achievement logic ---
+                        let uid = GamificationManager.shared.getUserUID() ?? "default"
+                        let breathKey = "first_breath_\(uid)"
+                        let defaults = UserDefaults.standard
+                        let hasBreathBefore = defaults.bool(forKey: breathKey)
+                        if !hasBreathBefore {
+                            defaults.set(true, forKey: breathKey)
+                            // Unlock "First Breath" achievement
+                            GamificationManager.shared.incrementAchievement("first_breath")
+                            GamificationManager.shared.save()
+                        }
+                        
+                        // --- Breathwork Pro badge logic ---
+                        let breathworkProKey = "breathwork_pro_sessions_\(uid)"
+                        var completedSessions = defaults.integer(forKey: breathworkProKey)
+                        completedSessions += 1
+                        defaults.set(completedSessions, forKey: breathworkProKey)
+                        // Update Breathwork Pro badge progress
+                        GamificationManager.shared.incrementBadge("breathwork_pro")
+                        GamificationManager.shared.save()
+                        
                         // Notify that the exercise is complete
                         NotificationCenter.default.post(name: NSNotification.Name("BreathingExerciseComplete"), object: nil)
                     }

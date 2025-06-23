@@ -61,12 +61,6 @@ class AffirmationsViewModel: ObservableObject {
         let wasInserted = topics.insert(topicId).inserted
         if wasInserted {
             defaults.set(Array(topics), forKey: explorerKey)
-            let count = topics.count
-            // Update achievement progress (goal: 5)
-            if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "explorer" }) {
-                GamificationManager.shared.achievements[idx].progress = count
-                GamificationManager.shared.achievements[idx].isUnlocked = (count >= 5)
-            }
             // Update badge progress using milestone-based system
             GamificationManager.shared.incrementBadge("explorer")
             GamificationManager.shared.save()
@@ -97,21 +91,21 @@ class AffirmationsViewModel: ObservableObject {
         // --- Collector logic ---
         let uid = GamificationManager.shared.getUserUID() ?? "default"
         let collectorKey = "collector_count_\(uid)"
+        let collectorIdsKey = "collector_ids_\(uid)"
         let defaults = UserDefaults.standard
-        var count = defaults.integer(forKey: collectorKey)
-        // Only increment if this is a new save
-        if !savedAffirmations.contains(where: { $0.id == affirmation.id }) {
-            count += 1
+        var savedIds = Set(defaults.stringArray(forKey: collectorIdsKey) ?? [])
+        let affirmationId = affirmation.id.uuidString
+        
+        // Only increment if this is a new save (not already saved)
+        if !savedIds.contains(affirmationId) {
+            savedIds.insert(affirmationId)
+            defaults.set(Array(savedIds), forKey: collectorIdsKey)
+            let count = savedIds.count
             defaults.set(count, forKey: collectorKey)
+            // Update badge progress using milestone-based system
+            GamificationManager.shared.incrementBadge("collector")
+            GamificationManager.shared.save()
         }
-        // Update achievement progress (goal: 10)
-        if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "collector" }) {
-            GamificationManager.shared.achievements[idx].progress = count
-            GamificationManager.shared.achievements[idx].isUnlocked = (count >= 10)
-        }
-        // Update badge progress using milestone-based system
-        GamificationManager.shared.incrementBadge("collector")
-        GamificationManager.shared.save()
         loadSavedAffirmations()
     }
 

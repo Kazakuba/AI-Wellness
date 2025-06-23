@@ -73,6 +73,28 @@ struct ChatDetailView: View {
                     .disabled(isGeneratingTitle)
                 Button(action: {
                     guard !messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+                    
+                    // --- AI Chat Starter achievement logic ---
+                    let uid = GamificationManager.shared.getUserUID() ?? "default"
+                    let chatKey = "ai_chat_starter_\(uid)"
+                    let defaults = UserDefaults.standard
+                    let hasChattedBefore = defaults.bool(forKey: chatKey)
+                    if !hasChattedBefore {
+                        defaults.set(true, forKey: chatKey)
+                        // Unlock "AI Chat Starter" achievement
+                        GamificationManager.shared.incrementAchievement("ai_chat_starter")
+                        GamificationManager.shared.save()
+                    }
+                    
+                    // --- AI Conversationalist badge logic ---
+                    let aiConversationalistKey = "ai_conversationalist_sessions_\(uid)"
+                    var completedSessions = defaults.integer(forKey: aiConversationalistKey)
+                    completedSessions += 1
+                    defaults.set(completedSessions, forKey: aiConversationalistKey)
+                    // Update AI Conversationalist badge progress
+                    GamificationManager.shared.incrementBadge("ai_conversationalist")
+                    GamificationManager.shared.save()
+                    
                     if chat.messages.isEmpty {
                         print("[DEBUG] Generating title for first message: \(messageText)")
                         isGeneratingTitle = true

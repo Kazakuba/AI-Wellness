@@ -73,24 +73,34 @@ struct WritingView: View {
             .frame(maxHeight: .infinity)
             .onChange(of: text) { oldValue, newValue in
                 saveText(newValue)
-                // --- Journal Hero achievement logic ---
+                
                 let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
                 guard !trimmed.isEmpty else { return }
+                
                 let uid = GamificationManager.shared.getUserUID() ?? "default"
-                let journalKey = "journal_hero_dates_\(uid)"
                 let defaults = UserDefaults.standard
-                var completedDates = Set(defaults.stringArray(forKey: journalKey) ?? [])
+                
+                // --- Journal Initiate achievement logic ---
+                let journalKey = "journal_initiate_\(uid)"
+                let hasWrittenBefore = defaults.bool(forKey: journalKey)
+                if !hasWrittenBefore {
+                    defaults.set(true, forKey: journalKey)
+                    // Unlock "Journal Initiate" achievement
+                    GamificationManager.shared.incrementAchievement("journal_initiate")
+                }
+                
+                // --- Journal Master badge logic ---
+                let journalMasterKey = "journal_master_entries_\(uid)"
+                var completedDates = Set(defaults.stringArray(forKey: journalMasterKey) ?? [])
                 let dateString = ISO8601DateFormatter().string(from: selectedDate)
                 if !completedDates.contains(dateString) {
                     completedDates.insert(dateString)
-                    defaults.set(Array(completedDates), forKey: journalKey)
-                    // Update achievement progress (goal: 5)
-                    if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "journal_hero" }) {
-                        GamificationManager.shared.achievements[idx].progress = completedDates.count
-                        GamificationManager.shared.achievements[idx].isUnlocked = (completedDates.count >= 5)
-                    }
-                    GamificationManager.shared.save()
+                    defaults.set(Array(completedDates), forKey: journalMasterKey)
+                    // Update Journal Master badge progress
+                    GamificationManager.shared.incrementBadge("journal_master")
                 }
+                
+                GamificationManager.shared.save()
             }
     }
     

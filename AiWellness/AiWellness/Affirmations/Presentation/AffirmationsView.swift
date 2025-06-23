@@ -107,18 +107,8 @@ struct AffirmationsView: View {
                                     let previousShareCount = defaults.integer(forKey: shareKey)
                                     let newShareCount = previousShareCount + 1
                                     defaults.set(newShareCount, forKey: shareKey)
-                                    // Increment achievement progress by 1 for each share
-                                    GamificationManager.shared.incrementAchievement("sharing_is_caring", by: 1)
                                     // Update badge progress using milestone-based system
                                     GamificationManager.shared.incrementBadge("social_sharer", by: 1)
-                                    // --- First Share achievement (share at least once) ---
-                                    if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "first_share" }) {
-                                        if !GamificationManager.shared.achievements[idx].isUnlocked {
-                                            GamificationManager.shared.achievements[idx].progress = 1
-                                            GamificationManager.shared.achievements[idx].isUnlocked = true
-                                        }
-                                    }
-                                    GamificationManager.shared.save()
                                 }
                                 rootVC.present(av, animated: true, completion: nil)
                             }
@@ -211,7 +201,16 @@ struct AffirmationsView: View {
 
     private func handleAffirmationUnlock(fromShake: Bool = false) {
         if fromShake {
-            GamificationManager.shared.incrementAchievement("shake_it_up")
+            // --- Shake it Up achievement logic ---
+            let uid = GamificationManager.shared.getUserUID() ?? "default"
+            let shakeKey = "shake_it_up_\(uid)"
+            let defaults = UserDefaults.standard
+            let hasShakenBefore = defaults.bool(forKey: shakeKey)
+            if !hasShakenBefore {
+                defaults.set(true, forKey: shakeKey)
+                // Unlock "Shake it Up!" achievement on first shake
+                GamificationManager.shared.incrementAchievement("shake_it_up")
+            }
             GamificationManager.shared.incrementBadge("shaker")
         }
         // --- Streak logic ---
@@ -222,39 +221,35 @@ struct AffirmationsView: View {
         let today = Calendar.current.startOfDay(for: Date())
         let lastDate = defaults.object(forKey: lastDateKey) as? Date
         var streak = defaults.integer(forKey: streakKey)
+        
+        print("DEBUG: Streak calculation - current streak: \(streak), last date: \(lastDate?.description ?? "nil")")
+        
         if let last = lastDate {
             let days = Calendar.current.dateComponents([.day], from: last, to: today).day ?? 0
+            print("DEBUG: Days since last unlock: \(days)")
             if days == 1 {
+                // Consecutive day
                 streak += 1
+                print("DEBUG: Consecutive day, new streak: \(streak)")
             } else if days > 1 {
+                // Gap in streak, reset to 1
                 streak = 1
+                print("DEBUG: Gap in streak, reset to: \(streak)")
             } else if days == 0 {
-                // Already unlocked today, do not increment streak
+                // Same day, don't increment streak
+                print("DEBUG: Same day, keeping streak at: \(streak)")
             }
         } else {
+            // First time ever
             streak = 1
+            print("DEBUG: First time, setting streak to: \(streak)")
         }
+        
         defaults.set(today, forKey: lastDateKey)
         defaults.set(streak, forKey: streakKey)
-        // Update achievement and badge progress directly
-        if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "streak_starter" }) {
-            GamificationManager.shared.achievements[idx].progress = streak
-            GamificationManager.shared.achievements[idx].isUnlocked = (streak >= 3)
-        }
-        // Update badge progress using milestone-based system
-        GamificationManager.shared.incrementBadge("consistency")
-        // --- Streak Slayer badge ---
-        if let idx = GamificationManager.shared.badges.firstIndex(where: { $0.id == "streak_slayer" }) {
-            GamificationManager.shared.badges[idx].progress = streak
-            if streak == 3 || streak == 7 || streak == 30 {
-                GamificationManager.shared.badges[idx].level = min(3, GamificationManager.shared.badges[idx].level + 1)
-            }
-        }
-        // --- Affirmation Streak achievement (7-day streak) ---
-        if let idx = GamificationManager.shared.achievements.firstIndex(where: { $0.id == "affirmation_streak" }) {
-            GamificationManager.shared.achievements[idx].progress = streak
-            GamificationManager.shared.achievements[idx].isUnlocked = (streak >= 7)
-        }
+        
+        // Update consistency badge progress using the proper increment method
+        GamificationManager.shared.updateConsistencyBadge(streak: streak)
         GamificationManager.shared.save()
     }
 }
