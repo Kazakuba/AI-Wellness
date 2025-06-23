@@ -103,7 +103,7 @@ struct GamifiedDashboardHeaderView: View {
                 defaults.set(lastCelebratedLevel, forKey: lastLevelKey)
             }
         }
-        .onChange(of: gamification.level) { newLevel in
+        .onChange(of: gamification.level) { oldLevel, newLevel in
             let uid = gamification.getUserUID() ?? "default"
             let lastLevelKey = "lastCelebratedLevel_\(uid)"
             let defaults = UserDefaults.standard
