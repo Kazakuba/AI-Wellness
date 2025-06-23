@@ -60,7 +60,7 @@ class WritingDataManager {
     }
 
     // Load all entries from UserDefaults for a user
-    private func loadAllEntries(for uid: String) -> [Date: String] {
+    func loadAllEntries(for uid: String) -> [Date: String] {
         guard let data = defaults.data(forKey: storageKey + uid) else { return [:] }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601

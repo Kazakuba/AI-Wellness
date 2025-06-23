@@ -65,16 +65,13 @@ struct DashboardView: View {
                 .padding()
                 VStack(spacing: 20) {
                     GamifiedDashboardHeaderView()
-                    // Achievements horizontal scroll
                     AchievementsHorizontalScrollView()
-                    // Badges horizontal scroll
                     BadgesHorizontalScrollView()
-                    // Weekly Recap collapsible
-                    CollapsibleSectionView(title: "📆 Weekly Recap") {
-                        WeeklyRecapView()
-                    }
                     Spacer()
                 }
+                // Weekly Recap banner at the bottom
+                WeeklyRecapView()
+                    .padding(.bottom, 12)
             }
         }
         .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
