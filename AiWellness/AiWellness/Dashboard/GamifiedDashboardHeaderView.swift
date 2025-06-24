@@ -71,6 +71,7 @@ struct GamifiedDashboardHeaderView: View {
                 )
             }
             .padding(.horizontal, 8)
+            .padding(.bottom, 13)
             // XP Progress Bar
             XPProgressBar(currentXP: gamification.xp, nextLevelXP: gamification.level * 100)
         }
@@ -90,6 +91,7 @@ struct GamifiedDashboardHeaderView: View {
                 .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
         )
         .padding(.horizontal)
+        .padding(.bottom, 20)
         .confettiCannon(trigger: $confettiTrigger, num: 40, colors: [.yellow, .green, .blue, .orange])
         .onAppear {
             updateStreak()

@@ -54,6 +54,7 @@ struct AchievementsHorizontalScrollView: View {
                     }
                 }
                 .padding(.horizontal, 8)
+                .padding(.bottom, 20)
             }
         }
         .frame(maxWidth: .infinity)

@@ -141,7 +141,8 @@ struct WeeklyRecapView: View {
             .padding(.bottom, 8)
         }
         .padding(.horizontal)
-        .padding(.top, 8)
+        .padding(.top, 20)
+        .padding(.bottom, 20)
         .onAppear {
             savedAffirmations.loadSavedAffirmations()
             startTimer()

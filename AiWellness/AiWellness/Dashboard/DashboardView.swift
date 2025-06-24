@@ -51,19 +51,6 @@ struct DashboardView: View {
                 .padding()
                 .padding(.top, 8)
                 Spacer()
-                VStack {
-                    PrimaryButton(title: "Open Time Capsule") {
-                        withAnimation {
-                            showTimeCapsule = true
-                        }
-                    }
-                    PrimaryButton(title: "Test Notification") {
-                        withAnimation {
-                            showTestNotifictions = true
-                        }
-                    }
-                }
-                .padding()
                 VStack(spacing: 20) {
                     GamifiedDashboardHeaderView()
                     AchievementsHorizontalScrollView()
@@ -74,6 +61,9 @@ struct DashboardView: View {
                     .padding(.bottom, 12)
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification)) { _ in
+            showTimeCapsule = true
+        }
         .confettiCannon(trigger: $confettiManager.trigger, num: 40, confettis: confettiManager.confettis, colors: [.yellow, .green, .blue, .orange])
         .fullScreenCover(isPresented: $showTimeCapsule) {
             TimeCapsuleView(isPresented: $showTimeCapsule)
@@ -81,9 +71,6 @@ struct DashboardView: View {
         .fullScreenCover(isPresented: $showSettings) {
             SettingsView()
                 .environmentObject(authService)
-        }
-        .fullScreenCover(isPresented: $showTestNotifictions) {
-            NotificationTestView(isPresented: $showTestNotifictions)
         }
     }
 }
@@ -124,4 +111,16 @@ private struct WelcomeText: View {
 #Preview {
     DashboardView(authService: AuthenticationService())
         .environmentObject(SettingsViewModel())
+}
+
+extension UIDevice {
+    static let deviceDidShakeNotification = Notification.Name(rawValue: "deviceDidShakeNotification")
+}
+
+extension UIWindow {
+    open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if motion == .motionShake {
+            NotificationCenter.default.post(name: UIDevice.deviceDidShakeNotification, object: nil)
+        }
+    }
 }
