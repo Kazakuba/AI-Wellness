@@ -89,7 +89,6 @@ struct AiWellnessApp: App {
             AppRootView()
                 .environmentObject(SettingsViewModel(authService: AuthenticationService()))  // Share ViewModel across views
                 .environmentObject(appState) // sharing with entire app
-                .preferredColorScheme(isDarkMode ? .dark : .light)  // Apply globally
         }
     }
     

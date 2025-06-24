@@ -49,6 +49,7 @@ struct DashboardView: View {
                     }
                 }
                 .padding()
+                .padding(.top, 8)
                 Spacer()
                 VStack {
                     PrimaryButton(title: "Open Time Capsule") {

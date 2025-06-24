@@ -16,37 +16,22 @@ struct WeeklyRecapView: View {
     private var weekEnd: Date {
         Calendar.current.date(byAdding: .day, value: 7, to: weekStart) ?? Date()
     }
-    private var weekKey: String {
-        let uid = gamification.getUserUID() ?? "default"
-        let weekString = DateFormatter.localizedString(from: weekStart, dateStyle: .short, timeStyle: .none)
-        return "weekly_recap_\(uid)_\(weekString)"
-    }
     
-    // XP gained this week (dummy: just show current XP for now, can be improved if you track XP history)
+    // XP gained this week (always calculate fresh)
     private var xpThisWeek: Int {
-        recapData["xp"] as? Int ?? gamification.xp
+        gamification.xp
     }
-    // Current streak (from consistency badge progress)
+    // Current streak (always calculate fresh)
     private var currentStreak: Int {
-        recapData["streak"] as? Int ?? (gamification.badges.first(where: { $0.id == "consistency" })?.progress ?? 0)
+        gamification.badges.first(where: { $0.id == "consistency" })?.progress ?? 0
     }
-    // Top affirmation (most recent saved)
-    private var topAffirmation: String {
-        recapData["topAffirmation"] as? String ?? {
-            let affirmations = savedAffirmations.savedAffirmations.filter { $0.date >= weekStart && $0.date < weekEnd }
-            return affirmations.first?.text ?? "No affirmations saved this week."
-        }()
-    }
-    // New badges unlocked this week
+    // New badges unlocked this week (always calculate fresh)
     private var newBadges: [Badge] {
-        if let badgeData = recapData["badges"] as? [Data] {
-            return badgeData.compactMap { try? JSONDecoder().decode(Badge.self, from: $0) }
-        }
-        return gamification.badges.filter { $0.level > 0 }
+        gamification.badges.filter { $0.level > 0 }
     }
-    // Affirmations saved this week
+    // Affirmations saved this week (always calculate fresh)
     private var affirmationsThisWeek: Int {
-        recapData["affirmationsThisWeek"] as? Int ?? savedAffirmations.savedAffirmations.filter { $0.date >= weekStart && $0.date < weekEnd }.count
+        savedAffirmations.savedAffirmations.filter { $0.date >= weekStart && $0.date < weekEnd }.count
     }
     // Breathing sessions this week (using timestamps if available, else fallback to count)
     private var breathingSessionsThisWeek: Int {
@@ -61,7 +46,7 @@ struct WeeklyRecapView: View {
             return count
         }
     }
-    // Journal entries this week
+    // Journal entries this week (always calculate fresh)
     private var journalEntriesThisWeek: Int {
         guard let uid = gamification.getUserUID() else { return 0 }
         let entries = WritingDataManager.shared
@@ -69,22 +54,18 @@ struct WeeklyRecapView: View {
             .filter { $0.key >= weekStart && $0.key < weekEnd && !$0.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         return entries.count
     }
-    // AI chats/messages this week
+    // AI chats/messages this week (always calculate fresh)
     private var aiChatsThisWeek: Int {
         chatStore.chats.flatMap { chat in
             chat.messages.filter { $0.timestamp >= weekStart && $0.timestamp < weekEnd && $0.sender == "Me" }
         }.count
     }
     
-    // Recap data loaded/saved per user/week
-    @State private var recapData: [String: Any] = [:]
-    
     // Unique icon colors for each stat (light/dark mode)
     private func iconColor(for stat: String) -> Color {
         switch stat {
         case "star.fill": return isDarkMode ? Color.yellow : Color.orange
         case "flame.fill": return isDarkMode ? Color.orange : Color.red
-        case "quote.bubble.fill": return isDarkMode ? Color.cyan : Color.blue
         case "heart.fill": return isDarkMode ? Color.pink : Color.pink
         case "rosette": return getBadgeColor()
         case "lungs.fill": return isDarkMode ? Color.mint : Color.teal
@@ -111,7 +92,6 @@ struct WeeklyRecapView: View {
         var arr: [(String, String, String, Color)] = []
         arr.append(("star.fill", "XP Gained", "\(xpThisWeek)", iconColor(for: "star.fill")))
         arr.append(("flame.fill", "Current Streak", "\(currentStreak) days", iconColor(for: "flame.fill")))
-        arr.append(("quote.bubble.fill", "Top Affirmation", topAffirmation, iconColor(for: "quote.bubble.fill")))
         arr.append(("heart.fill", "Affirmations Saved", "\(affirmationsThisWeek)", iconColor(for: "heart.fill")))
         arr.append(("lungs.fill", "Breathing Sessions", "\(breathingSessionsThisWeek)", iconColor(for: "lungs.fill")))
         arr.append(("book.closed.fill", "Journal Entries", "\(journalEntriesThisWeek)", iconColor(for: "book.closed.fill")))
@@ -161,9 +141,9 @@ struct WeeklyRecapView: View {
             .padding(.bottom, 8)
         }
         .padding(.horizontal)
+        .padding(.top, 8)
         .onAppear {
             savedAffirmations.loadSavedAffirmations()
-            loadRecapData()
             startTimer()
         }
         .onDisappear {
@@ -177,7 +157,6 @@ struct WeeklyRecapView: View {
                 weekStart: weekStart,
                 xp: xpThisWeek,
                 streak: currentStreak,
-                topAffirmation: topAffirmation,
                 affirmationsThisWeek: affirmationsThisWeek,
                 breathingSessions: breathingSessionsThisWeek,
                 journalEntries: journalEntriesThisWeek,
@@ -236,30 +215,6 @@ struct WeeklyRecapView: View {
         return df
     }
     
-    // MARK: - Recap Data Persistence
-    private func loadRecapData() {
-        if let data = UserDefaults.standard.data(forKey: weekKey),
-           let dict = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSDictionary.self, from: data) as? [String: Any] {
-            recapData = dict
-        }
-    }
-    private func saveRecapData() {
-        var dict: [String: Any] = [:]
-        dict["xp"] = gamification.xp
-        dict["streak"] = gamification.badges.first(where: { $0.id == "consistency" })?.progress ?? 0
-        let affirmations = savedAffirmations.savedAffirmations.filter { $0.date >= weekStart && $0.date < weekEnd }
-        dict["topAffirmation"] = affirmations.first?.text ?? "No affirmations saved this week."
-        dict["affirmationsThisWeek"] = affirmations.count
-        dict["badges"] = gamification.badges.filter { $0.level > 0 }.compactMap { try? JSONEncoder().encode($0) }
-        // Add new stats
-        dict["breathingSessionsThisWeek"] = breathingSessionsThisWeek
-        dict["journalEntriesThisWeek"] = journalEntriesThisWeek
-        dict["aiChatsThisWeek"] = aiChatsThisWeek
-        if let data = try? NSKeyedArchiver.archivedData(withRootObject: dict, requiringSecureCoding: false) {
-            UserDefaults.standard.set(data, forKey: weekKey)
-        }
-    }
-    
     private func getBadgeColorForLevel(_ level: Int) -> Color {
         switch level {
         case 1:
@@ -278,7 +233,6 @@ struct FullWeeklyRecapSheet: View {
     let weekStart: Date
     let xp: Int
     let streak: Int
-    let topAffirmation: String
     let affirmationsThisWeek: Int
     let breathingSessions: Int
     let journalEntries: Int
@@ -312,10 +266,9 @@ struct FullWeeklyRecapSheet: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            .padding(.top, 8)
+            .padding(.top, 50)
             recapCard(icon: "star.fill", title: "XP Gained", value: "\(xp)", color: iconColor("star.fill"))
             recapCard(icon: "flame.fill", title: "Current Streak", value: "\(streak) days", color: iconColor("flame.fill"))
-            recapCard(icon: "quote.bubble.fill", title: "Top Affirmation", value: topAffirmation, color: iconColor("quote.bubble.fill"))
             recapCard(icon: "heart.fill", title: "Affirmations Saved", value: "\(affirmationsThisWeek)", color: iconColor("heart.fill"))
             recapCard(icon: "lungs.fill", title: "Breathing Sessions", value: "\(breathingSessions)", color: iconColor("lungs.fill"))
             recapCard(icon: "book.closed.fill", title: "Journal Entries", value: "\(journalEntries)", color: iconColor("book.closed.fill"))
