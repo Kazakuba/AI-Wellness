@@ -117,7 +117,7 @@ struct SettingsView: View {
             }
 
         }
-        .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
+        .confettiCannon(trigger: $confettiManager.trigger, num: 40, confettis: confettiManager.confettis, colors: [.yellow, .green, .blue, .orange])
     }
 
     private func accountRow(user: User?) -> some View {

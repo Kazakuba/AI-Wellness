@@ -298,7 +298,7 @@ struct BreathingExerciseView: View {
             showText = true
             startInstructionsTimer()
         }
-        .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
+        .confettiCannon(trigger: $confettiManager.trigger, num: 40, confettis: confettiManager.confettis, colors: [.yellow, .green, .blue, .orange])
     }
     
     // Start instructions timer to hide instructions after a delay

@@ -30,7 +30,7 @@ struct WritingView: View {
         .onChange(of: Auth.auth().currentUser?.uid) { _, _ in
             loadText()
         }
-        .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
+        .confettiCannon(trigger: $confettiManager.trigger, num: 40, confettis: confettiManager.confettis, colors: [.yellow, .green, .blue, .orange])
     }
     
     // MARK: - UI Components
@@ -101,6 +101,7 @@ struct WritingView: View {
                 }
                 
                 GamificationManager.shared.save()
+                ConfettiManager.shared.celebrate()
             }
     }
     

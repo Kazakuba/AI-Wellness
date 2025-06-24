@@ -102,7 +102,7 @@ struct ChatListView: View {
             }
             .background(gradient.ignoresSafeArea())
             .navigationBarHidden(true)
-            .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
+            .confettiCannon(trigger: $confettiManager.trigger, num: 40, confettis: confettiManager.confettis, colors: [.yellow, .green, .blue, .orange])
             .navigationDestination(for: Chat.self) { chat in
                 ChatDetailView(chat: chat, serverStatusViewModel: serverStatusViewModel)
             }
@@ -199,6 +199,10 @@ struct ChatListView: View {
             let days = $0.createdDate.daysAgo()
             return days >= 7 && days < 30
         }
+    }
+
+    private func handleChatAchievement() {
+        ConfettiManager.shared.celebrate()
     }
 }
 

@@ -83,8 +83,8 @@ struct GamifiedDashboardHeaderView: View {
                             [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
                             [Color(red: 1.0, green: 0.6, blue: 0.4), Color(red: 1.0, green: 0.8, blue: 0.6)]
                         ),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
+                        startPoint: .topTrailing,
+                        endPoint: .bottom
                     )
                 )
                 .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -99,7 +99,7 @@ struct GamifiedDashboardHeaderView: View {
             let storedLevel = defaults.integer(forKey: lastLevelKey)
             lastCelebratedLevel = storedLevel > 0 ? storedLevel : gamification.level
             if gamification.level > lastCelebratedLevel {
-                confettiTrigger += 1
+                ConfettiManager.shared.celebrate()
                 lastCelebratedLevel = gamification.level
                 defaults.set(lastCelebratedLevel, forKey: lastLevelKey)
             }
@@ -109,7 +109,7 @@ struct GamifiedDashboardHeaderView: View {
             let lastLevelKey = "lastCelebratedLevel_\(uid)"
             let defaults = UserDefaults.standard
             if newLevel > lastCelebratedLevel {
-                confettiTrigger += 1
+                ConfettiManager.shared.celebrate()
                 lastCelebratedLevel = newLevel
                 defaults.set(lastCelebratedLevel, forKey: lastLevelKey)
             }

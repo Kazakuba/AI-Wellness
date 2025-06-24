@@ -58,8 +58,8 @@ class GamificationManager: ObservableObject {
     ]
     
     // XP needed per level (simple formula: 100 * level)
-    private func xpForNextLevel() -> Int { 10 * level }
-    
+    private func xpForNextLevel() -> Int { 50 * level }
+
     // MARK: - Initialization
     private init() {
         load()

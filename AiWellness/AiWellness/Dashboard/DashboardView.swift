@@ -75,7 +75,7 @@ struct DashboardView: View {
                     .padding(.bottom, 12)
             }
         }
-        .confettiCannon(trigger: $confettiManager.trigger, num: 40, colors: [.yellow, .green, .blue, .orange])
+        .confettiCannon(trigger: $confettiManager.trigger, num: 40, confettis: confettiManager.confettis, colors: [.yellow, .green, .blue, .orange])
         .fullScreenCover(isPresented: $showTimeCapsule) {
             TimeCapsuleView(isPresented: $showTimeCapsule)
         }

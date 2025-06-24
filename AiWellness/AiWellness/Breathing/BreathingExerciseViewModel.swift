@@ -83,7 +83,7 @@ class BreathingExerciseViewModel: ObservableObject {
                         GamificationManager.shared.save()
                         
                         // Notify that the exercise is complete
-                        NotificationCenter.default.post(name: NSNotification.Name("BreathingExerciseComplete"), object: nil)
+                        ConfettiManager.shared.celebrate()
                     }
                 }
             }

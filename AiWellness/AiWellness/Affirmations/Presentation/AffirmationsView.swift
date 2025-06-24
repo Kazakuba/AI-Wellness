@@ -1,5 +1,6 @@
 // Main AffirmationsView with locked/unlocked states and UI
 import SwiftUI
+import ConfettiSwiftUI
 
 struct AffirmationsView: View {
     @Binding var hasOpenedAffirmations: Bool
@@ -11,6 +12,7 @@ struct AffirmationsView: View {
     @State private var showTodayAffirmation: Bool = false
     @State private var todayAffirmation: Affirmation?
     @AppStorage("selectedThemeId") private var selectedThemeId: String = ThemeLibrary.defaultTheme.id
+    @StateObject private var confettiManager = ConfettiManager.shared
 
     var gradient: LinearGradient {
         LinearGradient(
@@ -197,6 +199,7 @@ struct AffirmationsView: View {
                 }
             }
         }
+        .confettiCannon(trigger: $confettiManager.trigger, num: 40, confettis: confettiManager.confettis, colors: [.yellow, .green, .blue, .orange])
     }
 
     private func handleAffirmationUnlock(fromShake: Bool = false) {
@@ -255,5 +258,8 @@ struct AffirmationsView: View {
         // Update consistency badge progress using the proper increment method
         GamificationManager.shared.updateConsistencyBadge(streak: streak)
         GamificationManager.shared.save()
+
+        // 🎉 Trigger confetti
+        ConfettiManager.shared.celebrate()
     }
 }
