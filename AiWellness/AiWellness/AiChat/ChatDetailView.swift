@@ -7,6 +7,73 @@
 
 import SwiftUI
 
+struct MessageBubble: View {
+    let message: Message
+    @Environment(\.colorScheme) var colorScheme
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
+
+    var userGradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.8)]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+    
+    var aiGradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: [Color.green, Color.green.opacity(0.8)]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+    
+    private var formattedTimestamp: String {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return formatter.string(from: message.timestamp)
+    }
+    
+    var body: some View {
+        HStack(alignment: .bottom) {
+            if message.sender != "Me" {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(message.content)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .foregroundColor(.white)
+                        .background(aiGradient)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                    
+                    Text(formattedTimestamp)
+                        .font(.caption2)
+                        .foregroundColor(isDarkMode ? .white : .black)
+                }
+                .frame(maxWidth: UIScreen.main.bounds.width * 0.75, alignment: .leading)
+                Spacer()
+            } else {
+                Spacer()
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text(message.content)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .foregroundColor(.white)
+                        .background(userGradient)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                    
+                    Text(formattedTimestamp)
+                        .font(.caption2)
+                        .foregroundColor(isDarkMode ? .white : .black)
+                }
+                .frame(maxWidth: UIScreen.main.bounds.width * 0.75, alignment: .trailing)
+            }
+        }
+        .padding(.horizontal, 8)
+    }
+}
+
 struct ChatDetailView: View {
     @ObservedObject var chatStore = ChatStore.shared
     let chat: Chat
@@ -14,137 +81,147 @@ struct ChatDetailView: View {
     @State private var messageText: String = ""
     @State private var isFirstMessageSent = false
     @State private var isGeneratingTitle = false
+    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
+    
+    var gradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: isDarkMode ?
+                [Color.indigo, Color.black] :
+                [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]
+            ),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
 
     var body: some View {
-        VStack {
-            // Remove duplicate title, rely on navigationTitle only
-            ScrollView {
-                ScrollViewReader { scrollViewProxy in
-                    VStack(spacing: 8) {
-                        ForEach(currentChat.messages) { message in
-                            // Message bubbles
-                            if message.sender == "Me" {
-                                HStack {
-                                    Spacer()
-                                    VStack(alignment: .trailing, spacing: 4) {
-                                        Text(message.sender)
-                                            .font(.caption2)
-                                            .foregroundColor(.secondary)
-                                        Text(message.content)
-                                            .padding(.horizontal, 12)
-                                            .padding(.vertical, 8)
-                                            .foregroundColor(.white)
-                                            .background(Color.blue)
-                                            .cornerRadius(12)
-                                    }
-                                }
-                                .padding(.horizontal)
-                            } else {
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(message.sender)
-                                            .font(.caption2)
-                                            .foregroundColor(.secondary)
-                                        Text(message.content)
-                                            .padding(.horizontal, 12)
-                                            .padding(.vertical, 8)
-                                            .background(Color.gray.opacity(0.15))
-                                            .cornerRadius(12)
-                                    }
-                                    Spacer()
-                                }
-                                .padding(.horizontal)
+        ZStack {
+            gradient.ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                ScrollView {
+                    ScrollViewReader { scrollViewProxy in
+                        LazyVStack(spacing: 16) {
+                            ForEach(currentChat.messages) { message in
+                                MessageBubble(message: message)
                             }
                         }
-                    }
-                    .onChange(of: currentChat.messages.count) {
-                        if let lastMessage = currentChat.messages.last {
-                            withAnimation {
-                                scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
+                        .padding(.vertical)
+                        .onChange(of: currentChat.messages.count) {
+                            if let lastMessage = currentChat.messages.last {
+                                withAnimation {
+                                    scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
+                                }
                             }
                         }
                     }
                 }
-            }
-            Divider()
-            HStack {
-                TextField("Type your message...", text: $messageText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .disabled(isGeneratingTitle)
-                Button(action: {
-                    guard !messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+                
+                // Message input field
+                HStack(spacing: 12) {
+                    TextField("Type message here...", text: $messageText)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(20)
+                        .disabled(isGeneratingTitle)
                     
-                    // --- AI Chat Starter achievement logic ---
-                    let uid = GamificationManager.shared.getUserUID() ?? "default"
-                    let chatKey = "ai_chat_starter_\(uid)"
-                    let defaults = UserDefaults.standard
-                    let hasChattedBefore = defaults.bool(forKey: chatKey)
-                    if !hasChattedBefore {
-                        defaults.set(true, forKey: chatKey)
-                        // Unlock "AI Chat Starter" achievement
-                        GamificationManager.shared.incrementAchievement("ai_chat_starter")
+                    Button(action: {
+                        guard !messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+                        
+                        // --- AI Chat Starter achievement logic ---
+                        let uid = GamificationManager.shared.getUserUID() ?? "default"
+                        let chatKey = "ai_chat_starter_\(uid)"
+                        let defaults = UserDefaults.standard
+                        let hasChattedBefore = defaults.bool(forKey: chatKey)
+                        if !hasChattedBefore {
+                            defaults.set(true, forKey: chatKey)
+                            GamificationManager.shared.incrementAchievement("ai_chat_starter")
+                            GamificationManager.shared.save()
+                        }
+                        
+                        // --- AI Conversationalist badge logic ---
+                        let aiConversationalistKey = "ai_conversationalist_sessions_\(uid)"
+                        var completedSessions = defaults.integer(forKey: aiConversationalistKey)
+                        completedSessions += 1
+                        defaults.set(completedSessions, forKey: aiConversationalistKey)
+                        GamificationManager.shared.incrementBadge("ai_conversationalist")
                         GamificationManager.shared.save()
-                    }
-                    
-                    // --- AI Conversationalist badge logic ---
-                    let aiConversationalistKey = "ai_conversationalist_sessions_\(uid)"
-                    var completedSessions = defaults.integer(forKey: aiConversationalistKey)
-                    completedSessions += 1
-                    defaults.set(completedSessions, forKey: aiConversationalistKey)
-                    // Update AI Conversationalist badge progress
-                    GamificationManager.shared.incrementBadge("ai_conversationalist")
-                    GamificationManager.shared.save()
-                    
-                    if chat.messages.isEmpty {
-                        isGeneratingTitle = true
-                        GeminiAPIService.shared.generateTitle(for: messageText) { result in
-                            DispatchQueue.main.async {
-                                isGeneratingTitle = false
-                                switch result {
-                                case .success(let titles):
-                                    let title = titles.randomElement()?.trimmingCharacters(in: .whitespacesAndNewlines)
-                                    if let title = title, !title.isEmpty, let idx = chatStore.chats.firstIndex(where: { $0.id == chat.id }) {
-                                        chatStore.chats[idx].title = title
-                                        chatStore.saveChatsToUserDefaults()
-                                    } else {
-                                        print("[DEBUG] No valid title returned, keeping placeholder.")
+                        
+                        if chat.messages.isEmpty {
+                            isGeneratingTitle = true
+                            GeminiAPIService.shared.generateTitle(for: messageText) { result in
+                                DispatchQueue.main.async {
+                                    isGeneratingTitle = false
+                                    switch result {
+                                    case .success(let titles):
+                                        let title = titles.randomElement()?.trimmingCharacters(in: .whitespacesAndNewlines)
+                                        if let title = title, !title.isEmpty, let idx = chatStore.chats.firstIndex(where: { $0.id == chat.id }) {
+                                            chatStore.chats[idx].title = title
+                                            chatStore.saveChatsToUserDefaults()
+                                        } else {
+                                            print("[DEBUG] No valid title returned, keeping placeholder.")
+                                        }
+                                    case .failure(let error):
+                                        print("[DEBUG] Failed to generate title: \(error)")
                                     }
-                                case .failure(let error):
-                                    print("[DEBUG] Failed to generate title: \(error)")
                                 }
                             }
                         }
+                        chatStore.sendMessageUsingGeminiAPI(content: messageText, sender: "Me", chatID: chat.id)
+                        messageText = ""
+                    }) {
+                        Image(systemName: "paperplane.fill")
+                            .font(.title2)
+                            .foregroundColor(isDarkMode ? .white : .black)
                     }
-                    chatStore.sendMessageUsingGeminiAPI(content: messageText, sender: "Me", chatID: chat.id)
-                    messageText = ""
-                }) {
-                    Text("Send")
+                    .disabled(isGeneratingTitle)
                 }
-                .disabled(isGeneratingTitle)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .padding(.bottom, 16)
+                .background(.clear)
             }
-            .padding()
         }
-        .navigationTitle(currentChat.title)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(isDarkMode ? .white : .black)
+                        Text("Back")
+                            .foregroundColor(isDarkMode ? .white : .black)
+                    }
+                }
+            }
+
+            ToolbarItem(placement: .principal) {
+                Text(currentChat.title)
+                    .foregroundColor(isDarkMode ? .white : .black)
+            }
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 4) {
                     Circle()
-                        .fill(serverStatusViewModel.isServerUp == true ? Color.green : (serverStatusViewModel.isServerUp == false ? Color.red : Color.gray))
-                        .frame(width: 10, height: 10)
+                        .fill(serverStatusViewModel.isServerUp == true ? Color.green : Color.red)
+                        .frame(width: 8, height: 8)
                     Text(serverStatusViewModel.isServerUp == true ? "Server is Up" : "Server is Down")
                         .font(.caption2)
+                        .foregroundColor(.primary)
                 }
             }
         }
+        .toolbar(.hidden, for: .tabBar)
+        .ignoresSafeArea(.container, edges: .bottom)
     }
 
     private var currentChat: Chat {
         chatStore.chats.first(where: { $0.id == chat.id }) ?? chat
-    }
-
-    func sendMessage() {
-        chatStore.sendMessageUsingGeminiAPI(content: messageText, sender: "Me", chatID: chat.id)
-        messageText = ""
     }
 }

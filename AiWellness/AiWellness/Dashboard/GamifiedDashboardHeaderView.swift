@@ -143,6 +143,7 @@ struct GamifiedDashboardHeaderView: View {
 struct XPProgressBar: View {
     var currentXP: Int
     var nextLevelXP: Int
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             ZStack(alignment: .leading) {
@@ -158,7 +159,7 @@ struct XPProgressBar: View {
             HStack {
                 Text("XP: \(currentXP)/\(nextLevelXP)")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(isDarkMode ? .white : .black)
                 Spacer()
             }
         }

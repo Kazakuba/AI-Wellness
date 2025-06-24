@@ -51,7 +51,7 @@ struct ChatListView: View {
                 serverStatus
 
                 List {
-                    Section(header: Text("Today").foregroundColor(.white.opacity(0.7))) {
+                    Section(header: Text("Today").foregroundColor(.white)) {
                         ForEach(todayChats) { chat in
                             NavigationLink(value: chat) {
                                 Text(chat.title)
@@ -62,7 +62,7 @@ struct ChatListView: View {
                         .onDelete { deleteChat(at: $0, from: todayChats) }
                     }
 
-                    Section(header: Text("7 DAYS").foregroundColor(.white.opacity(0.7))) {
+                    Section(header: Text("7 DAYS").foregroundColor(.white)) {
                         ForEach(sevenDayChats) { chat in
                             NavigationLink(value: chat) {
                                 Text(chat.title)
@@ -73,7 +73,7 @@ struct ChatListView: View {
                         .onDelete { deleteChat(at: $0, from: sevenDayChats) }
                     }
 
-                    Section(header: Text("30 DAYS").foregroundColor(.white.opacity(0.7))) {
+                    Section(header: Text("30 DAYS").foregroundColor(.white)) {
                         ForEach(thirtyDayChats) { chat in
                             NavigationLink(value: chat) {
                                 Text(chat.title)
@@ -87,7 +87,6 @@ struct ChatListView: View {
                 .scrollContentBackground(.hidden)
                 .background(Color.clear)
                 .foregroundColor(.white)
-                // ✅ FADE-OUT MASK TO HIDE CONTENT BEHIND THE TAB BAR
                 .mask(
                     LinearGradient(
                         gradient: Gradient(stops: [
@@ -107,7 +106,6 @@ struct ChatListView: View {
                 ChatDetailView(chat: chat, serverStatusViewModel: serverStatusViewModel)
             }
         }
-
         .background(Color.clear)
         .sheet(isPresented: $isShowingMoreOptions) {
             MoreOptionsView()
