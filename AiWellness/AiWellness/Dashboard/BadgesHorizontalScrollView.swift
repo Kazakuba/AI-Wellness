@@ -33,6 +33,13 @@ struct BadgesHorizontalScrollView: View {
         }
     }
 
+    // Helper to get the next milestone for a badge
+    private func nextMilestone(for badge: Badge) -> Int {
+        let milestones = badge.milestones ?? [badge.goal]
+        let idx = min(badge.level, milestones.count - 1)
+        return milestones[idx]
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Badges")
@@ -55,8 +62,9 @@ struct BadgesHorizontalScrollView: View {
                                     .foregroundColor(badge.level > 0 ? (isDarkMode ? .white : .black) : (isDarkMode ? .white.opacity(0.7) : .black.opacity(0.7)))
                                     .lineLimit(1)
                                 if badge.level == 0 {
-                                    let clampedProgress = min(max(badge.progress, 0), badge.goal)
-                                    ProgressView(value: Float(clampedProgress), total: Float(badge.goal))
+                                    let milestone = nextMilestone(for: badge)
+                                    let clampedProgress = min(max(badge.progress, 0), milestone)
+                                    ProgressView(value: Float(clampedProgress), total: Float(milestone))
                                         .frame(width: 60)
                                 } else {
                                     Text(badgeLevelText(for: badge.level))
@@ -125,13 +133,14 @@ struct BadgesHorizontalScrollView: View {
                                 .padding(.top, 12)
                         }
                     } else if badge.level > 0 {
-                        let clampedProgress = min(max(badge.progress, 0), badge.goal)
-                        ProgressView(value: Float(clampedProgress), total: Float(badge.goal))
+                        let milestone = nextMilestone(for: badge)
+                        let clampedProgress = min(max(badge.progress, 0), milestone)
+                        ProgressView(value: Float(clampedProgress), total: Float(milestone))
                             .progressViewStyle(LinearProgressViewStyle(tint: .blue))
                             .frame(width: 180, height: 12)
                             .background(Color.gray.opacity(0.15).cornerRadius(6))
                             .padding(.top, 12)
-                        Text("Progress to next level: \(clampedProgress)/\(badge.goal)")
+                        Text("Progress to next level: \(clampedProgress)/\(milestone)")
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .padding(.bottom, 16)
@@ -139,13 +148,14 @@ struct BadgesHorizontalScrollView: View {
                             .font(.caption2)
                             .foregroundColor(.secondary)
                     } else {
-                        let clampedProgress = min(max(badge.progress, 0), badge.goal)
-                        ProgressView(value: Float(clampedProgress), total: Float(badge.goal))
+                        let milestone = nextMilestone(for: badge)
+                        let clampedProgress = min(max(badge.progress, 0), milestone)
+                        ProgressView(value: Float(clampedProgress), total: Float(milestone))
                             .progressViewStyle(LinearProgressViewStyle(tint: .blue))
                             .frame(width: 180, height: 12)
                             .background(Color.gray.opacity(0.15).cornerRadius(6))
                             .padding(.top, 12)
-                        Text("Progress: \(clampedProgress)/\(badge.goal)")
+                        Text("Progress: \(clampedProgress)/\(milestone)")
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .padding(.bottom, 16)

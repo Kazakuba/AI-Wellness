@@ -80,7 +80,7 @@ struct WritingView: View {
                 let uid = GamificationManager.shared.getUserUID() ?? "default"
                 let defaults = UserDefaults.standard
                 
-                // --- Journal Initiate achievement logic ---
+                // Journal Initiate achievement logic
                 let journalKey = "journal_initiate_\(uid)"
                 let hasWrittenBefore = defaults.bool(forKey: journalKey)
                 if !hasWrittenBefore {
@@ -89,7 +89,7 @@ struct WritingView: View {
                     GamificationManager.shared.incrementAchievement("journal_initiate")
                 }
                 
-                // --- Journal Master badge logic ---
+                // Journal Master badge logic
                 let journalMasterKey = "journal_master_entries_\(uid)"
                 var completedDates = Set(defaults.stringArray(forKey: journalMasterKey) ?? [])
                 let dateString = ISO8601DateFormatter().string(from: selectedDate)

@@ -70,7 +70,6 @@ struct DashboardView: View {
                     BadgesHorizontalScrollView()
                     Spacer()
                 }
-                // Weekly Recap banner at the bottom
                 WeeklyRecapView()
                     .padding(.bottom, 12)
             }

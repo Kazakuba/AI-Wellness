@@ -89,48 +89,37 @@ class GamificationManager: ObservableObject {
     
     // MARK: - Public API
     func incrementAchievement(_ id: String, by amount: Int = 1) {
-        print("DEBUG: incrementAchievement called for \(id) with amount \(amount)")
-        print("DEBUG: Current achievements count: \(achievements.count)")
-        print("DEBUG: Available achievement IDs: \(achievements.map { $0.id })")
-        
         if let idx = achievements.firstIndex(where: { $0.id == id }) {
             var ach = achievements[idx]
-            print("DEBUG: Current achievement state - unlocked: \(ach.isUnlocked), progress: \(ach.progress), goal: \(ach.goal)")
             if !ach.isUnlocked {
                 ach.progress += amount
-                print("DEBUG: New progress: \(ach.progress)")
                 if ach.progress >= ach.goal {
                     ach.isUnlocked = true
                     addXP(achievementXP[id] ?? 10)
-                    print("DEBUG: Achievement \(id) unlocked!")
                 }
                 achievements[idx] = ach
-                print("DEBUG: About to save achievement \(id)")
                 save()
-                print("DEBUG: Save completed for achievement \(id)")
-            } else {
-                print("DEBUG: Achievement \(id) already unlocked")
             }
-        } else {
-            print("DEBUG: Achievement \(id) not found!")
-            print("DEBUG: Available achievements: \(achievements.map { "\($0.id): unlocked=\($0.isUnlocked)" })")
         }
     }
-    
+
     func incrementBadge(_ id: String, by amount: Int = 1) {
         if let idx = badges.firstIndex(where: { $0.id == id }) {
             var badge = badges[idx]
             badge.progress += amount
             let milestones = badge.milestones ?? [badge.goal]
-            var newLevel = badge.level
-            for (i, milestone) in milestones.enumerated() where badge.progress >= milestone && badge.level < i + 1 {
-                newLevel = i + 1
+            while badge.level < 3 {
+                let nextMilestoneIndex = badge.level
+                if nextMilestoneIndex < milestones.count, badge.progress >= milestones[nextMilestoneIndex] {
+                    badge.progress -= milestones[nextMilestoneIndex]
+                    badge.level += 1
+                    addXP(badgeXP[id] ?? 10)
+                } else {
+                    break
+                }
             }
-            if newLevel > badge.level {
-                badge.level = min(3, newLevel)
-                badge.progress = 0
-                addXP(badgeXP[id] ?? 10)
-            }
+            // Cap level at 3 (gold)
+            if badge.level > 3 { badge.level = 3 }
             badges[idx] = badge
             save()
         }
@@ -138,18 +127,15 @@ class GamificationManager: ObservableObject {
     
     // Special method for consistency badge that tracks streak value
     func updateConsistencyBadge(streak: Int) {
-        print("DEBUG: updateConsistencyBadge called with streak: \(streak)")
         if let idx = badges.firstIndex(where: { $0.id == "consistency" }) {
             var badge = badges[idx]
-            print("DEBUG: Current badge level: \(badge.level), progress: \(badge.progress)")
-            
+
             // Set progress to current streak
             badge.progress = streak
             
             // Check if we should level up based on milestones
             let milestones = badge.milestones ?? [3, 7, 30]
-            print("DEBUG: Milestones: \(milestones)")
-            
+
             // Determine what level this streak should be
             var targetLevel = 0
             for (i, milestone) in milestones.enumerated() {
@@ -157,14 +143,11 @@ class GamificationManager: ObservableObject {
                     targetLevel = i + 1
                 }
             }
-            
-            print("DEBUG: Target level for streak \(streak): \(targetLevel)")
-            
+
             // Only level up if we're going to a higher level
             if targetLevel > badge.level {
                 badge.level = targetLevel
                 addXP(badgeXP["consistency"] ?? 10)
-                print("DEBUG: Badge leveled up to \(badge.level)")
             }
             
             badges[idx] = badge
@@ -188,7 +171,6 @@ class GamificationManager: ObservableObject {
                 ConfettiManager.shared.celebrate()
             }
         }
-        // --- Level Up! badge logic ---
         if level > oldLevel {
             if let idx = badges.firstIndex(where: { $0.id == "level_up" }) {
                 // Award badge at level 2, 5, 10 (bronze, silver, gold)
@@ -207,13 +189,12 @@ class GamificationManager: ObservableObject {
     }
     
     // MARK: - User UID Storage
-    /// Call this after login, before showing any gamification UI.
-    /// This will update the user, reload all gamification data, and notify the UI.
+    // Call this after login, before showing any gamification UI.
     func setUser(uid: String) {
         UserDefaults.standard.set(uid, forKey: userKey)
-        load() // Reload data for the new user
+        load()
         DispatchQueue.main.async {
-            self.objectWillChange.send() // Force UI update if needed
+            self.objectWillChange.send()
         }
     }
     func getUserUID() -> String? {
@@ -240,59 +221,41 @@ class GamificationManager: ObservableObject {
         defaults.removeObject(forKey: "ai_chat_starter_\(uid)")
         defaults.removeObject(forKey: "first_breath_\(uid)")
         
-        print("DEBUG: Reset all achievement flags for user: \(uid)")
     }
     
     // MARK: - Persistence (override)
     func save() {
         let uid = getUserUID() ?? "default"
-        print("DEBUG: Saving gamification data for user: \(uid)")
-        
+
         UserDefaults.standard.set(uid, forKey: userKey)
         if let data = try? JSONEncoder().encode(achievements) {
             UserDefaults.standard.set(data, forKey: "\(achievementsKey)_\(uid)")
-            print("DEBUG: Saved \(achievements.count) achievements")
-        } else {
-            print("DEBUG: Failed to encode achievements")
         }
         if let data = try? JSONEncoder().encode(badges) {
             UserDefaults.standard.set(data, forKey: "\(badgesKey)_\(uid)")
-            print("DEBUG: Saved \(badges.count) badges")
-        } else {
-            print("DEBUG: Failed to encode badges")
         }
         UserDefaults.standard.set(xp, forKey: "\(xpKey)_\(uid)")
         UserDefaults.standard.set(level, forKey: "\(levelKey)_\(uid)")
-        
-        print("DEBUG: Save completed - XP: \(xp), Level: \(level)")
-    }
+            }
     private func load() {
         let uid = getUserUID() ?? "default"
-        print("DEBUG: Loading gamification data for user: \(uid)")
-        
+
         if let data = UserDefaults.standard.data(forKey: "\(achievementsKey)_\(uid)"),
            let decoded = try? JSONDecoder().decode([Achievement].self, from: data) {
             achievements = decoded
-            print("DEBUG: Loaded \(achievements.count) achievements from UserDefaults")
         } else {
             achievements = achievementTemplates
-            print("DEBUG: Initialized \(achievements.count) achievements from templates")
         }
         
         if let data = UserDefaults.standard.data(forKey: "\(badgesKey)_\(uid)"),
            let decoded = try? JSONDecoder().decode([Badge].self, from: data) {
             badges = decoded
-            print("DEBUG: Loaded \(badges.count) badges from UserDefaults")
         } else {
             badges = badgeTemplates
-            print("DEBUG: Initialized \(badges.count) badges from templates")
         }
         
         xp = UserDefaults.standard.integer(forKey: "\(xpKey)_\(uid)")
         level = UserDefaults.standard.integer(forKey: "\(levelKey)_\(uid)")
         if level < 1 { level = 1 }
-        
-        print("DEBUG: Final state - XP: \(xp), Level: \(level)")
-        print("DEBUG: Achievements: \(achievements.map { "\($0.id): unlocked=\($0.isUnlocked), progress=\($0.progress)/\($0.goal)" })")
-    }
+       }
 }

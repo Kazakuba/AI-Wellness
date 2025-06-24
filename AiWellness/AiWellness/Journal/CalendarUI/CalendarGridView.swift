@@ -9,10 +9,10 @@ struct CalendarGridView: View {
     let today: Date
     @Binding var currentMonthOffset: Int
     var onDateSelected: (Date) -> Void
-    var isDarkMode: Bool // <-- Accept as parameter
+    var isDarkMode: Bool
 
-    static let minMonthOffset = -12 // Example: 1 year back
-    static let maxMonthOffset = 12   // Example: 1 year forward
+    static let minMonthOffset = -12
+    static let maxMonthOffset = 12
 
     var body: some View {
         let days = generateDaysForMonth(offset: monthOffset)

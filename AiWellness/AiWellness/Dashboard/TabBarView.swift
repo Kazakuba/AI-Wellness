@@ -34,8 +34,7 @@ struct TabBarView: View {
                     }
                     .tag(0)
 
-                // This view already has its own gradient background and is ready.
-                ChatListView() // Removed the isDarkMode prop since it's inside the view now
+                ChatListView()
                     .tabItem {
                         Image(systemName: "person.bubble")
                         Text("AI Chat")
@@ -66,12 +65,11 @@ struct TabBarView: View {
             .toolbarBackground(.hidden, for: .tabBar)
             .opacity(tabBarHidden ? 0 : 1)
 
-            // Conditionally display the breathing exercise as a full screen cover
             if showBreathingExercise {
                 BreathingExerciseView(tabBarHidden: $tabBarHidden)
                     .transition(.opacity)
                     .onDisappear {
-                        selectedTab = 0 // Go back to Dashboard tab
+                        selectedTab = 0
                     }
             }
         }
@@ -103,14 +101,14 @@ struct TabBarView: View {
             }
         }
         .sheet(item: $unlockedNote, onDismiss: {
-            unlockedNote = nil //Reset to prevent repeated presentation
+            unlockedNote = nil
         }) { note in
             TimeCapsuleUnlockedView(note: note)
         }
     }
 }
 
-// Simple view that just acts as an entry point for the breathing exercise
+// ToFix
 struct BreathingEntryView: View {
     @Binding var showBreathingExercise: Bool
     var isDarkMode: Bool = false

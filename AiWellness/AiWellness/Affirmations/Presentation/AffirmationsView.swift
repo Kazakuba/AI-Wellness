@@ -226,30 +226,23 @@ struct AffirmationsView: View {
 
         // --- Prevent multiple updates on the same day ---
         if let last = lastDate, Calendar.current.isDate(last, inSameDayAs: today) {
-            print("DEBUG: Streak already updated today. Skipping.")
             return
         }
 
         var streak = defaults.integer(forKey: streakKey)
-        
-        print("DEBUG: Streak calculation - current streak: \(streak), last date: \(lastDate?.description ?? "nil")")
-        
+
         if let last = lastDate {
             let days = Calendar.current.dateComponents([.day], from: last, to: today).day ?? 0
-            print("DEBUG: Days since last unlock: \(days)")
             if days == 1 {
                 // Consecutive day
                 streak += 1
-                print("DEBUG: Consecutive day, new streak: \(streak)")
             } else if days > 1 {
                 // Gap in streak, reset to 1
                 streak = 1
-                print("DEBUG: Gap in streak, reset to: \(streak)")
             }
         } else {
             // First time ever
             streak = 1
-            print("DEBUG: First time, setting streak to: \(streak)")
         }
         
         defaults.set(today, forKey: lastDateKey)

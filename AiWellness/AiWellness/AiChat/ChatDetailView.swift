@@ -96,17 +96,14 @@ struct ChatDetailView: View {
                     GamificationManager.shared.save()
                     
                     if chat.messages.isEmpty {
-                        print("[DEBUG] Generating title for first message: \(messageText)")
                         isGeneratingTitle = true
                         GeminiAPIService.shared.generateTitle(for: messageText) { result in
                             DispatchQueue.main.async {
                                 isGeneratingTitle = false
                                 switch result {
                                 case .success(let titles):
-                                    print("[DEBUG] Gemini returned titles: \(titles)")
                                     let title = titles.randomElement()?.trimmingCharacters(in: .whitespacesAndNewlines)
                                     if let title = title, !title.isEmpty, let idx = chatStore.chats.firstIndex(where: { $0.id == chat.id }) {
-                                        print("[DEBUG] Updating chat title to: \(title)")
                                         chatStore.chats[idx].title = title
                                         chatStore.saveChatsToUserDefaults()
                                     } else {
