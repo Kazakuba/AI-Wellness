@@ -4,7 +4,7 @@ import SwiftUI
 // MARK: - Achievement Model
 struct Achievement: Identifiable, Codable, Equatable {
     let id: String
-    let title: String
+    var title: String
     let systemImage: String
     let description: String
     var isUnlocked: Bool
@@ -71,7 +71,8 @@ class GamificationManager: ObservableObject {
         Achievement(id: "shake_it_up", title: "Shake it Up!", systemImage: "waveform.path.ecg", description: "Tried the shake feature", isUnlocked: false, progress: 0, goal: 1),
         Achievement(id: "journal_initiate", title: "Journal Initiate", systemImage: "book", description: "Wrote your first journal entry", isUnlocked: false, progress: 0, goal: 1),
         Achievement(id: "ai_chat_starter", title: "AI Chat Starter", systemImage: "message.circle", description: "First time chatting with the AI", isUnlocked: false, progress: 0, goal: 1),
-        Achievement(id: "first_breath", title: "First Breath", systemImage: "lungs", description: "Completed your first breathing session", isUnlocked: false, progress: 0, goal: 1)
+        Achievement(id: "first_breath", title: "First Breath", systemImage: "lungs", description: "Completed your first breathing session", isUnlocked: false, progress: 0, goal: 1),
+        Achievement(id: "hidden_time_capsule", title: "???", systemImage: "clock.arrow.circlepath", description: "When the bass drops and the lights all blink, I'm what you do without a think.", isUnlocked: false, progress: 0, goal: 1)
     ]
     
     // MARK: - Badge Definitions (Complete Badge System)
@@ -96,6 +97,10 @@ class GamificationManager: ObservableObject {
                 if ach.progress >= ach.goal {
                     ach.isUnlocked = true
                     addXP(achievementXP[id] ?? 10)
+                    // Special: update title for hidden achievement
+                    if id == "hidden_time_capsule" {
+                        ach.title = "Time Travel"
+                    }
                 }
                 achievements[idx] = ach
                 save()

@@ -76,6 +76,7 @@ struct DashboardView: View {
                                 withAnimation {
                                     showTimeCapsuleAnimation = false
                                     showTimeCapsule = true
+                                    GamificationManager.shared.incrementAchievement("hidden_time_capsule")
                                 }
                             }
                         }
