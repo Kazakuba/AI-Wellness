@@ -9,11 +9,13 @@ import SwiftUI
 import FirebaseAuth
 import GoogleSignIn
 import ConfettiSwiftUI
+import Lottie
 
 struct DashboardView: View {
     @ObservedObject var authService: AuthenticationService
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
     @ObservedObject var notificationService = NotificationService()
+    @State private var showTimeCapsuleAnimation: Bool = false
     @State private var showTimeCapsule: Bool = false
     @State private var showSettings: Bool = false
     @State private var showTestNotifictions = false
@@ -60,9 +62,33 @@ struct DashboardView: View {
                 WeeklyRecapView()
                     .padding(.bottom, 12)
             }
+            // Lottie Animation Overlay
+            if showTimeCapsuleAnimation {
+                Color.black.opacity(0.4).ignoresSafeArea()
+                VStack {
+                    Spacer()
+                    LottieView(animation: .named("timeCapsuleAnimation"))
+                        .playing()
+                        .frame(width: 300, height: 300)
+                        .onAppear {
+                            // Adjust the delay to match your animation's duration
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                                withAnimation {
+                                    showTimeCapsuleAnimation = false
+                                    showTimeCapsule = true
+                                }
+                            }
+                        }
+                    Spacer()
+                }
+                .transition(.opacity)
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification)) { _ in
-            showTimeCapsule = true
+            if !showTimeCapsuleAnimation && !showTimeCapsule {
+                HapticManager.strongLongHaptic()
+                showTimeCapsuleAnimation = true
+            }
         }
         .confettiCannon(trigger: $confettiManager.trigger, num: 40, confettis: confettiManager.confettis, colors: [.yellow, .green, .blue, .orange])
         .fullScreenCover(isPresented: $showTimeCapsule) {

@@ -18,4 +18,13 @@ enum HapticManager {
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(type)
     }
+    
+    static func strongLongHaptic() {
+        let impact = UIImpactFeedbackGenerator(style: .heavy)
+        impact.impactOccurred()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+            let notification = UINotificationFeedbackGenerator()
+            notification.notificationOccurred(.success)
+        }
+    }
 }
