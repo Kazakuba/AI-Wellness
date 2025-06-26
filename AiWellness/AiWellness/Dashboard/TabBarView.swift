@@ -74,19 +74,8 @@ struct TabBarView: View {
                         }
                 }
             }
-            Button(action: {
-                if let uid = GamificationManager.shared.getUserUID() {
-                    let key = "onboarding_completed_\(uid)"
-                    UserDefaults.standard.removeObject(forKey: key)
-                }
-                NotificationCenter.default.post(name: Notification.Name("RestartOnboarding"), object: nil)
-            }) {
-                Text("Restart Onboarding (TEMP)")
-                    .foregroundColor(.red)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
-            }
+            .accentColor(Color("TextPrimary"))
+            .background(Color("BackgroundRows").edgesIgnoringSafeArea(.all))
         }
         .onChange(of: selectedTab) { oldValue, newValue in
             if newValue == 3 {

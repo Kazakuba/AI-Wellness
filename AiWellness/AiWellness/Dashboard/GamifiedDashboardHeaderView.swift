@@ -38,13 +38,25 @@ struct GamifiedDashboardHeaderView: View {
                 Button(action: { showResetFlagsAlert = true }) {
                     Text("[F]")
                         .font(.caption)
-                        .foregroundColor(.orange)
+                        .foregroundColor(.red)
                         .padding(.leading, 4)
                 }
                 .alert(isPresented: $showResetFlagsAlert) {
                     Alert(title: Text("Reset Achievement Flags?"), message: Text("This will reset all achievement flags, allowing you to unlock achievements again for testing."), primaryButton: .destructive(Text("Reset Flags")) {
                         gamification.resetAchievementFlags()
                     }, secondaryButton: .cancel())
+                }
+                Button(action: {
+                    if let uid = GamificationManager.shared.getUserUID() {
+                        let key = "onboarding_completed_\(uid)"
+                        UserDefaults.standard.removeObject(forKey: key)
+                    }
+                    NotificationCenter.default.post(name: Notification.Name("RestartOnboarding"), object: nil)
+                }) {
+                    Text("[R]")
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .padding(.leading, 4)
                 }
                 Spacer()
                 HStack(spacing: 6) {
