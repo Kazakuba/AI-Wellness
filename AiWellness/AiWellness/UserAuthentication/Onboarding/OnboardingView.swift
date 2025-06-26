@@ -22,8 +22,31 @@ struct OnboardingView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color.accentColor.opacity(0.25), Color.blue.opacity(0.12), Color.white]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                .ignoresSafeArea()
+            // Beautiful gradient background
+            LinearGradient(
+                colors: [
+                    Color("CustomPrimary").opacity(0.15),
+                    Color("CustomSecondary").opacity(0.1),
+                    Color.white.opacity(0.8)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+            
+            // Decorative shapes for visual interest
+            Circle()
+                .fill(Color("CustomPrimary").opacity(0.1))
+                .frame(width: 200, height: 200)
+                .blur(radius: 50)
+                .offset(x: -100, y: -200)
+            
+            Circle()
+                .fill(Color("CustomSecondary").opacity(0.1))
+                .frame(width: 200, height: 200)
+                .blur(radius: 40)
+                .offset(x: 150, y: 300)
+            
             VStack {
                 TabView(selection: $currentStep) {
                     OnboardingFeaturesScreen()
@@ -40,26 +63,34 @@ struct OnboardingView: View {
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 .animation(.easeInOut, value: currentStep)
                 .frame(maxHeight: .infinity)
+                
                 // Step indicator
-                HStack(spacing: 8) {
+                HStack(spacing: 10) {
                     ForEach(0..<totalSteps, id: \.self) { idx in
                         Circle()
-                            .fill(idx == currentStep ? Color.accentColor : Color.gray.opacity(0.3))
-                            .frame(width: 10, height: 10)
+                            .fill(idx == currentStep ? Color("CustomPrimary") : Color("CustomSecondary").opacity(0.3))
+                            .frame(width: idx == currentStep ? 12 : 10, height: idx == currentStep ? 12 : 10)
+                            .animation(.spring(), value: currentStep)
+                            .overlay(
+                                Circle()
+                                    .stroke(idx == currentStep ? Color("CustomPrimary").opacity(0.3) : Color.clear, lineWidth: 2)
+                                    .scaleEffect(1.3)
+                            )
                     }
                 }
                 .padding(.vertical, 8)
+                
                 // Navigation
                 HStack {
                     Button(action: { if currentStep > 0 { currentStep -= 1 } }) {
                         Text("Back")
-                            .foregroundColor(currentStep > 0 ? .white : Color.white.opacity(0.5))
+                            .foregroundColor(currentStep > 0 ? .white : Color.white.opacity(0.7))
                             .fontWeight(.bold)
                             .padding(.horizontal, 28)
                             .padding(.vertical, 14)
-                            .background(currentStep > 0 ? Color.accentColor : Color.accentColor.opacity(0.3))
-                            .cornerRadius(10)
-                            .shadow(color: currentStep > 0 ? Color.accentColor.opacity(0.25) : .clear, radius: 4, x: 0, y: 2)
+                            .background(currentStep > 0 ? Color("CustomPrimary") : Color("CustomPrimary").opacity(0.3))
+                            .cornerRadius(12)
+                            .shadow(color: currentStep > 0 ? Color("CustomPrimary").opacity(0.18) : .clear, radius: 6, x: 0, y: 2)
                     }
                     .disabled(currentStep == 0)
                     Spacer()
@@ -70,9 +101,9 @@ struct OnboardingView: View {
                                 .fontWeight(.bold)
                                 .padding(.horizontal, 28)
                                 .padding(.vertical, 14)
-                                .background(Color.accentColor)
-                                .cornerRadius(10)
-                                .shadow(color: Color.accentColor.opacity(0.25), radius: 4, x: 0, y: 2)
+                                .background(Color("CustomPrimary"))
+                                .cornerRadius(12)
+                                .shadow(color: Color("CustomPrimary").opacity(0.18), radius: 6, x: 0, y: 2)
                         }
                     } else {
                         Button(action: { completeOnboarding() }) {
@@ -81,14 +112,14 @@ struct OnboardingView: View {
                                 .fontWeight(.bold)
                                 .padding(.horizontal, 28)
                                 .padding(.vertical, 14)
-                                .background(Color.accentColor)
-                                .cornerRadius(10)
-                                .shadow(color: Color.accentColor.opacity(0.25), radius: 4, x: 0, y: 2)
+                                .background(Color("CustomPrimary"))
+                                .cornerRadius(12)
+                                .shadow(color: Color("CustomPrimary").opacity(0.18), radius: 6, x: 0, y: 2)
                         }
                     }
                 }
+                .padding(.horizontal, 8)
                 .padding(.bottom, 24)
-                .padding(.horizontal)
             }
             .padding(.top, 8)
         }
@@ -111,4 +142,4 @@ struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingView(onFinish: {})
     }
-} 
+}

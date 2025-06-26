@@ -1,5 +1,26 @@
 import SwiftUI
 
+// MARK: - Gradient Styles
+struct OnboardingGradients {
+    static let peachBackground = LinearGradient(
+        colors: [
+            Color("onboardingGradient").opacity(0.1),
+            Color("onboardingGradient2").opacity(0.15)
+        ],
+        startPoint: .topTrailing,
+        endPoint: .bottom
+    )
+    
+    static let cardBackground = LinearGradient(
+        colors: [
+            Color.white.opacity(0.95),
+            Color("CustomPrimary").opacity(0.1)
+        ],
+        startPoint: .top,
+        endPoint: .bottom
+    )
+}
+
 // Shared feature icon
 public func featureIcon(_ systemName: String, _ label: String) -> some View {
     VStack(spacing: 8) {
@@ -7,8 +28,8 @@ public func featureIcon(_ systemName: String, _ label: String) -> some View {
             .resizable()
             .scaledToFit()
             .frame(width: 40, height: 40)
-            .foregroundColor(Color.accentColor.opacity(0.85))
-            .shadow(color: Color.accentColor.opacity(0.18), radius: 4, x: 0, y: 2)
+            .foregroundColor(Color("CustomPrimary"))
+            .shadow(color: Color("CustomPrimary").opacity(0.3), radius: 4, x: 0, y: 2)
         Text(label)
             .font(.subheadline)
             .foregroundColor(.primary)
@@ -19,8 +40,13 @@ public func featureIcon(_ systemName: String, _ label: String) -> some View {
 // Shared benefit row
 public func benefitRow(_ systemName: String, _ text: String) -> some View {
     HStack(spacing: 16) {
-        Image(systemName: systemName)
-            .foregroundColor(.accentColor)
+        ZStack {
+            Circle()
+                .fill(Color("CustomPrimary").opacity(0.15))
+                .frame(width: 36, height: 36)
+            Image(systemName: systemName)
+                .foregroundColor(Color("CustomPrimary"))
+        }
         Text(text)
             .font(.body)
     }
@@ -46,10 +72,10 @@ public struct GoalToggle: View {
             HStack {
                 ZStack {
                     Circle()
-                        .fill(isSelected ? Color.accentColor.opacity(0.18) : Color.accentColor.opacity(0.08))
+                        .fill(isSelected ? Color("CustomPrimary").opacity(0.2) : Color("CustomSecondary").opacity(0.1))
                         .frame(width: 40, height: 40)
                     Image(systemName: icon)
-                        .foregroundColor(isSelected ? Color.accentColor : Color.accentColor.opacity(0.5))
+                        .foregroundColor(isSelected ? Color("CustomPrimary") : Color("CustomSecondary"))
                         .scaleEffect(isSelected ? 1.2 : 1.0)
                         .animation(.spring(), value: isSelected)
                 }
@@ -59,21 +85,21 @@ public struct GoalToggle: View {
                 Spacer()
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(Color("CustomPrimary"))
                         .transition(.scale)
                 }
             }
-            .padding(.vertical, 8)
+            .padding(.vertical, 12)
             .padding(.horizontal)
             .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.accentColor : Color.accentColor.opacity(0.3), lineWidth: 2)
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(isSelected ? Color("CustomPrimary") : Color("CustomSecondary").opacity(0.3), lineWidth: 2)
                     .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.white.opacity(0.7))
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(OnboardingGradients.cardBackground)
                     )
             )
-            .shadow(color: isSelected ? Color.accentColor.opacity(0.12) : Color.clear, radius: 6, x: 0, y: 2)
+            .shadow(color: isSelected ? Color("CustomPrimary").opacity(0.15) : Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
         }
         .buttonStyle(PlainButtonStyle())
     }
@@ -88,7 +114,7 @@ public struct ColoredToggleStyle: ToggleStyle {
             Spacer()
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(configuration.isOn ? Color.accentColor : Color.gray.opacity(0.3))
+                    .fill(configuration.isOn ? Color("CustomPrimary") : Color.gray.opacity(0.3))
                     .frame(width: 48, height: 28)
                 Circle()
                     .fill(Color.white)
@@ -99,6 +125,5 @@ public struct ColoredToggleStyle: ToggleStyle {
             }
             .onTapGesture { configuration.isOn.toggle() }
         }
-        .padding(.vertical, 4)
     }
-} 
+}
