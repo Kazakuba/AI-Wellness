@@ -37,8 +37,7 @@ struct SettingsView: View {
                     ToggleRow(icon: "bell.fill", title: "Enable Notifications", isOn: $viewModel.notificationsEnabled, color: .pink)
                     if viewModel.notificationsEnabled {
                         NavigationLink("Manage Specific Notifications") {
-                            Text("Notification Preferences Coming Soon")
-                                .foregroundColor(dynamicTextColor)
+                            ManageNotificationsView()
                         }
                         .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
                         .foregroundColor(dynamicTextColor)

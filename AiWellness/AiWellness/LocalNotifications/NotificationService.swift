@@ -161,6 +161,69 @@ class NotificationService: ObservableObject {
         }
     }
     
+    func scheduleDailyAffirmationReminder() {
+        let content = UNMutableNotificationContent()
+        content.title = "Your Daily Affirmation Awaits"
+        content.body = "Start your day with a positive thought. Open AiWellness to see your affirmation!"
+        content.sound = .default
+
+        var dateComponents = DateComponents()
+        dateComponents.hour = 9 // 9 AM daily
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        let request = UNNotificationRequest(identifier: "dailyAffirmationReminder", content: content, trigger: trigger)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling daily affirmation: \(error.localizedDescription)")
+            } else {
+                print("Successfully scheduled daily affirmation reminder.")
+            }
+        }
+    }
+
+    func scheduleStreakReminder() {
+        let content = UNMutableNotificationContent()
+        content.title = "Keep Your Streak Going!"
+        content.body = "A small step every day leads to big results. Hop back in to maintain your streak."
+        content.sound = .default
+
+        var dateComponents = DateComponents()
+        dateComponents.hour = 19 // 7 PM daily
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        let request = UNNotificationRequest(identifier: "streakReminder", content: content, trigger: trigger)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling streak reminder: \(error.localizedDescription)")
+            } else {
+                print("Successfully scheduled streak reminder.")
+            }
+        }
+    }
+
+    func scheduleJournalingReminder() {
+        let content = UNMutableNotificationContent()
+        content.title = "Time to Reflect"
+        content.body = "How was your day? Take a moment to capture your thoughts in your journal."
+        content.sound = .default
+
+        var dateComponents = DateComponents()
+        dateComponents.hour = 20 // 8 PM daily
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        let request = UNNotificationRequest(identifier: "journalingReminder", content: content, trigger: trigger)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling journaling reminder: \(error.localizedDescription)")
+            } else {
+                print("Successfully scheduled journaling reminder.")
+            }
+        }
+    }
+    
     func sendPermissionConfirmationNotification() {
         let key = "confirmationNotificationSent"
         
@@ -172,7 +235,7 @@ class NotificationService: ObservableObject {
         
         let content = UNMutableNotificationContent()
         content.title = "You're All Set!"
-        content.body = "You’ll be reminded when it’s time to read your note."
+        content.body = "You'll be reminded when it's time to read your note."
         content.sound = .default
         
         let request = UNNotificationRequest(

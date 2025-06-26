@@ -126,6 +126,11 @@ struct OnboardingView: View {
     }
     
     private func completeOnboarding() {
+        // Save notification preferences
+        UserDefaults.standard.set(dailyAffirmation, forKey: "dailyAffirmationEnabled")
+        UserDefaults.standard.set(streaks, forKey: "streaksEnabled")
+        UserDefaults.standard.set(journaling, forKey: "journalingEnabled")
+
         if let uid = GamificationManager.shared.getUserUID() {
             let key = "onboarding_completed_\(uid)"
             UserDefaults.standard.set(true, forKey: key)
