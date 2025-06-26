@@ -10,11 +10,18 @@ import FirebaseAuth
 
 struct AppRootView: View {
     @StateObject var authService = AuthenticationService() // Shared service
+    @State private var showOnboarding = false
     
     var body: some View {
         Group {
             if authService.isAuthenticated {
-                TabBarView(authService: authService)
+                if showOnboarding {
+                    OnboardingView {
+                        showOnboarding = false
+                    }
+                } else {
+                    TabBarView(authService: authService)
+                }
             } else {
                 AuthenticationView(viewModel: .init(autheticationService: authService))
             }
@@ -22,7 +29,19 @@ struct AppRootView: View {
         .environmentObject(authService)
         .onAppear {
             checkAuthStatus()
+            if authService.isAuthenticated {
+                showOnboarding = shouldShowOnboarding()
+            }
+            NotificationCenter.default.addObserver(forName: Notification.Name("RestartOnboarding"), object: nil, queue: .main) { _ in
+                showOnboarding = true
+            }
         }
+    }
+    
+    func shouldShowOnboarding() -> Bool {
+        guard let uid = GamificationManager.shared.getUserUID() else { return false }
+        let key = "onboarding_completed_\(uid)"
+        return !UserDefaults.standard.bool(forKey: key)
     }
     
     func checkAuthStatus() {

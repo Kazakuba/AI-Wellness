@@ -26,51 +26,66 @@ struct TabBarView: View {
     }
 
     var body: some View {
-        ZStack {
-            TabView(selection: $selectedTab) {
-                DashboardView(authService: authService, isDarkMode: isDarkMode)
-                    .tabItem {
-                        Label("Dashboard", systemImage: "house")
-                    }
-                    .tag(0)
+        VStack {
+            ZStack {
+                TabView(selection: $selectedTab) {
+                    DashboardView(authService: authService, isDarkMode: isDarkMode)
+                        .tabItem {
+                            Label("Dashboard", systemImage: "house")
+                        }
+                        .tag(0)
 
-                ChatListView()
-                    .tabItem {
-                        Image(systemName: "person.bubble")
-                        Text("AI Chat")
-                    }
-                    .tag(1)
+                    ChatListView()
+                        .tabItem {
+                            Image(systemName: "person.bubble")
+                            Text("AI Chat")
+                        }
+                        .tag(1)
 
-                CalendarView(selectedTab: $selectedTab, isDarkMode: isDarkMode)
-                    .tabItem {
-                        Image(systemName: "note.text")
-                        Text("Journal")
-                    }
-                    .tag(2)
+                    CalendarView(selectedTab: $selectedTab, isDarkMode: isDarkMode)
+                        .tabItem {
+                            Image(systemName: "note.text")
+                            Text("Journal")
+                        }
+                        .tag(2)
 
-                AffirmationsEntryView(isDarkMode: isDarkMode)
-                    .tabItem {
-                        Image(systemName: "sun.max.fill")
-                        Text("Affirmations")
-                    }
-                    .tag(4)
+                    AffirmationsEntryView(isDarkMode: isDarkMode)
+                        .tabItem {
+                            Image(systemName: "sun.max.fill")
+                            Text("Affirmations")
+                        }
+                        .tag(4)
 
-                BreathingEntryView(showBreathingExercise: $showBreathingExercise, isDarkMode: isDarkMode)
-                    .tabItem {
-                        Image(systemName: "lungs.fill")
-                        Text("Breathe")
-                    }
-                    .tag(3)
+                    BreathingEntryView(showBreathingExercise: $showBreathingExercise, isDarkMode: isDarkMode)
+                        .tabItem {
+                            Image(systemName: "lungs.fill")
+                            Text("Breathe")
+                        }
+                        .tag(3)
+                }
+                .toolbarBackground(.hidden, for: .tabBar)
+                .opacity(tabBarHidden ? 0 : 1)
+
+                if showBreathingExercise {
+                    BreathingExerciseView(tabBarHidden: $tabBarHidden)
+                        .transition(.opacity)
+                        .onDisappear {
+                            selectedTab = 0
+                        }
+                }
             }
-            .toolbarBackground(.hidden, for: .tabBar)
-            .opacity(tabBarHidden ? 0 : 1)
-
-            if showBreathingExercise {
-                BreathingExerciseView(tabBarHidden: $tabBarHidden)
-                    .transition(.opacity)
-                    .onDisappear {
-                        selectedTab = 0
-                    }
+            Button(action: {
+                if let uid = GamificationManager.shared.getUserUID() {
+                    let key = "onboarding_completed_\(uid)"
+                    UserDefaults.standard.removeObject(forKey: key)
+                }
+                NotificationCenter.default.post(name: Notification.Name("RestartOnboarding"), object: nil)
+            }) {
+                Text("Restart Onboarding (TEMP)")
+                    .foregroundColor(.red)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
             }
         }
         .onChange(of: selectedTab) { oldValue, newValue in
