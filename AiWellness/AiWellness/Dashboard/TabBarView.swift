@@ -74,7 +74,8 @@ struct TabBarView: View {
                         }
                 }
             }
-            .accentColor(Color("TextPrimary"))
+            //tabbarAccent
+            .accentColor(isDarkMode ? .white : Color("TextPrimary"))
             .background(Color("BackgroundRows").edgesIgnoringSafeArea(.all))
         }
         .onChange(of: selectedTab) { oldValue, newValue in

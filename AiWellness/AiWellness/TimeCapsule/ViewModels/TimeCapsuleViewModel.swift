@@ -59,9 +59,13 @@ class TimeCapsuleViewModel: ObservableObject {
         }
     }
     
-    func confirmAndSaveNote() {
+    func confirmAndSaveNote(dismissKeyboard: (() -> Void)? = nil) {
         if saveNote() {
             checkAndMaybeRequestPermissionAndSchedule()
+            DispatchQueue.main.async {
+                self.objectWillChange.send()
+                dismissKeyboard?()
+            }
         }
     }
     
@@ -88,7 +92,7 @@ class TimeCapsuleViewModel: ObservableObject {
     func fetchNote() {
         do {
             savedNotes = try persistanceService.fetchNote()
-            archiveExpiredNotes() // Archiving expired notes
+            // archiveExpiredNotes() // Do not auto-archive, keep all notes in main list
         } catch {
             errorMessage = "Failed to fetch notes: \(error.localizedDescription)"
             savedNotes = []
@@ -220,22 +224,15 @@ class TimeCapsuleViewModel: ObservableObject {
     }
     
     //Calculating how far in the future to lock the time capsule note
-//    private func calculateUnlockDate() -> Date {
-//        let timeIntervals: [String: TimeInterval] = [
-//            "1 Month": 60 * 60 * 24 * 30,
-//            "3 Months": 60 * 60 * 24 * 30 * 3,
-//            "6 Months": 60 * 60 * 24 * 30 * 6,
-//            "1 Year": 60 * 60 * 24 * 365
-//        ]
-//        return Date().addingTimeInterval(timeIntervals[selectedTimeframe] ?? 60 * 60 * 24 * 30)
-//    }
-    
-    //FOR TESTING Time Capsule notifications
-        func calculateUnlockDate() -> Date {
-            // TEMP for testing: 1 minute from now
-            return Calendar.current.date(byAdding: .minute, value: 1, to: Date())!
-        }
-    
+    private func calculateUnlockDate() -> Date {
+        let timeIntervals: [String: TimeInterval] = [
+            "1 Month": 60 * 60 * 24 * 30,
+            "3 Months": 60 * 60 * 24 * 30 * 3,
+            "6 Months": 60 * 60 * 24 * 30 * 6,
+            "1 Year": 60 * 60 * 24 * 365
+        ]
+        return Date().addingTimeInterval(timeIntervals[selectedTimeframe] ?? 60 * 60 * 24 * 30)
+    }
     
     private func scheduleLatestNoteNotification() {
         guard let note = savedNotes.last else { return }
