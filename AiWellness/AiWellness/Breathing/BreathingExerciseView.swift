@@ -309,28 +309,11 @@ struct BreathingExerciseView: View {
     
     // Handles back button action - separate from exitBreathingMode
     private func handleBackButton() {
-        // Notify parent via binding that we want to return to tab view
-        tabBarHidden = false
-        
-        // Reset the exercise state
+        // Instead of dismissing, show the customization sheet
+        showCustomizationSheet = true
+        // Optionally, pause the exercise and reset state if needed
         viewModel.pause()
         viewModel.elapsedTime = 0
-        
-        // Use the modern way to get the window for iOS 15+
-        if #available(iOS 15.0, *) {
-            // Get the active window scene
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let window = windowScene.windows.first {
-                window.rootViewController?.dismiss(animated: true)
-            }
-        } else {
-            // Fallback for older iOS versions
-            if let window = UIApplication.shared.windows.first {
-                window.rootViewController?.dismiss(animated: true)
-            }
-        }
-        
-        NotificationCenter.default.post(name: NSNotification.Name("DismissBreathingExercise"), object: nil)
     }
     
     private func startBreathingExercise() {

@@ -24,9 +24,10 @@ struct CustomizationSheetView: View {
         // Navigation stack for iOS 16+
         NavigationView {
             customizationContent
-                .navigationBarTitle("Themes", displayMode: .large)
+                .navigationBarTitle("Breathing Exercises", displayMode: .large)
                 .navigationBarItems(
                     leading: Button(action: { 
+                        NotificationCenter.default.post(name: NSNotification.Name("DismissBreathingExercise"), object: nil)
                         dismiss()
                     }) {
                         Image(systemName: "xmark")
