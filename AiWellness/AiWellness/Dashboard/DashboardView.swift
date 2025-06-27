@@ -23,6 +23,7 @@ struct DashboardView: View {
     @State private var showTodayAffirmation = false
     @State private var todayAffirmation: Affirmation?
     @StateObject private var confettiManager = ConfettiManager.shared
+    let isActiveTab: Bool
 
     var gradient: LinearGradient {
         LinearGradient(
@@ -86,7 +87,8 @@ struct DashboardView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification)) { _ in
-            if !showTimeCapsuleAnimation && !showTimeCapsule {
+            // Only respond to shake when dashboard tab is active
+            if isActiveTab && !showTimeCapsuleAnimation && !showTimeCapsule {
                 HapticManager.strongLongHaptic()
                 showTimeCapsuleAnimation = true
             }
@@ -136,7 +138,7 @@ private struct WelcomeText: View {
 }
 
 #Preview {
-    DashboardView(authService: AuthenticationService())
+    DashboardView(authService: AuthenticationService(), isActiveTab: true)
         .environmentObject(SettingsViewModel())
 }
 

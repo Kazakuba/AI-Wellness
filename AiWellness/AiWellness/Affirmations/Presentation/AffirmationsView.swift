@@ -49,7 +49,7 @@ struct AffirmationsView: View {
                             .animation(.easeInOut(duration: 0.6), value: viewModel.showUnlockAnimation)
                         Text("Unlock your daily affirmation!")
                             .font(.title2)
-                            .foregroundColor(.black)
+                            .foregroundColor(isDarkMode ? .white : .black)
                             .opacity(viewModel.showUnlockAnimation ? 0.5 : 1.0)
                             .animation(.easeInOut(duration: 0.6), value: viewModel.showUnlockAnimation)
                         if viewModel.showUnlockAnimation {
@@ -65,7 +65,7 @@ struct AffirmationsView: View {
                                 .padding(.horizontal, 32)
                                 .padding(.vertical, 16)
                                 .background(Color.blue)
-                                .foregroundColor(.white)
+                                .foregroundColor(isDarkMode ? .white : .black)
                                 .cornerRadius(24)
                                 .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
                         }

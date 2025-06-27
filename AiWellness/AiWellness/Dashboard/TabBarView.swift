@@ -29,7 +29,7 @@ struct TabBarView: View {
         VStack {
             ZStack {
                 TabView(selection: $selectedTab) {
-                    DashboardView(authService: authService, isDarkMode: isDarkMode)
+                    DashboardView(authService: authService, isDarkMode: isDarkMode, isActiveTab: selectedTab == 0)
                         .tabItem {
                             Label("Dashboard", systemImage: "house")
                         }
