@@ -13,7 +13,6 @@ struct TabBarView: View {
     @AppStorage("isDarkMode") private var isDarkMode: Bool = false
     @State private var selectedTab = 0
     @State private var tabBarHidden: Bool = false
-    @State private var showBreathingExercise: Bool = false
     @State private var unlockedNote: TimeCapsuleNote? = nil
 
     init(authService: AuthenticationService) {
@@ -56,7 +55,8 @@ struct TabBarView: View {
                         }
                         .tag(4)
 
-                    BreathingEntryView(showBreathingExercise: $showBreathingExercise, isDarkMode: isDarkMode)
+                    // Empty view for breathing tab - the actual view will be shown as overlay
+                    Color.clear
                         .tabItem {
                             Image(systemName: "lungs.fill")
                             Text("Breathe")
@@ -66,7 +66,8 @@ struct TabBarView: View {
                 .toolbarBackground(.hidden, for: .tabBar)
                 .opacity(tabBarHidden ? 0 : 1)
 
-                if showBreathingExercise {
+                // Show BreathingExerciseView directly when breathing tab is selected
+                if selectedTab == 3 {
                     BreathingExerciseView(tabBarHidden: $tabBarHidden)
                         .transition(.opacity)
                         .onDisappear {
@@ -78,18 +79,10 @@ struct TabBarView: View {
             .accentColor(isDarkMode ? .white : Color("TextPrimary"))
             .background(Color("BackgroundRows").edgesIgnoringSafeArea(.all))
         }
-        .onChange(of: selectedTab) { oldValue, newValue in
-            if newValue == 3 {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    showBreathingExercise = true
-                }
-            }
-        }
         .onAppear {
             NotificationCenter.default.addObserver(forName: NSNotification.Name("DismissBreathingExercise"),
                                                   object: nil,
                                                   queue: .main) { _ in
-                showBreathingExercise = false
                 selectedTab = 0
             }
         }
@@ -109,30 +102,6 @@ struct TabBarView: View {
             unlockedNote = nil
         }) { note in
             TimeCapsuleUnlockedView(note: note)
-        }
-    }
-}
-
-// ToFix
-struct BreathingEntryView: View {
-    @Binding var showBreathingExercise: Bool
-    var isDarkMode: Bool = false
-    
-    var body: some View {
-        VStack {
-            Text("Loading breathing exercise...")
-                .font(.title2)
-                .foregroundColor(isDarkMode ? .white : Color(.secondaryLabel))
-            ProgressView()
-        }
-        .background(
-            (isDarkMode ? LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.black]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color.mint, Color.cyan]), startPoint: .topLeading, endPoint: .bottomTrailing))
-                .edgesIgnoringSafeArea(.all)
-        )
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                showBreathingExercise = true
-            }
         }
     }
 }
