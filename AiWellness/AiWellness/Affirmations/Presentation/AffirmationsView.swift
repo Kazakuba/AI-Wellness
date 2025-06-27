@@ -8,10 +8,8 @@ struct AffirmationsView: View {
     @StateObject private var viewModel = AffirmationsViewModel()
     @StateObject private var savedViewModel = SavedAffirmationViewModel()
     @StateObject private var motionManager = MotionManager()
-    @State private var showThemeSheet = false
     @State private var showTodayAffirmation: Bool = false
     @State private var todayAffirmation: Affirmation?
-    @AppStorage("selectedThemeId") private var selectedThemeId: String = ThemeLibrary.defaultTheme.id
     @StateObject private var confettiManager = ConfettiManager.shared
 
     var gradient: LinearGradient {
@@ -86,7 +84,6 @@ struct AffirmationsView: View {
                     Spacer()
                 } else if let affirmation = viewModel.dailyAffirmation {
                     Spacer()
-                    let theme = ThemeLibrary.allThemes.first(where: { $0.id == selectedThemeId }) ?? ThemeLibrary.defaultTheme
                     Text(affirmation.text)
                         .font(.system(size: 28, weight: .bold, design: .serif))
                         .multilineTextAlignment(.center)
@@ -140,7 +137,7 @@ struct AffirmationsView: View {
                                     .truncationMode(.tail)
                             }
                             .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(theme.isDark ? .white : Color(red: 44/255, green: 51/255, blue: 71/255))
+                            .foregroundColor(isDarkMode ? .white : Color(red: 44/255, green: 51/255, blue: 71/255))
                             .padding(.horizontal, 18)
                             .padding(.vertical, 12)
                             .background(isDarkMode ? Color.white.opacity(0.18) : Color.white)
@@ -148,21 +145,6 @@ struct AffirmationsView: View {
                             .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
                         }
                         Spacer()
-                        Button(action: { showThemeSheet = true }) {
-                            Image(systemName: "paintbrush")
-                                .font(.system(size: 22))
-                                .foregroundColor(isDarkMode ? .white : .black)
-                                .frame(width: 48, height: 48)
-                        }
-                        .background(isDarkMode ? Color.white.opacity(0.18) : Color.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                        .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
-                        Button(action: {}) {
-                            Image(systemName: "person.crop.circle")
-                                .font(.system(size: 22))
-                                .foregroundColor(isDarkMode ? .white : .black)
-                                .frame(width: 48, height: 48)
-                        }
                         .background(isDarkMode ? Color.white.opacity(0.18) : Color.white)
                         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                         .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
@@ -178,9 +160,6 @@ struct AffirmationsView: View {
                 TopicSelectionSheet(isPresented: $viewModel.showTopicSheet, selectedTopic: $viewModel.selectedTopic, topics: AffirmationTopicsProvider.topics) { topic in
                     viewModel.selectTopic(topic)
                 }
-            }
-            .sheet(isPresented: $showThemeSheet) {
-                ThemePickerSheet(isPresented: $showThemeSheet)
             }
             .onAppear {
                 // Always lock on tab open (not on topic change)
