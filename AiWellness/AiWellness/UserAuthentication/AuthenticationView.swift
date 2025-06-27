@@ -11,33 +11,56 @@ import FirebaseAuth
 
 struct AuthenticationView: View {
     @State var viewModel: AuthenticationViewModel
-    
-    var body: some View {
-        VStack {
-            Spacer()
-            
-            //Cicle Image
-            AIImage()
-            
-            //Welcome text
-            WelcomeSign()
-            
-            //Some motivational quote for an app
-            MotivationalWelcomeText()
-            
-            //Buttons for login
-            VStack(spacing: 15) {
-                AuthenticationSignInButton(image: "globe", text: "Continue with Google", action: viewModel.googleSignIn)
-                AuthenticationSignInButton(image: "facebook", text: "Continue with Facebook", action: {})
-                AuthenticationSignInButton(image: "envelope", text: "Continue with Email", action: {})
-                AuthenticationSignInButton(image: "phone", text: "Continue with phone number", action: {})
-            }
-            .padding(.horizontal, 5)
+    @State private var animateBG = false
 
-            //Terms and Conditions and Privacy Policy
-            TermsAndConditionsAndPrivacyPolice()
+    var body: some View {
+        ZStack {
+            AnimatedNeonBackgroundAuth(isDarkMode: false, animate: $animateBG)
+                .ignoresSafeArea()
+                .onAppear {
+                    animateBG.toggle()
+                }
+            VStack {
+                Spacer()
+
+                //Cicle Image
+                AIImage()
+
+                //Welcome text
+                WelcomeSign()
+
+                //Some motivational quote for an app
+                MotivationalWelcomeText()
+
+                //Buttons for login
+                VStack(spacing: 15) {
+                    AuthenticationSignInButton(image: "globe", text: "Continue with Google", action: viewModel.googleSignIn)
+                }
+                .padding(.horizontal, 5)
+                .padding(.bottom, 8)
+
+                //Terms and Conditions and Privacy Policy
+                TermsAndConditionsAndPrivacyPolice()
+                    .padding(.horizontal, 8)
+                    .padding(.top, 8)
+
+                Spacer()
+            }
+            .padding()
         }
-        .padding()
+    }
+}
+
+extension Color {
+    var components: (red: Double, green: Double, blue: Double) {
+        #if canImport(UIKit)
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0
+        UIColor(self).getRed(&r, green: &g, blue: &b, alpha: nil)
+        #else
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0
+        NSColor(self).getRed(&r, green: &g, blue: &b, alpha: nil)
+        #endif
+        return (Double(r), Double(g), Double(b))
     }
 }
 
@@ -47,7 +70,7 @@ struct AuthenticationView: View {
 
 private struct AIImage: View {
     var body: some View {
-        Image(systemName: "person.circle")
+        Image("exampleImage")
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: 120, height: 120)
@@ -75,23 +98,73 @@ private struct MotivationalWelcomeText: View {
     }
 }
 
+extension View {
+    func neonButtonBackground() -> some View {
+        self.background(
+            LinearGradient(gradient: Gradient(colors: [Color.cyan, Color.purple, Color.blue]), startPoint: .topLeading, endPoint: .bottomTrailing)
+        )
+    }
+}
+
+struct AuthenticationSignInButton: View {
+    var image: String
+    var text: String
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Image(systemName: image)
+                    .foregroundColor(.white)
+                Text(text)
+                    .foregroundColor(.white)
+                    .fontWeight(.medium)
+            }
+            .frame(maxWidth: .infinity, minHeight: 50)
+            .neonButtonBackground()
+            .cornerRadius(10)
+        }
+    }
+}
+
+struct AnimatedNeonBackgroundAuth: View {
+    var isDarkMode: Bool
+    @Binding var animate: Bool
+    @State private var animateGradient = false
+    var body: some View {
+        LinearGradient(
+            gradient: Gradient(colors: animate ? [Color.cyan, Color.purple, Color.blue, Color.mint] : [ColorPalette.background, ColorPalette.surface]),
+            startPoint: animate ? .topLeading : .bottomTrailing,
+            endPoint: animate ? .bottomTrailing : .topLeading
+        )
+        .animation(Animation.linear(duration: 6).repeatForever(autoreverses: true), value: animate)
+    }
+}
+
 private struct TermsAndConditionsAndPrivacyPolice: View {
     var body: some View {
-        VStack(spacing: -10) {
-            HStack {
+        VStack(spacing: 4) {
+            HStack(spacing: 4) {
                 Text("By signing up you agree to our")
-                TertiaryButton(title: "Terms and Conditions", action: {})
+                    .font(Typography.Font.body2)
+                Link("Terms & Conditions", destination: URL(string: "https://your-terms-url.com")!)
+                    .font(Typography.Font.body2)
+                    .foregroundColor(.blue)
+                    .underline()
             }
-            .font(Typography.Font.body2)
-
-            
-            HStack {
-                Text("See how we use your data in our")
-                TertiaryButton(title: "Privacy Policy", action: {})
+            .multilineTextAlignment(.center)
+            .padding(.bottom, 2)
+            HStack(spacing: 4) {
+                Text("Check how we use your data")
+                    .font(Typography.Font.body2)
+                Link("Privacy Policy", destination: URL(string: "https://your-privacy-url.com")!)
+                    .font(Typography.Font.body2)
+                    .foregroundColor(.blue)
+                    .underline()
             }
-            .font(Typography.Font.body2)
+            .multilineTextAlignment(.center)
         }
-        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
         .padding(.top, 20)
     }
 }
