@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import FirebaseAuth
+import Lottie
 
 struct AuthenticationView: View {
     @State var viewModel: AuthenticationViewModel
@@ -22,9 +23,11 @@ struct AuthenticationView: View {
                 }
             VStack {
                 Spacer()
-
-                //Cicle Image
-                AIImage()
+                LottieView(animation: .named("loginScreenAnimation"))
+                    .playing()
+                    .looping()
+                    .frame(width: 300, height: 300)
+                    .padding(.bottom, 20)
 
                 //Welcome text
                 WelcomeSign()
@@ -68,17 +71,6 @@ extension Color {
     AuthenticationView(viewModel: AuthenticationViewModel(autheticationService: AuthenticationService()))
 }
 
-private struct AIImage: View {
-    var body: some View {
-        Image("exampleImage")
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: 120, height: 120)
-            .clipShape(Circle())
-            .overlay(Circle().stroke(Color(.separator), lineWidth: 2))
-            .padding(.bottom, 20)
-    }
-}
 private struct WelcomeSign: View {
     var body: some View {
         Text("Welcome to AI Wellness")
