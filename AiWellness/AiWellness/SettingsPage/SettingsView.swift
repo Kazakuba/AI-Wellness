@@ -39,7 +39,7 @@ struct SettingsView: View {
                         NavigationLink("Manage Specific Notifications") {
                             ManageNotificationsView()
                         }
-                        .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                        .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                         .foregroundColor(dynamicTextColor)
                     }
                     PickerRow(icon: "globe", title: "Language", selection: $viewModel.selectedLanguage, options: viewModel.languages, color: .blue)
@@ -84,7 +84,7 @@ struct SettingsView: View {
                                 Spacer()
                             }
                         }
-                        .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                        .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                     }
                 }
             }
@@ -140,7 +140,7 @@ struct SettingsView: View {
                     .foregroundColor(dynamicTextColor)
             }
         }
-        .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+        .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
 
     }
 
@@ -159,7 +159,7 @@ struct SettingsView: View {
     }
 
     private var dynamicRowBackground: Color {
-        viewModel.isDarkMode ? Color(.systemGray5) : Color(.systemGroupedBackground)
+        viewModel.isDarkMode ? Color.customSystemGray6 : Color(.systemGroupedBackground)
     }
 
     struct CustomSearchBar: View {
@@ -168,7 +168,7 @@ struct SettingsView: View {
 
         var body: some View {
             let placeholderColor = isDarkMode ? Color.white : Color.black
-            let backgroundColor = isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6)
+            let backgroundColor = isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6
 
             HStack {
                 Image(systemName: "magnifyingglass")
@@ -197,6 +197,10 @@ struct SettingsView: View {
         }
     }
 
+}
+
+extension Color {
+    static let customSystemGray6 = Color(red: 242 / 255, green: 242 / 255, blue: 247 / 255) // Matches systemGray6
 }
 
 #Preview {

@@ -14,10 +14,10 @@ struct AppInfoView: View {
             Section(header: Text("App Info").foregroundColor(isDarkMode ? .white : .black)) {
                 Text("Version 1.0.0")
                     .foregroundColor(isDarkMode ? .white : .black)
-                    .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                    .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                 Text("Build 100")
                     .foregroundColor(isDarkMode ? .white : .black)
-                    .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                    .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
             }
         }
         .navigationTitle("App Info")

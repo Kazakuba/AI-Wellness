@@ -84,7 +84,7 @@ struct CustomizationSheetView: View {
             }
             .padding(.bottom, 30)
         }
-        .background(Color(UIColor.systemGray6))
+        .background(Color.customSystemGray6)
     }
     
     private var categorySelector: some View {

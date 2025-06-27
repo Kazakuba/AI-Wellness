@@ -18,15 +18,15 @@ struct SupportView: View {
                 NavigationLink(destination: Text("Terms of Service Content Here").foregroundColor(isDarkMode ? .white : .black).background(isDarkMode ? Color.black : Color.white)) {
                     Text("Terms of Service").foregroundColor(isDarkMode ? .white : .black)
                 }
-                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                 NavigationLink(destination: Text("Privacy Policy Content Here").foregroundColor(isDarkMode ? .white : .black).background(isDarkMode ? Color.black : Color.white)) {
                     Text("Privacy Policy").foregroundColor(isDarkMode ? .white : .black)
                 }
-                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                 NavigationLink(destination: Text("Help & Features Guide Coming Soon").foregroundColor(isDarkMode ? .white : .black).background(isDarkMode ? Color.black : Color.white)) {
                     Text("Help").foregroundColor(isDarkMode ? .white : .black)
                 }
-                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
             }
             
             // User Engagement Section
@@ -35,17 +35,17 @@ struct SupportView: View {
                     viewModel.sendFeedbackEmail()
                 }
                 .foregroundColor(isDarkMode ? .white : .black)
-                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                 Button("Rate the App") {
                     viewModel.rateApp()
                 }
                 .foregroundColor(isDarkMode ? .white : .black)
-                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                 Button("Share the App") {
                     viewModel.shareApp()
                 }
                 .foregroundColor(isDarkMode ? .white : .black)
-                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
             }
         }
         .navigationTitle("Support & Feedback")

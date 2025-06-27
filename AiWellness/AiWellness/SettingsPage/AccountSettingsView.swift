@@ -22,7 +22,7 @@ struct AccountSettingsView: View {
                 ) {
                     Text("Update Email / Password").foregroundColor(isDarkMode ? .white : .black)
                 }
-                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                 NavigationLink(destination: Text("Currently only Google Sign-In Available")
                     .foregroundColor(isDarkMode ? .white : .black)
                     .background(isDarkMode ? Color.black : Color.white)
@@ -33,7 +33,7 @@ struct AccountSettingsView: View {
                 ) {
                     Text("Link / Unlink Accounts").foregroundColor(isDarkMode ? .white : .black)
                 }
-                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
             }
         }
         .navigationTitle("Account Management")

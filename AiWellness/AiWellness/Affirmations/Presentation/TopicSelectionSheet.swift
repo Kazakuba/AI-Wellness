@@ -34,7 +34,7 @@ struct TopicSelectionSheet: View {
                 
                 TextField("Search", text: $searchText)
                     .padding(10)
-                    .background(Color(.systemGray6))
+                    .background(Color.customSystemGray6)
                     .cornerRadius(10)
                     .padding(.horizontal)
                 
@@ -67,7 +67,7 @@ struct TopicCardView: View {
         Button(action: onTap) {
             ZStack(alignment: .topTrailing) {
                 RoundedRectangle(cornerRadius: 18)
-                    .fill(Color(.systemGray6))
+                    .fill(Color.customSystemGray6)
                     .frame(height: 120)
                     .overlay(
                         VStack(spacing: 10) {

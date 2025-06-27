@@ -19,12 +19,12 @@ struct DangerZoneView: View {
                     print("Delete Account")
                 }
                 .foregroundColor(isDarkMode ? .white : .red)
-                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                 Button("Delete All Chats", role: .destructive) {
                     showDeleteChatsAlert = true
                 }
                 .foregroundColor(isDarkMode ? .white : .red)
-                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                 .alert(isPresented: $showDeleteChatsAlert) {
                     Alert(
                         title: Text("Delete All Chats"),
@@ -46,7 +46,7 @@ struct DangerZoneView: View {
                     print("Delete All Journal Entries")
                 }
                 .foregroundColor(isDarkMode ? .white : .red)
-                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color(.systemGray6))
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
             }
         }
         .navigationTitle("Account Management")

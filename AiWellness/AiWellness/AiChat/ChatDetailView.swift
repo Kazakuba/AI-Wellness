@@ -124,7 +124,7 @@ struct ChatDetailView: View {
                     TextField("Type message here...", text: $messageText)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(Color(.systemGray6))
+                        .background(Color.customSystemGray6)
                         .cornerRadius(20)
                         .disabled(isGeneratingTitle)
                     
