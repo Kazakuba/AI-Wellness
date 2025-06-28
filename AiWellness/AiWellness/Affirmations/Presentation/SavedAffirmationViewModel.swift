@@ -50,9 +50,10 @@ class SavedAffirmationViewModel: ObservableObject {
     }
     
     func loadSavedAffirmations() {
-        // Always use the use case (repository is user-specific)
-        savedAffirmations = getSavedAffirmationsUseCase.execute()
-        isLoading = false
+        DispatchQueue.main.async {
+            self.savedAffirmations = self.getSavedAffirmationsUseCase.execute()
+            self.isLoading = false
+        }
     }
     
     func fetchAndSyncFromFirestore(completion: @escaping () -> Void) {
