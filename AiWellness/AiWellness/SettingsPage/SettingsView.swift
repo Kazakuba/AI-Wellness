@@ -42,7 +42,6 @@ struct SettingsView: View {
                         .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                         .foregroundColor(dynamicTextColor)
                     }
-                    PickerRow(icon: "globe", title: "Language", selection: $viewModel.selectedLanguage, options: viewModel.languages, color: .blue)
                 }
 
                 // Account Management

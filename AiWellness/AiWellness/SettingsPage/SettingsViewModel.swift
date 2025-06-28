@@ -16,15 +16,10 @@ class SettingsViewModel: ObservableObject {
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
     @Published var notificationsEnabled: Bool = true
     @Published var selectedAIVoice: String = "Filip"
-    @Published var selectedLanguage: String = "English"
     @Published var selectedAppIcon: String = "Default"
     @Published var enableMotionEffects: Bool = true
     @Published var enableAffirmationAnimations: Bool = true
-    
-    let appIcons = ["Default", "Dark", "Light"]
-    let aiVoice = ["Filip","Lucija","Miso"]
-    let languages = ["English", "Spanish"]
-    
+
     init(authService: AuthenticationService = AuthenticationService()) {
         self.authService = authService
     }
