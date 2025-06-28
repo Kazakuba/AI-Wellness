@@ -2,62 +2,60 @@
 import Foundation
 
 class AffirmationPersistence {
-    private let savedKey = "saved_affirmations"
-    private let todayKey = "today_affirmation"
-    private let todayDateKey = "today_affirmation_date"
+    private func savedKey(for uid: String?) -> String { "saved_affirmations_\(uid ?? "default")" }
+    private func todayKey(for uid: String?) -> String { "today_affirmation_\(uid ?? "default")" }
+    private func todayDateKey(for uid: String?) -> String { "today_affirmation_date_\(uid ?? "default")" }
+    private func todayTopicKey(for uid: String?) -> String { "today_affirmation_topic_map_\(uid ?? "default")" }
     
-    // Store daily affirmations per topic and date
-    private let todayTopicKey = "today_affirmation_topic_map"
-
-    func saveAffirmation(_ affirmation: Affirmation) {
-        var affirmations = getSavedAffirmations()
+    func saveAffirmation(_ affirmation: Affirmation, uid: String?) {
+        var affirmations = getSavedAffirmations(uid: uid)
         if !affirmations.contains(affirmation) {
             affirmations.append(affirmation)
-            saveAffirmations(affirmations)
+            saveAffirmations(affirmations, uid: uid)
         }
     }
     
-    func getSavedAffirmations() -> [Affirmation] {
-        guard let data = UserDefaults.standard.data(forKey: savedKey),
+    func getSavedAffirmations(uid: String?) -> [Affirmation] {
+        guard let data = UserDefaults.standard.data(forKey: savedKey(for: uid)),
               let affirmations = try? JSONDecoder().decode([Affirmation].self, from: data) else {
             return []
         }
         return affirmations
     }
     
-    func isAffirmationSaved(_ affirmation: Affirmation) -> Bool {
-        getSavedAffirmations().contains(affirmation)
+    func isAffirmationSaved(_ affirmation: Affirmation, uid: String?) -> Bool {
+        getSavedAffirmations(uid: uid).contains(affirmation)
     }
     
-    func saveAffirmations(_ affirmations: [Affirmation]) {
+    func saveAffirmations(_ affirmations: [Affirmation], uid: String?) {
         if let data = try? JSONEncoder().encode(affirmations) {
-            UserDefaults.standard.set(data, forKey: savedKey)
+            UserDefaults.standard.set(data, forKey: savedKey(for: uid))
         }
     }
     
     // Save today's affirmation for a topic
-    func saveTodayAffirmation(_ affirmation: Affirmation) {
+    func saveTodayAffirmation(_ affirmation: Affirmation, uid: String?) {
         // Save for legacy single-topic
         if let data = try? JSONEncoder().encode(affirmation) {
-            UserDefaults.standard.set(data, forKey: todayKey)
-            UserDefaults.standard.set(Date(), forKey: todayDateKey)
+            UserDefaults.standard.set(data, forKey: todayKey(for: uid))
+            UserDefaults.standard.set(Date(), forKey: todayDateKey(for: uid))
         }
         // Save for per-topic
-        var topicMap = getTodayAffirmationTopicMap()
+        var topicMap = getTodayAffirmationTopicMap(uid: uid)
         if let topic = affirmation.topic {
             topicMap[topic] = (affirmation, Date())
             // Encode as [String: [AffirmationOrDate]]
             let encodableMap: [String: [AffirmationOrDate]] = topicMap.mapValues { [AffirmationOrDate(affirmation: $0.0, date: nil), AffirmationOrDate(affirmation: nil, date: $0.1)] }
             if let data = try? JSONEncoder().encode(encodableMap) {
-                UserDefaults.standard.set(data, forKey: todayTopicKey)
+                UserDefaults.standard.set(data, forKey: todayTopicKey(for: uid))
             }
         }
     }
 
     // Get today's affirmation for a topic
-    func getTodayAffirmation(for topic: String?) -> Affirmation? {
-        guard let topic = topic else { return getTodayAffirmation() }
-        let topicMap = getTodayAffirmationTopicMap()
+    func getTodayAffirmation(for topic: String?, uid: String?) -> Affirmation? {
+        guard let topic = topic else { return getTodayAffirmation(uid: uid) }
+        let topicMap = getTodayAffirmationTopicMap(uid: uid)
         if let (affirmation, date) = topicMap[topic], Calendar.current.isDateInToday(date) {
             return affirmation
         }
@@ -65,10 +63,10 @@ class AffirmationPersistence {
     }
 
     // Get today's affirmation (legacy single-topic support)
-    func getTodayAffirmation() -> Affirmation? {
-        guard let date = UserDefaults.standard.object(forKey: todayDateKey) as? Date,
+    func getTodayAffirmation(uid: String?) -> Affirmation? {
+        guard let date = UserDefaults.standard.object(forKey: todayDateKey(for: uid)) as? Date,
               Calendar.current.isDateInToday(date),
-              let data = UserDefaults.standard.data(forKey: todayKey),
+              let data = UserDefaults.standard.data(forKey: todayKey(for: uid)),
               let affirmation = try? JSONDecoder().decode(Affirmation.self, from: data) else {
             return nil
         }
@@ -76,8 +74,8 @@ class AffirmationPersistence {
     }
 
     // Helper: get topic map from UserDefaults
-    private func getTodayAffirmationTopicMap() -> [String: (Affirmation, Date)] {
-        guard let data = UserDefaults.standard.data(forKey: todayTopicKey),
+    private func getTodayAffirmationTopicMap(uid: String?) -> [String: (Affirmation, Date)] {
+        guard let data = UserDefaults.standard.data(forKey: todayTopicKey(for: uid)),
               let raw = try? JSONDecoder().decode([String: [AffirmationOrDate]].self, from: data) else {
             return [:]
         }
@@ -91,16 +89,16 @@ class AffirmationPersistence {
     }
     
     //Deleting saved affirmation locally
-    func deleteAffirmation(_ affirmation: Affirmation) {
-        var affirmations = getSavedAffirmations()
+    func deleteAffirmation(_ affirmation: Affirmation, uid: String?) {
+        var affirmations = getSavedAffirmations(uid: uid)
         if let index = affirmations.firstIndex(of: affirmation) {
             affirmations.remove(at: index)
-            saveAffirmations(affirmations)
+            saveAffirmations(affirmations, uid: uid)
         }
     }
     
-    func clearAllAffirmations() {
-        UserDefaults.standard.removeObject(forKey: savedKey)
+    func clearAllAffirmations(uid: String?) {
+        UserDefaults.standard.removeObject(forKey: savedKey(for: uid))
     }
 
     // Helper struct for decoding

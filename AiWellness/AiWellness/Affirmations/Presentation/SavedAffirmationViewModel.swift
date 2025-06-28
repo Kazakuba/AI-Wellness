@@ -26,10 +26,16 @@ class SavedAffirmationViewModel: ObservableObject {
         // Automatically filter as searchText changes (optional, you can also filter in view)
         $searchText
             .sink { _ in
-                // Trigger UI update; or you can filter inside the View instead
                 self.objectWillChange.send()
             }
             .store(in: &cancellables)
+        
+        // Listen for account/user changes
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadOnUserChange), name: .journalUserDidChange, object: nil)
+    }
+
+    @objc private func reloadOnUserChange() {
+        loadSavedAffirmations()
     }
 
     // Computed property for filtered affirmations based on searchText
@@ -44,43 +50,27 @@ class SavedAffirmationViewModel: ObservableObject {
     }
     
     func loadSavedAffirmations() {
-        // Load local saved affirmations first (fast)
-        savedAffirmations = persistence.getSavedAffirmations()
-        
-        
-        //Sync in progress
-        isLoading = true
-        
-        // Fetch from Firestore and sync local storage
-        fetchAndSyncFromFirestore { [weak self] in
-            DispatchQueue.main.async {
-                self?.savedAffirmations = self?.persistence.getSavedAffirmations() ?? []
-                
-                // Calculate elapsed time
-                let elapsed = Date().timeIntervalSince(Date())
-                let delay = max(0, 0.5 - elapsed)
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                    self?.isLoading = false
-                }
-            }
-        }
+        // Always use the use case (repository is user-specific)
+        savedAffirmations = getSavedAffirmationsUseCase.execute()
+        isLoading = false
     }
     
     func fetchAndSyncFromFirestore(completion: @escaping () -> Void) {
-            FirestoreManager.shared.fetchSavedAffirmations { [weak self] cloudAffirmations in
-                guard let self = self else { return }
-                let localAffirmations = self.persistence.getSavedAffirmations()
-                let combined = (localAffirmations + cloudAffirmations).uniqued()
-                self.persistence.saveAffirmations(combined)
-                completion()
-            }
+        let uid = GamificationManager.shared.getUserUID()
+        FirestoreManager.shared.fetchSavedAffirmations { [weak self] cloudAffirmations in
+            guard let self = self else { return }
+            let localAffirmations = self.persistence.getSavedAffirmations(uid: uid)
+            let combined = (localAffirmations + cloudAffirmations).uniqued()
+            self.persistence.saveAffirmations(combined, uid: uid)
+            completion()
         }
+    }
     
     //Deleting saved affirmation
     func deleteAffirmation(_ affirmation: Affirmation) {
+        let uid = GamificationManager.shared.getUserUID()
         // Delete locally
-        persistence.deleteAffirmation(affirmation)
+        persistence.deleteAffirmation(affirmation, uid: uid)
         
         // Delete in Firestore
         FirestoreManager.shared.deleteAffirmation(affirmation) { result in
@@ -93,7 +83,7 @@ class SavedAffirmationViewModel: ObservableObject {
         }
         
         // Update local list
-        savedAffirmations = persistence.getSavedAffirmations()
+        savedAffirmations = persistence.getSavedAffirmations(uid: uid)
     }
     
     func deleteAffirmations(at offsets: IndexSet) {
@@ -104,8 +94,9 @@ class SavedAffirmationViewModel: ObservableObject {
     }
     
     func clearAllAffirmations() {
+        let uid = GamificationManager.shared.getUserUID()
         // Clear local storage
-        persistence.clearAllAffirmations()
+        persistence.clearAllAffirmations(uid: uid)
 
         // Clear Firestore
         FirestoreManager.shared.clearAllAffirmations { [weak self] result in

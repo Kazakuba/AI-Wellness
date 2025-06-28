@@ -15,13 +15,14 @@ class AffirmationRepositoryImpl: AffirmationRepository {
     }
     
     func fetchDailyAffirmation(completion: @escaping (Result<Affirmation, Error>) -> Void, topic: String? = nil) {
+        let uid = GamificationManager.shared.getUserUID()
         // Check if today's affirmation is cached for the topic
-        if let cached = persistence.getTodayAffirmation(for: topic) {
+        if let cached = persistence.getTodayAffirmation(for: topic, uid: uid) {
             completion(.success(cached))
             return
         }
         // Otherwise, fetch from API, ensuring uniqueness
-        let previousAffirmations = persistence.getSavedAffirmations().filter { $0.topic == topic }
+        let previousAffirmations = persistence.getSavedAffirmations(uid: uid).filter { $0.topic == topic }
         func fetchUniqueAffirmation(retry: Int = 0) {
             apiService.fetchAffirmation(completion: { result in
                 switch result {
@@ -32,11 +33,11 @@ class AffirmationRepositoryImpl: AffirmationRepository {
                             fetchUniqueAffirmation(retry: retry + 1)
                         } else {
                             // Give up after 5 tries, return anyway
-                            self.persistence.saveTodayAffirmation(affirmation)
+                            self.persistence.saveTodayAffirmation(affirmation, uid: uid)
                             completion(.success(affirmation))
                         }
                     } else {
-                        self.persistence.saveTodayAffirmation(affirmation)
+                        self.persistence.saveTodayAffirmation(affirmation, uid: uid)
                         completion(.success(affirmation))
                     }
                 case .failure(let error):
@@ -53,8 +54,8 @@ class AffirmationRepositoryImpl: AffirmationRepository {
     }
     
     func saveAffirmation(_ affirmation: Affirmation) {
-        persistence.saveAffirmation(affirmation)
-        
+        let uid = GamificationManager.shared.getUserUID()
+        persistence.saveAffirmation(affirmation, uid: uid)
         // Checking if this calls FirestoreManager.shared.uploadAffirmation
         FirestoreManager.shared.uploadAffirmation(affirmation) { result in
             switch result {
@@ -67,10 +68,12 @@ class AffirmationRepositoryImpl: AffirmationRepository {
     }
     
     func getSavedAffirmations() -> [Affirmation] {
-        persistence.getSavedAffirmations()
+        let uid = GamificationManager.shared.getUserUID()
+        return persistence.getSavedAffirmations(uid: uid)
     }
     
     func isAffirmationSaved(_ affirmation: Affirmation) -> Bool {
-        persistence.isAffirmationSaved(affirmation)
+        let uid = GamificationManager.shared.getUserUID()
+        return persistence.isAffirmationSaved(affirmation, uid: uid)
     }
 }
