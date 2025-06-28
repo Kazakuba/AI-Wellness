@@ -9,6 +9,10 @@ struct TopicSelectionSheet: View {
     var onSelect: (AffirmationTopic) -> Void
     
     @State private var searchText = ""
+    @AppStorage("lastCustomTopic") private var lastCustomTopic: String = ""
+    @State private var customTopicInput: String = ""
+    @State private var showCustomInput: Bool = false
+    let customCharLimit = 30
     
     var filteredTopics: [AffirmationTopic] {
         if searchText.isEmpty { return topics }
@@ -36,11 +40,55 @@ struct TopicSelectionSheet: View {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                         ForEach(filteredTopics) { topic in
                             TopicCardView(topic: topic, isSelected: selectedTopic?.id == topic.id, colorScheme: colorScheme) {
-                                selectedTopic = topic
-                                onSelect(topic)
-                                isPresented = false
+                                if topic.id == "custom" {
+                                    showCustomInput = true
+                                    customTopicInput = lastCustomTopic
+                                    selectedTopic = topic
+                                } else {
+                                    showCustomInput = false
+                                    selectedTopic = topic
+                                    onSelect(topic)
+                                    isPresented = false
+                                }
                             }
                         }
+                    }
+                    .padding()
+                }
+                if showCustomInput {
+                    VStack(spacing: 8) {
+                        Text("Enter your custom topic")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        HStack {
+                            TextField("Custom topic", text: $customTopicInput)
+                                .padding(10)
+                                .background(Color(.systemGray6))
+                                .cornerRadius(10)
+                                .onChange(of: customTopicInput) { _, newValue in
+                                    if newValue.count > customCharLimit {
+                                        customTopicInput = String(newValue.prefix(customCharLimit))
+                                    }
+                                }
+                            Button(action: {
+                                let trimmed = customTopicInput.trimmingCharacters(in: .whitespacesAndNewlines)
+                                guard !trimmed.isEmpty else { return }
+                                lastCustomTopic = trimmed
+                                let custom = AffirmationTopic(id: "custom_\(trimmed)", title: trimmed, iconName: "heart")
+                                selectedTopic = custom
+                                onSelect(custom)
+                                isPresented = false
+                                showCustomInput = false
+                            }) {
+                                Text("Use")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.textSecondary)
+                            }
+                            .disabled(customTopicInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        }
+                        Text("\(customCharLimit - customTopicInput.count) characters left")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
                     }
                     .padding()
                 }
