@@ -129,7 +129,7 @@ struct WeeklyRecapView: View {
                     Spacer()
                     Text("\(weekStart, formatter: dateFormatter)")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.textSecondary)
                 }
                 .padding(.horizontal)
                 .padding(.top, 8)
@@ -265,7 +265,7 @@ struct FullWeeklyRecapSheet: View {
                 Spacer()
                 Text("\(weekStart, formatter: dateFormatter)")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.textSecondary)
             }
             .padding(.top, 50)
             recapCard(icon: "star.fill", title: "XP Gained", value: "\(xp)", color: iconColor("star.fill"))
@@ -298,7 +298,7 @@ struct FullWeeklyRecapSheet: View {
                                         .frame(maxWidth: .infinity)
                                     Text(badgeLevelText(for: badge.level))
                                         .font(.caption2)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(.textSecondary)
                                 }
                                 .frame(width: 80, height: 80)
                                 .padding(8)

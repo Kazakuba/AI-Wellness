@@ -52,7 +52,7 @@ struct TopicSelectionSheet: View {
                 }
                 Spacer()
             }
-            .background(Color(.systemBackground))
+            .background(Color(.systemGray2))
         }
     }
 }

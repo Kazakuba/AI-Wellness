@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct OnboardingConfirmationScreen: View {
+    @Environment(\.colorScheme) var colorScheme
     let selectedGoals: Set<String>
     let dailyAffirmation: Bool
     let streaks: Bool
@@ -72,7 +73,7 @@ struct OnboardingConfirmationScreen: View {
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 24)
-                    .fill(OnboardingGradients.cardBackground)
+                    .fill(OnboardingGradients.cardBackground(for: colorScheme))
             )
             .shadow(color: Color("CustomPrimary").opacity(0.1), radius: 16, x: 0, y: 8)
             .padding(.horizontal, 16)

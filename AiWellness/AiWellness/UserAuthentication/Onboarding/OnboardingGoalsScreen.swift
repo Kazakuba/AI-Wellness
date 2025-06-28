@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct OnboardingGoalsScreen: View {
+    @Environment(\.colorScheme) var colorScheme
     @Binding var selectedGoals: Set<String>
     let goals: [(String, String)]
     let currentStep: Int
@@ -42,7 +43,7 @@ struct OnboardingGoalsScreen: View {
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 24)
-                    .fill(OnboardingGradients.cardBackground)
+                    .fill(OnboardingGradients.cardBackground(for: colorScheme))
             )
             .shadow(color: Color("CustomPrimary").opacity(0.1), radius: 16, x: 0, y: 8)
             .padding(.horizontal, 16)

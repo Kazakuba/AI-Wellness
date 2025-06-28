@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    @Environment(\.colorScheme) var colorScheme
     @State private var currentStep = 0
     let totalSteps = 5
     let onFinish: () -> Void
@@ -22,9 +23,13 @@ struct OnboardingView: View {
     
     var body: some View {
         ZStack {
-            // Beautiful gradient background
+            // Adaptive gradient background
             LinearGradient(
-                colors: [
+                colors: colorScheme == .dark ? [
+                    Color("CustomPrimary").opacity(0.18),
+                    Color("CustomSecondary").opacity(0.15),
+                    Color(.systemBackground).opacity(0.95)
+                ] : [
                     Color("CustomPrimary").opacity(0.15),
                     Color("CustomSecondary").opacity(0.1),
                     Color.white.opacity(0.8)

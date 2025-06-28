@@ -11,14 +11,27 @@ struct OnboardingGradients {
         endPoint: .bottom
     )
     
-    static let cardBackground = LinearGradient(
-        colors: [
-            Color.white.opacity(0.95),
-            Color("CustomPrimary").opacity(0.1)
-        ],
-        startPoint: .top,
-        endPoint: .bottom
-    )
+    static func cardBackground(for colorScheme: ColorScheme) -> LinearGradient {
+        if colorScheme == .dark {
+            return LinearGradient(
+                colors: [
+                    Color(.secondarySystemBackground).opacity(0.95),
+                    Color("CustomPrimary").opacity(0.08)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        } else {
+            return LinearGradient(
+                colors: [
+                    Color.white.opacity(0.95),
+                    Color("CustomPrimary").opacity(0.1)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        }
+    }
 }
 
 // Shared feature icon
@@ -96,7 +109,7 @@ public struct GoalToggle: View {
                     .stroke(isSelected ? Color("CustomPrimary") : Color("CustomSecondary").opacity(0.3), lineWidth: 2)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(OnboardingGradients.cardBackground)
+                            .fill(OnboardingGradients.cardBackground(for: .light))
                     )
             )
             .shadow(color: isSelected ? Color("CustomPrimary").opacity(0.15) : Color.black.opacity(0.05), radius: 8, x: 0, y: 4)

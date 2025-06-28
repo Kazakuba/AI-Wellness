@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct OnboardingNotificationsScreen: View {
+    @Environment(\.colorScheme) var colorScheme
     @Binding var dailyAffirmation: Bool
     @Binding var streaks: Bool
     @Binding var journaling: Bool
@@ -41,7 +42,7 @@ struct OnboardingNotificationsScreen: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 24)
-                .fill(OnboardingGradients.cardBackground)
+                .fill(OnboardingGradients.cardBackground(for: colorScheme))
         )
         .shadow(color: Color("CustomPrimary").opacity(0.1), radius: 16, x: 0, y: 8)
         .padding(.horizontal, 16)
