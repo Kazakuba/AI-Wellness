@@ -31,7 +31,7 @@ struct SettingsView: View {
                     accountRow(user: viewModel.user)
                 }
 
-                // Preferences Section (NEW)
+                // Preferences Section
                 Section(header: Text("Preferences").foregroundColor(dynamicTextColor)) {
                     ToggleRow(icon: "moon.fill", title: "Dark Mode", isOn: $viewModel.isDarkMode, color: .gray)
                     ToggleRow(icon: "bell.fill", title: "Enable Notifications", isOn: $viewModel.notificationsEnabled, color: .pink)
@@ -42,25 +42,27 @@ struct SettingsView: View {
                         .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                         .foregroundColor(dynamicTextColor)
                     }
-                }
-
-                // Account Management
-                Section(header: isMatch(searchText: searchText, text: "Account Management") ? Text("Account Management").foregroundColor(dynamicTextColor) : nil) {
-                    if isMatch(searchText: searchText, text: "Account Settings") {
-                        NavigationRow(icon: "gearshape.fill", title: "Account Settings", destination: AccountSettingsView(), color: .gray)
-                    }
                     if isMatch(searchText: searchText, text: "Danger Zone") {
                         NavigationRow(icon: "exclamationmark.triangle.fill", title: "Danger Zone", destination: DangerZoneView().environmentObject(ChatStore.shared), color: .red)
-                    }
-                    if isMatch(searchText: searchText, text: "Personal Affirmations") {
-                        NavigationRow(icon: "person.bubble.fill", title: "Personal Affirmations", destination: AffirmationsSettingsView(viewModel: SettingsViewModel()), color: .teal)
                     }
                 }
 
                 // About & Support
                 Section(header: isMatch(searchText: searchText, text: "About & Support") ? Text("About & Support").foregroundColor(dynamicTextColor) : nil) {
-                    if isMatch(searchText: searchText, text: "About Us") {
-                        NavigationRow(icon: "info.circle.fill", title: "About Us", destination: AboutUsView(), color: .blue)
+                    if isMatch(searchText: searchText, text: "GitHub") {
+                        Button(action: {
+                            if let url = URL(string: "https://github.com/kazakuba/ai-wellness") {
+                                UIApplication.shared.open(url)
+                            }
+                        }) {
+                            HStack {
+                                Image(systemName: "chevron.left.slash.chevron.right")
+                                    .foregroundColor(.yellow)
+                                Text("GitHub")
+                                    .foregroundColor(dynamicTextColor)
+                            }
+                        }
+                        .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
                     }
                     if isMatch(searchText: searchText, text: "App Info") {
                         NavigationRow(icon: "info.bubble.fill", title: "App Info", destination: AppInfoView(), color: .purple)
