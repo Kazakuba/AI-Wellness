@@ -33,8 +33,8 @@ struct SettingsView: View {
 
                 // Preferences Section
                 Section(header: Text("Preferences").foregroundColor(dynamicTextColor)) {
-                    ToggleRow(icon: "moon.fill", title: "Dark Mode", isOn: $viewModel.isDarkMode, color: .gray)
-                    ToggleRow(icon: "bell.fill", title: "Enable Notifications", isOn: $viewModel.notificationsEnabled, color: .pink)
+                    ToggleRow(icon: "moon.fill", title: "Dark Mode", isOn: $viewModel.isDarkMode, color: .indigo)
+                    ToggleRow(icon: "bell.fill", title: "Enable Notifications", isOn: $viewModel.notificationsEnabled, color: .orange)
                     if viewModel.notificationsEnabled {
                         NavigationLink("Manage Specific Notifications") {
                             ManageNotificationsView()

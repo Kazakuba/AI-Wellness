@@ -27,7 +27,9 @@ struct ManageNotificationsView: View {
         }
         .navigationTitle("Manage Notifications")
         .navigationBarTitleDisplayMode(.inline)
+        
     }
+
 
     private func scheduleNotifications(for type: String, isEnabled: Bool) {
         let center = UNUserNotificationCenter.current()

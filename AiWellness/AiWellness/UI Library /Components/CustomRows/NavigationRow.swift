@@ -18,7 +18,7 @@ struct NavigationRow<Destination: View>: View {
         NavigationLink(destination: destination) {
             HStack {
                 Image(systemName: icon)
-                    .foregroundColor(isDarkMode ? .white : .black)
+                    .foregroundColor(color)
                     .frame(width: 30, height: 30)
                     .background(Color(.tertiarySystemFill))
                     .clipShape(RoundedRectangle(cornerRadius: 8))
