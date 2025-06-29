@@ -69,7 +69,9 @@ class BreathingExerciseViewModel: ObservableObject {
                         if !hasBreathBefore {
                             defaults.set(true, forKey: breathKey)
                             // Unlock "First Breath" achievement
-                            GamificationManager.shared.incrementAchievement("first_breath")
+                            if GamificationManager.shared.incrementAchievement("first_breath") {
+                                ConfettiManager.shared.celebrate()
+                            }
                             GamificationManager.shared.save()
                         }
                         
@@ -79,7 +81,9 @@ class BreathingExerciseViewModel: ObservableObject {
                         completedSessions += 1
                         defaults.set(completedSessions, forKey: breathworkProKey)
                         // Update Breathwork Pro badge progress
-                        GamificationManager.shared.incrementBadge("breathwork_pro")
+                        if GamificationManager.shared.incrementBadge("breathwork_pro") {
+                            ConfettiManager.shared.celebrate()
+                        }
                         GamificationManager.shared.save()
                         
                         // Notify that the exercise is complete

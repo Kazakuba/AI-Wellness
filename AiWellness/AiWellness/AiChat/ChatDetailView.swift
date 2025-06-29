@@ -138,7 +138,9 @@ struct ChatDetailView: View {
                         let hasChattedBefore = defaults.bool(forKey: chatKey)
                         if !hasChattedBefore {
                             defaults.set(true, forKey: chatKey)
-                            GamificationManager.shared.incrementAchievement("ai_chat_starter")
+                            if GamificationManager.shared.incrementAchievement("ai_chat_starter") {
+                                ConfettiManager.shared.celebrate()
+                            }
                             GamificationManager.shared.save()
                         }
                         
@@ -147,7 +149,9 @@ struct ChatDetailView: View {
                         var completedSessions = defaults.integer(forKey: aiConversationalistKey)
                         completedSessions += 1
                         defaults.set(completedSessions, forKey: aiConversationalistKey)
-                        GamificationManager.shared.incrementBadge("ai_conversationalist")
+                        if GamificationManager.shared.incrementBadge("ai_conversationalist") {
+                            ConfettiManager.shared.celebrate()
+                        }
                         GamificationManager.shared.save()
                         
                         if chat.messages.isEmpty {

@@ -106,8 +106,9 @@ struct AffirmationsView: View {
                                     let previousShareCount = defaults.integer(forKey: shareKey)
                                     let newShareCount = previousShareCount + 1
                                     defaults.set(newShareCount, forKey: shareKey)
-                                    // Update badge progress using milestone-based system
-                                    GamificationManager.shared.incrementBadge("social_sharer", by: 1)
+                                    if GamificationManager.shared.incrementBadge("social_sharer", by: 1) {
+                                        ConfettiManager.shared.celebrate()
+                                    }
                                 }
                                 rootVC.present(av, animated: true, completion: nil)
                             }
@@ -183,17 +184,19 @@ struct AffirmationsView: View {
 
     private func handleAffirmationUnlock(fromShake: Bool = false) {
         if fromShake {
-            // --- Shake it Up achievement logic ---
             let uid = GamificationManager.shared.getUserUID() ?? "default"
             let shakeKey = "shake_it_up_\(uid)"
             let defaults = UserDefaults.standard
             let hasShakenBefore = defaults.bool(forKey: shakeKey)
             if !hasShakenBefore {
                 defaults.set(true, forKey: shakeKey)
-                // Unlock "Shake it Up!" achievement on first shake
-                GamificationManager.shared.incrementAchievement("shake_it_up")
+                if GamificationManager.shared.incrementAchievement("shake_it_up") {
+                    ConfettiManager.shared.celebrate()
+                }
             }
-            GamificationManager.shared.incrementBadge("shaker")
+            if GamificationManager.shared.incrementBadge("shaker") {
+                ConfettiManager.shared.celebrate()
+            }
         }
         // --- Streak logic ---
         let uid = GamificationManager.shared.getUserUID() ?? "default"

@@ -62,7 +62,9 @@ class AffirmationsViewModel: ObservableObject {
         if wasInserted {
             defaults.set(Array(topics), forKey: explorerKey)
             // Update badge progress using milestone-based system
-            GamificationManager.shared.incrementBadge("explorer")
+            if GamificationManager.shared.incrementBadge("explorer") {
+                ConfettiManager.shared.celebrate()
+            }
             GamificationManager.shared.save()
         }
         // Do NOT lock again when changing topic
@@ -87,7 +89,9 @@ class AffirmationsViewModel: ObservableObject {
     func saveAffirmation(_ affirmation: Affirmation) {
         saveAffirmationUseCase.execute(affirmation)
         // Unlock "First Affirmation" achievement if not already unlocked
-        GamificationManager.shared.incrementAchievement("first_affirmation")
+        if GamificationManager.shared.incrementAchievement("first_affirmation") {
+            ConfettiManager.shared.celebrate()
+        }
         // --- Collector logic ---
         let uid = GamificationManager.shared.getUserUID() ?? "default"
         let collectorKey = "collector_count_\(uid)"
@@ -103,7 +107,9 @@ class AffirmationsViewModel: ObservableObject {
             let count = savedIds.count
             defaults.set(count, forKey: collectorKey)
             // Update badge progress using milestone-based system
-            GamificationManager.shared.incrementBadge("collector")
+            if GamificationManager.shared.incrementBadge("collector") {
+                ConfettiManager.shared.celebrate()
+            }
             GamificationManager.shared.save()
         }
         loadSavedAffirmations()
