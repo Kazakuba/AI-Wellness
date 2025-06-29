@@ -83,17 +83,7 @@ struct BreathingExerciseView: View {
                             .padding(.leading, 8)
 
                             Spacer()
-                            
-                            Button(action: {
-                                showCustomizationSheet = true
-                            }) {
-                                Image(systemName: "slider.horizontal.3")
-                                    .font(.title2)
-                                    .foregroundColor(isDarkMode ? .white : .black)
-                                    .padding()
-                            }
                         }
-                        .padding(.top, 32)
                         .transition(.move(edge: .top))
                         .animation(.easeInOut, value: showControls)
                     }
