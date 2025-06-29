@@ -35,6 +35,14 @@ struct AppRootView: View {
             NotificationCenter.default.addObserver(forName: Notification.Name("RestartOnboarding"), object: nil, queue: .main) { _ in
                 showOnboarding = true
             }
+            NotificationCenter.default.addObserver(forName: Notification.Name("UserDidLogout"), object: nil, queue: .main) { _ in
+                authService.isAuthenticated = false
+            }
+        }
+        .onChange(of: authService.isAuthenticated) { oldValue, newValue in
+            if newValue {
+                showOnboarding = shouldShowOnboarding()
+            }
         }
     }
     

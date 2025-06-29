@@ -66,4 +66,10 @@ class WritingDataManager {
         decoder.dateDecodingStrategy = .iso8601
         return (try? decoder.decode([Date: String].self, from: data)) ?? [:]
     }
+
+    // Delete all entries for the current user
+    func deleteAllEntries() {
+        guard let uid = currentGoogleUID() else { return }
+        defaults.removeObject(forKey: storageKey + uid)
+    }
 }
