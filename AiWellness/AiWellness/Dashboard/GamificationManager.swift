@@ -89,7 +89,7 @@ class GamificationManager: ObservableObject {
     ]
     
     // MARK: - Public API
-    func incrementAchievement(_ id: String, by amount: Int = 1) {
+    func incrementAchievement(_ id: String, by amount: Int = 1) -> Bool {
         if let idx = achievements.firstIndex(where: { $0.id == id }) {
             var ach = achievements[idx]
             if !ach.isUnlocked {
@@ -101,14 +101,19 @@ class GamificationManager: ObservableObject {
                     if id == "hidden_time_capsule" {
                         ach.title = "Time Travel"
                     }
+                    achievements[idx] = ach
+                    save()
+                    return true
                 }
                 achievements[idx] = ach
                 save()
             }
         }
+        return false
     }
 
-    func incrementBadge(_ id: String, by amount: Int = 1) {
+    func incrementBadge(_ id: String, by amount: Int = 1) -> Bool {
+        var didLevelUp = false
         if let idx = badges.firstIndex(where: { $0.id == id }) {
             var badge = badges[idx]
             badge.progress += amount
@@ -119,6 +124,7 @@ class GamificationManager: ObservableObject {
                     badge.progress -= milestones[nextMilestoneIndex]
                     badge.level += 1
                     addXP(badgeXP[id] ?? 10)
+                    didLevelUp = true
                 } else {
                     break
                 }
@@ -128,6 +134,7 @@ class GamificationManager: ObservableObject {
             badges[idx] = badge
             save()
         }
+        return didLevelUp
     }
     
     // Special method for consistency badge that tracks streak value

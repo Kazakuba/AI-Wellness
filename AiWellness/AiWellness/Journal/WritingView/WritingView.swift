@@ -79,6 +79,7 @@ struct WritingView: View {
                 
                 let uid = GamificationManager.shared.getUserUID() ?? "default"
                 let defaults = UserDefaults.standard
+                var didCelebrate = false
                 
                 // Journal Initiate achievement logic
                 let journalKey = "journal_initiate_\(uid)"
@@ -86,7 +87,9 @@ struct WritingView: View {
                 if !hasWrittenBefore {
                     defaults.set(true, forKey: journalKey)
                     // Unlock "Journal Initiate" achievement
-                    GamificationManager.shared.incrementAchievement("journal_initiate")
+                    if GamificationManager.shared.incrementAchievement("journal_initiate") {
+                        didCelebrate = true
+                    }
                 }
                 
                 // Journal Master badge logic
@@ -97,11 +100,15 @@ struct WritingView: View {
                     completedDates.insert(dateString)
                     defaults.set(Array(completedDates), forKey: journalMasterKey)
                     // Update Journal Master badge progress
-                    GamificationManager.shared.incrementBadge("journal_master")
+                    if GamificationManager.shared.incrementBadge("journal_master") {
+                        didCelebrate = true
+                    }
                 }
                 
                 GamificationManager.shared.save()
-                ConfettiManager.shared.celebrate()
+                if didCelebrate {
+                    ConfettiManager.shared.celebrate()
+                }
             }
     }
     
