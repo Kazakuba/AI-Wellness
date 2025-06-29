@@ -9,7 +9,9 @@ struct BreathingPatterns {
         "Triangle": (inhale: 4, hold1: 0, exhale: 6, hold2: 0), // 4-6 breathing
         "Calm": (inhale: 4, hold1: 7, exhale: 8, hold2: 0),  // 4-7-8 breathing
         "Energy": (inhale: 6, hold1: 2, exhale: 4, hold2: 0),  // Energizing breath
-        "Focus": (inhale: 5, hold1: 2, exhale: 7, hold2: 0)   // Focus breathing
+        "Focus": (inhale: 5, hold1: 2, exhale: 7, hold2: 0),   // Focus breathing
+        "Wave": (inhale: 5, hold1: 0, exhale: 5, hold2: 0),    // Ocean breathing
+        "Spiral": (inhale: 6, hold1: 3, exhale: 6, hold2: 0)   // Spiral breathing
     ]
     
     static func getPattern(for animationType: String) -> (inhale: Double, hold1: Double, exhale: Double, hold2: Double) {
@@ -20,14 +22,14 @@ struct BreathingPatterns {
 // MARK: - Theme Categories
 struct ThemeCategories {
     static let categories: [String: [String]] = [
-        "Stress Relief": ["Square", "Calm"],
-        "Sleep": ["Calm", "Circle"],
-        "Energy": ["Energy", "Triangle"],
-        "Focus": ["Focus", "Square"],
-        "Beginner": ["Circle", "Square"]
+        "Stress Relief": ["Square", "Calm", "Wave"],
+        "Sleep": ["Calm", "Circle", "Wave"],
+        "Energy": ["Energy", "Triangle", "Spiral"],
+        "Focus": ["Focus", "Square", "Spiral"],
+        "Beginner": ["Circle", "Square", "Wave"]
     ]
     
-    static let allThemes = ["Square", "Circle", "Triangle", "Calm", "Energy", "Focus"]
+    static let allThemes = ["Square", "Circle", "Triangle", "Calm", "Energy", "Focus", "Wave", "Spiral"]
     
     static func getThemesForCategory(_ category: String) -> [String] {
         if category == "All" {
@@ -45,7 +47,9 @@ struct BreathingInstructions {
         "Triangle": "Extended exhale: Inhale for 4 counts and exhale for 6. This extended exhale pattern activates your parasympathetic nervous system, reducing anxiety.",
         "Calm": "4-7-8 breathing: Inhale for 4 counts, hold for 7, and exhale for 8. This powerful relaxation technique can help with sleep and anxiety.",
         "Energy": "Energizing breath: Inhale for 6, hold briefly for 2, and exhale for 4. This pattern increases alertness and energy levels.",
-        "Focus": "Focus breathing: Inhale for 5, hold for 2, exhale for 7. This technique improves mental clarity and concentration for tasks requiring attention."
+        "Focus": "Focus breathing: Inhale for 5, hold for 2, exhale for 7. This technique improves mental clarity and concentration for tasks requiring attention.",
+        "Wave": "Ocean breathing: Inhale and exhale for equal counts of 5. This rhythmic pattern mimics ocean waves, promoting deep relaxation and mindfulness.",
+        "Spiral": "Spiral breathing: Inhale for 6, hold for 3, exhale for 6. This expanding pattern helps release tension and creates a sense of inner peace."
     ]
     
     static func getInstructions(for type: String) -> String {
@@ -82,6 +86,10 @@ struct AnimationVisuals {
             return "bolt"
         case "Focus":
             return "brain"
+        case "Wave":
+            return "wave.3.right"
+        case "Spiral":
+            return "sparkles"
         default:
             return "circle"
         }
@@ -101,6 +109,10 @@ struct AnimationVisuals {
             return Color.orange
         case "Focus":
             return Color(red: 0.6, green: 0.1, blue: 0.3) // Dark pink/maroon
+        case "Wave":
+            return Color.teal
+        case "Spiral":
+            return Color.indigo
         default:
             return Color.blue
         }
