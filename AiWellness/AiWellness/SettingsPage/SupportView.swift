@@ -15,15 +15,27 @@ struct SupportView: View {
         List {
             // Legal & Help Section
             Section(header: Text("Legal & Help").foregroundColor(isDarkMode ? .white : .black)) {
-                NavigationLink(destination: Text("Terms of Service Content Here").foregroundColor(isDarkMode ? .white : .black).background(isDarkMode ? Color.black : Color.white)) {
+                Button(action: {
+                    if let url = URL(string: "https://www.google.com") {
+                        UIApplication.shared.open(url)
+                    }
+                }) {
                     Text("Terms of Service").foregroundColor(isDarkMode ? .white : .black)
                 }
                 .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
-                NavigationLink(destination: Text("Privacy Policy Content Here").foregroundColor(isDarkMode ? .white : .black).background(isDarkMode ? Color.black : Color.white)) {
+                Button(action: {
+                    if let url = URL(string: "https://www.google.com") {
+                        UIApplication.shared.open(url)
+                    }
+                }) {
                     Text("Privacy Policy").foregroundColor(isDarkMode ? .white : .black)
                 }
                 .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
-                NavigationLink(destination: Text("Help & Features Guide Coming Soon").foregroundColor(isDarkMode ? .white : .black).background(isDarkMode ? Color.black : Color.white)) {
+                Button(action: {
+                    if let url = URL(string: "https://www.google.com") {
+                        UIApplication.shared.open(url)
+                    }
+                }) {
                     Text("Help").foregroundColor(isDarkMode ? .white : .black)
                 }
                 .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)

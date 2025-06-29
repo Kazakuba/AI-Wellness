@@ -5,6 +5,7 @@ struct ManageNotificationsView: View {
     @AppStorage("dailyAffirmationEnabled") private var dailyAffirmation = true
     @AppStorage("streaksEnabled") private var streaks = true
     @AppStorage("journalingEnabled") private var journaling = false
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
 
     var body: some View {
         Form {
@@ -27,7 +28,10 @@ struct ManageNotificationsView: View {
         }
         .navigationTitle("Manage Notifications")
         .navigationBarTitleDisplayMode(.inline)
-        
+        .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(isDarkMode ? .dark : .light, for: .navigationBar)
+        .tint(isDarkMode ? .white : .black)
     }
 
 
