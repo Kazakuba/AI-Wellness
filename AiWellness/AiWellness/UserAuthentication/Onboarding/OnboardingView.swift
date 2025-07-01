@@ -17,8 +17,8 @@ struct OnboardingView: View {
     ]
     
     // Step 4: Notifications
-    @State private var dailyAffirmation = true
-    @State private var streaks = true
+    @State private var dailyAffirmation = false
+    @State private var streaks = false
     @State private var journaling = false
     
     var body: some View {
