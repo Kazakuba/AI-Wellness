@@ -13,6 +13,7 @@ struct GamifiedDashboardHeaderView: View {
     @State private var dailyStreak: Int = 0
     @State private var confettiTrigger: Int = 0
     @State private var lastCelebratedLevel: Int = 1
+    @State private var animateGradient = false
     // Placeholder values for now
     var level: Int = 3
     var currentXP: Int = 120
@@ -60,8 +61,18 @@ struct GamifiedDashboardHeaderView: View {
                 }
                 Spacer()
                 HStack(spacing: 6) {
-                    Image(systemName: "flame.fill")
-                        .foregroundColor(.orange)
+                    // Animated flame icon
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.orange, Color.yellow, Color.red]),
+                        startPoint: animateGradient ? .topLeading : .topTrailing,
+                        endPoint: animateGradient ? .bottomTrailing : .bottom
+                    )
+                    .frame(width: 28, height: 28)
+                    .mask(
+                        Image(systemName: "flame.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    )
                     Text("\(dailyStreak) days")
                         .font(.headline)
                         .foregroundColor(isDarkMode ? .white : .black)
@@ -75,8 +86,8 @@ struct GamifiedDashboardHeaderView: View {
                                     [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
                                     [Color(red: 1.0, green: 0.6, blue: 0.4), Color(red: 1.0, green: 0.8, blue: 0.6)]
                                 ),
-                                startPoint: .topTrailing,
-                                endPoint: .bottom
+                                startPoint: animateGradient ? .topLeading : .topTrailing,
+                                endPoint: animateGradient ? .bottomTrailing : .bottom
                             )
                         )
                         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -116,6 +127,11 @@ struct GamifiedDashboardHeaderView: View {
                 ConfettiManager.shared.celebrate()
                 lastCelebratedLevel = gamification.level
                 defaults.set(lastCelebratedLevel, forKey: lastLevelKey)
+            }
+            // Animate only the streak badge, speed depends on streak
+            let speed = max(0.5, 3.0 - Double(dailyStreak) * 0.1)
+            withAnimation(Animation.linear(duration: speed).repeatForever(autoreverses: true)) {
+                animateGradient.toggle()
             }
         }
         .onChange(of: gamification.level) { oldLevel, newLevel in
