@@ -42,7 +42,30 @@ struct ChatListView: View {
                         .foregroundColor(isDarkMode ? .white : .black)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.red)
+                        .background(
+                            LinearGradient(
+                                gradient: Gradient(colors: isDarkMode ?
+                                                   [Color.white.opacity(0.35), Color.white.opacity(0.25)] :
+                                                    [Color.white.opacity(0.45), Color.white.opacity(0.35)]
+                                                  ),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: isDarkMode ?
+                                                           [Color.white.opacity(0.5), Color.white.opacity(0.3)] :
+                                                            [Color.white.opacity(0.6), Color.white.opacity(0.4)]
+                                                          ),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: 1.5
+                                )
+                        )
                         .cornerRadius(8)
                         .padding(.horizontal)
                         .padding(.top, 8)
@@ -57,7 +80,16 @@ struct ChatListView: View {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
-                            .listRowBackground(Color.white.opacity(0.15))
+                            .listRowBackground(
+                                LinearGradient(
+                                    gradient: Gradient(colors: isDarkMode ?
+                                                       [Color.white.opacity(0.3), Color.white.opacity(0.2)] :
+                                                        [Color.white.opacity(0.4), Color.white.opacity(0.3)]
+                                                      ),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
                         }
                         .onDelete { deleteChat(at: $0, from: todayChats) }
                     }
@@ -68,7 +100,16 @@ struct ChatListView: View {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
-                            .listRowBackground(Color.white.opacity(0.15))
+                            .listRowBackground(
+                                LinearGradient(
+                                    gradient: Gradient(colors: isDarkMode ?
+                                                       [Color.white.opacity(0.3), Color.white.opacity(0.2)] :
+                                                        [Color.white.opacity(0.4), Color.white.opacity(0.3)]
+                                                      ),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
                         }
                         .onDelete { deleteChat(at: $0, from: sevenDayChats) }
                     }
@@ -79,7 +120,16 @@ struct ChatListView: View {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
-                            .listRowBackground(Color.white.opacity(0.15))
+                            .listRowBackground(
+                                LinearGradient(
+                                    gradient: Gradient(colors: isDarkMode ?
+                                                       [Color.white.opacity(0.3), Color.white.opacity(0.2)] :
+                                                        [Color.white.opacity(0.4), Color.white.opacity(0.3)]
+                                                      ),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
                         }
                         .onDelete { deleteChat(at: $0, from: thirtyDayChats) }
                     }
