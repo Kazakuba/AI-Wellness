@@ -14,7 +14,7 @@ struct MoreOptionsView: View {
                 .font(.title)
                 .padding()
             Spacer()
-            Text("To be added")
+            Text("What more could you want?")
             Spacer()
         }
     }

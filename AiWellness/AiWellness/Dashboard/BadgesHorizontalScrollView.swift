@@ -5,6 +5,7 @@ struct BadgesHorizontalScrollView: View {
     @ObservedObject var gamification = GamificationManager.shared
     @State private var showInfoSheet = false
     @State private var selectedBadge: Badge? = nil
+    @State private var animateGradient = false
 
     var showBadgeSheet: Binding<Bool> {
         Binding(
@@ -85,12 +86,13 @@ struct BadgesHorizontalScrollView: View {
                                                 [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
                                                 [Color(red: 1.0, green: 0.6, blue: 0.4), Color(red: 1.0, green: 0.8, blue: 0.6)]
                                             ),
-                                            startPoint: .topTrailing,
-                                            endPoint: .bottom
+                                            startPoint: animateGradient ? .topLeading : .topTrailing,
+                                            endPoint: animateGradient ? .bottomTrailing : .bottom
                                         )
                                     )
                                     .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
-                            )}
+                            )
+                        }
                     }
                 }
                 .padding(.horizontal, 8)
@@ -164,6 +166,11 @@ struct BadgesHorizontalScrollView: View {
             }
             .frame(maxWidth: .infinity)
             .background(Color(.systemBackground))
+        }
+        .onAppear {
+            withAnimation(Animation.linear(duration: 3.0).repeatForever(autoreverses: true)) {
+                animateGradient.toggle()
+            }
         }
     }
 }
