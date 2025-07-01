@@ -64,7 +64,30 @@ struct AffirmationsView: View {
                                 .font(.headline)
                                 .padding(.horizontal, 32)
                                 .padding(.vertical, 16)
-                                .background(Color.blue)
+                                .background(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: isDarkMode ?
+                                                           [Color.indigo, Color.black] :
+                                                            [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]
+                                                          ),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 24)
+                                        .stroke(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: isDarkMode ?
+                                                                   [Color.white.opacity(0.5), Color.indigo.opacity(0.3)] :
+                                                                    [Color.white.opacity(0.5), Color.orange.opacity(0.3)]
+                                                                 ),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            ),
+                                            lineWidth: 1.5
+                                        )
+                                )
                                 .foregroundColor(isDarkMode ? .white : .black)
                                 .cornerRadius(24)
                                 .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
