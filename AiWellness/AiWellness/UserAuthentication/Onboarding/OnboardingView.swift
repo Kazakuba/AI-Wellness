@@ -89,13 +89,22 @@ struct OnboardingView: View {
                 HStack {
                     Button(action: { if currentStep > 0 { currentStep -= 1 } }) {
                         Text("Back")
-                            .foregroundColor(currentStep > 0 ? .white : Color.white.opacity(0.7))
+                            .foregroundColor(.white)
                             .fontWeight(.bold)
                             .padding(.horizontal, 28)
                             .padding(.vertical, 14)
-                            .background(currentStep > 0 ? Color("CustomPrimary") : Color("CustomPrimary").opacity(0.3))
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Color(red: 0.63, green: 0.35, blue: 1.0), // Rich purple
+                                        Color(red: 1.0, green: 0.65, blue: 0.4)    // Rich orange
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ).opacity(currentStep > 0 ? 0.95 : 0.3)
+                            )
                             .cornerRadius(12)
-                            .shadow(color: currentStep > 0 ? Color("CustomPrimary").opacity(0.18) : .clear, radius: 6, x: 0, y: 2)
+                            .shadow(color: currentStep > 0 ? Color.purple.opacity(0.18) : .clear, radius: 6, x: 0, y: 2)
                     }
                     .disabled(currentStep == 0)
                     Spacer()
@@ -106,9 +115,18 @@ struct OnboardingView: View {
                                 .fontWeight(.bold)
                                 .padding(.horizontal, 28)
                                 .padding(.vertical, 14)
-                                .background(Color("CustomPrimary"))
+                                .background(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            Color(red: 0.63, green: 0.35, blue: 1.0),
+                                            Color(red: 1.0, green: 0.65, blue: 0.4)
+                                        ]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ).opacity(0.95)
+                                )
                                 .cornerRadius(12)
-                                .shadow(color: Color("CustomPrimary").opacity(0.18), radius: 6, x: 0, y: 2)
+                                .shadow(color: Color.purple.opacity(0.18), radius: 6, x: 0, y: 2)
                         }
                     } else {
                         Button(action: { completeOnboarding() }) {
@@ -117,9 +135,18 @@ struct OnboardingView: View {
                                 .fontWeight(.bold)
                                 .padding(.horizontal, 28)
                                 .padding(.vertical, 14)
-                                .background(Color("CustomPrimary"))
+                                .background(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            Color(red: 0.63, green: 0.35, blue: 1.0),
+                                            Color(red: 1.0, green: 0.65, blue: 0.4)
+                                        ]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ).opacity(0.95)
+                                )
                                 .cornerRadius(12)
-                                .shadow(color: Color("CustomPrimary").opacity(0.18), radius: 6, x: 0, y: 2)
+                                .shadow(color: Color.purple.opacity(0.18), radius: 6, x: 0, y: 2)
                         }
                     }
                 }

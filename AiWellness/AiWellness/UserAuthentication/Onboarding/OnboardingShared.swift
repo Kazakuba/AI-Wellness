@@ -106,7 +106,7 @@ public struct GoalToggle: View {
             .padding(.horizontal)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Color("CustomPrimary") : Color("CustomSecondary").opacity(0.3), lineWidth: 2)
+                    .stroke(isSelected ? Color("CustomPrimary") : Color.purple.opacity(0.18), lineWidth: 2)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
                             .fill(OnboardingGradients.cardBackground(for: .light))
