@@ -28,6 +28,7 @@ struct ToggleRow: View {
 
             Toggle(title, isOn: $isOn)
                 .foregroundColor(isDarkMode ? .white : .black)
+                .tint(.green)
                 .onChange(of: isOn) {
                     iconScale = 1.2
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
