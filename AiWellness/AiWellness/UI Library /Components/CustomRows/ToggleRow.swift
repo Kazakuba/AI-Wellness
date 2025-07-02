@@ -2,7 +2,7 @@
 //  ToggleRow.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 10. 3. 25.
+//  Created by Kazakuba on 10. 3. 25.
 //
 
 import SwiftUI

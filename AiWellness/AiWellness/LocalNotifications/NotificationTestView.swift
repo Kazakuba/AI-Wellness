@@ -2,7 +2,7 @@
 //  NotificationTestView.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 23. 4. 25.
+//  Created by Kazakuba on 23. 4. 25.
 //
 
 import SwiftUI

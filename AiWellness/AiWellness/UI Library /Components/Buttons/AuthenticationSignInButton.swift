@@ -2,7 +2,7 @@
 //  AuthenticationButton.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 2. 1. 25.
+//  Created by Kazakuba on 2. 1. 25.
 //
 
 import SwiftUI

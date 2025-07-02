@@ -2,7 +2,7 @@
 //  AppState.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 5. 6. 25.
+//  Created by Kazakuba on 5. 6. 25.
 //
 
 import Foundation

@@ -2,7 +2,7 @@
 //  AppRootView.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 7. 1. 25.
+//  Created by Kazakuba on 7. 1. 25.
 //
 
 import SwiftUI

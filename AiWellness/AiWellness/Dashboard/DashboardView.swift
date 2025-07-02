@@ -2,7 +2,7 @@
 //  WelcomeScreen.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 27. 12. 24.
+//  Created by Kazakuba on 27. 12. 24.
 //
 
 import SwiftUI

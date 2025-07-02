@@ -2,7 +2,7 @@
 //  AuthenticationSignOutButton.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 10. 1. 25.
+//  Created by Kazakuba on 10. 1. 25.
 //
 
 import SwiftUI

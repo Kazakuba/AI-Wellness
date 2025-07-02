@@ -2,7 +2,7 @@
 //  SettingsViewModel.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 9. 2. 25.
+//  Created by Kazakuba on 9. 2. 25.
 //
 
 import SwiftUI

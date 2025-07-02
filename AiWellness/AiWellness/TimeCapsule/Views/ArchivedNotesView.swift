@@ -2,7 +2,7 @@
 //  ArchivedNotesView.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 6. 6. 25.
+//  Created by Kazakuba on 6. 6. 25.
 //
 
 import SwiftUI

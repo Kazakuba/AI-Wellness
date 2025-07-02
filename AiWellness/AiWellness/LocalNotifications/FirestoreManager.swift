@@ -2,7 +2,7 @@
 //  FirestoreManager.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 27. 4. 25.
+//  Created by Kazakuba on 27. 4. 25.
 //
 
 import Foundation

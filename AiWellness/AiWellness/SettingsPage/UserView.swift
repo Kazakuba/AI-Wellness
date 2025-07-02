@@ -2,7 +2,7 @@
 //  AccountSectionView.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 10. 2. 25.
+//  Created by Kazakuba on 10. 2. 25.
 //
 
 import SwiftUI

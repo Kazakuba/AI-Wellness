@@ -2,7 +2,7 @@
 //  NotificationReminderPromptView.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 11. 6. 25.
+//  Created by Kazakuba on 11. 6. 25.
 //
 
 import SwiftUI

@@ -2,7 +2,7 @@
 //  NotificationService.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 14. 1. 25.
+//  Created by Kazakuba on 14. 1. 25.
 //
 
 import UserNotifications

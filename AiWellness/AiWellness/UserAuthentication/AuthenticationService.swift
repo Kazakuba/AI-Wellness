@@ -2,7 +2,7 @@
 //  AuthenticationService.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 3. 1. 25.
+//  Created by Kazakuba on 3. 1. 25.
 //
 
 import Foundation

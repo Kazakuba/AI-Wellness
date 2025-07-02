@@ -2,7 +2,7 @@
 //  DeliveryTimeViewModel.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 24. 4. 25.
+//  Created by Kazakuba on 24. 4. 25.
 //
 
 import Foundation

@@ -2,7 +2,7 @@
 //  SavedAffirmationView.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 21. 5. 25.
+//  Created by Kazakuba on 21. 5. 25.
 //
 
 import SwiftUI

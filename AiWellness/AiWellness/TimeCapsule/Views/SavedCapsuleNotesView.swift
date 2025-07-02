@@ -2,7 +2,7 @@
 //  SavedCapsuleNotesView.swift
 //  AiWellness
 //
-//  Created by Lucija Iglič on 4. 6. 25.
+//  Created by Kazakuba on 4. 6. 25.
 //
 
 import SwiftUI
