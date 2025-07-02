@@ -67,7 +67,7 @@ class GamificationManager: ObservableObject {
     
     // MARK: - Achievement Definitions (Final List)
     private let achievementTemplates: [Achievement] = [
-        Achievement(id: "first_affirmation", title: "First Affirmation", systemImage: "sparkles", description: "Saved your first affirmation", isUnlocked: false, progress: 0, goal: 1),
+        Achievement(id: "first_affirmation", title: "1st Affirmation", systemImage: "sparkles", description: "Saved your first affirmation", isUnlocked: false, progress: 0, goal: 1),
         Achievement(id: "shake_it_up", title: "Shake it Up!", systemImage: "waveform.path.ecg", description: "Tried the shake feature", isUnlocked: false, progress: 0, goal: 1),
         Achievement(id: "journal_initiate", title: "Journal Initiate", systemImage: "book", description: "Wrote your first journal entry", isUnlocked: false, progress: 0, goal: 1),
         Achievement(id: "ai_chat_starter", title: "AI Chat Starter", systemImage: "message.circle", description: "First time chatting with the AI", isUnlocked: false, progress: 0, goal: 1),

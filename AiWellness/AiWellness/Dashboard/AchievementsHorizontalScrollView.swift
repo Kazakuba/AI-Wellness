@@ -27,7 +27,7 @@ struct AchievementsHorizontalScrollView: View {
                             VStack(spacing: 8) {
                                 Image(systemName: ach.systemImage)
                                     .font(.system(size: 28))
-                                    .foregroundColor(ach.isUnlocked ? (isDarkMode ? .yellow : .green) : (isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
+                                    .foregroundColor(ach.isUnlocked ? (isDarkMode ? .yellow : Color(red: 0.635, green: 0.349, blue: 1.0)) : (isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)))
                                 Text(ach.title)
                                     .font(.caption)
                                     .foregroundColor(ach.isUnlocked ? (isDarkMode ? .white : .black) : (isDarkMode ? .white.opacity(0.7) : .black.opacity(0.7)))
@@ -35,6 +35,7 @@ struct AchievementsHorizontalScrollView: View {
                                 if !ach.isUnlocked {
                                     ProgressView(value: Float(ach.progress), total: Float(ach.goal))
                                         .frame(width: 60)
+                                        .progressViewStyle(LinearProgressViewStyle(tint: Color(red: 0.635, green: 0.349, blue: 1.0)))
                                 }
                             }
                             .frame(width: 90, height: 90)
@@ -68,12 +69,12 @@ struct AchievementsHorizontalScrollView: View {
                         .padding(.top, 16)
                     Text(ach.isUnlocked ? "You unlocked this achievement!" : ach.description)
                         .font(.body)
-                        .foregroundColor(ach.isUnlocked ? .green : .primary)
+                        .foregroundColor(ach.isUnlocked ? Color(red: 0.635, green: 0.349, blue: 1.0) : .primary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 16)
                     let clampedProgress = min(max(ach.progress, 0), ach.goal)
                     ProgressView(value: Float(clampedProgress), total: Float(ach.goal))
-                        .progressViewStyle(LinearProgressViewStyle(tint: ach.isUnlocked ? .green : .blue))
+                        .progressViewStyle(LinearProgressViewStyle(tint: ach.isUnlocked ? Color(red: 0.635, green: 0.349, blue: 1.0) : Color(red: 0.635, green: 0.349, blue: 1.0)))
                         .frame(width: 180, height: 12)
                         .background(Color.gray.opacity(0.15).cornerRadius(6))
                         .padding(.top, 12)
