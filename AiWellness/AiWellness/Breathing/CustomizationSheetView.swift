@@ -24,7 +24,14 @@ struct CustomizationSheetView: View {
         // Navigation stack for iOS 16+
         NavigationView {
             customizationContent
-                .navigationBarTitle("Breathing Exercises", displayMode: .large)
+                .navigationBarTitleDisplayMode(.large)
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("Breathing Exercises")
+                            .font(.title.bold())
+                            .foregroundColor(isDarkMode ? .white : .black)
+                    }
+                }
                 .navigationBarItems(
                     leading: Button(action: { 
                         NotificationCenter.default.post(name: NSNotification.Name("DismissBreathingExercise"), object: nil)
@@ -44,8 +51,11 @@ struct CustomizationSheetView: View {
         }
         .accentColor(isDarkMode ? .white : .black)
         .background(
-            (isDarkMode ? LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.black]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color.mint, Color.cyan]), startPoint: .topLeading, endPoint: .bottomTrailing))
+            (isDarkMode ? LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.black]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]), startPoint: .topLeading, endPoint: .bottomTrailing))
                 .edgesIgnoringSafeArea(.all)
+        )
+        .presentationBackground(
+            isDarkMode ? LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.black]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]), startPoint: .topLeading, endPoint: .bottomTrailing)
         )
         .onAppear {
             // Initialize with all animations
@@ -64,7 +74,7 @@ struct CustomizationSheetView: View {
                 categorySelector
                 
                 // Animation themes
-                Text("Theme mixes")
+                Text("Select Theme")
                     .font(.system(size: 28, weight: .semibold))
                     .foregroundColor(isDarkMode ? .white : .black)
                     .padding(.horizontal)
@@ -85,7 +95,6 @@ struct CustomizationSheetView: View {
             }
             .padding(.bottom, 30)
         }
-        .background(Color.customSystemGray6)
     }
     
     private var categorySelector: some View {
@@ -100,12 +109,20 @@ struct CustomizationSheetView: View {
                         }) {
                             Text(category)
                                 .font(.system(size: 16, weight: .medium))
-                                .foregroundColor(selectedCategory == category ? .white : .black)
+                                .foregroundColor(
+                                    selectedCategory == category ?
+                                        (isDarkMode ? .white : .white) :
+                                        (isDarkMode ? .black : .black)
+                                )
                                 .padding(.horizontal, 22)
                                 .padding(.vertical, 12)
                                 .background(
                                     RoundedRectangle(cornerRadius: 25)
-                                        .fill(selectedCategory == category ? Color.black : Color.white)
+                                        .fill(
+                                            selectedCategory == category ?
+                                                (isDarkMode ? Color.indigo : Color.black) :
+                                                Color.white
+                                        )
                                 )
                         }
                     }
