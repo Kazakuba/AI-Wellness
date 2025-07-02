@@ -81,20 +81,33 @@ public struct GoalToggle: View {
     }
     
     public var body: some View {
+        let isDark = UITraitCollection.current.userInterfaceStyle == .dark
+        let borderColor: Color = isSelected
+            ? Color("CustomPrimary")
+            : (isDark ? Color.white.opacity(0.15) : Color.purple.opacity(0.18))
+        let fillColor: Color = isSelected
+            ? (isDark ? Color.white.opacity(0.10) : Color.white.opacity(0.95))
+            : (isDark ? Color.white.opacity(0.04) : Color.white.opacity(0.85))
+        let shadowColor: Color = isDark
+            ? Color.black.opacity(0.7)
+            : (isSelected ? Color("CustomPrimary").opacity(0.15) : Color.black.opacity(0.05))
+        let shadowRadius: CGFloat = isDark ? 12 : 8
+        let shadowY: CGFloat = isDark ? 8 : 4
+
         Button(action: onTap) {
             HStack {
                 ZStack {
                     Circle()
-                        .fill(isSelected ? Color("CustomPrimary").opacity(0.2) : Color("CustomSecondary").opacity(0.1))
+                        .fill(isSelected ? Color("CustomPrimary").opacity(isDark ? 0.25 : 0.2) : (isDark ? Color.white.opacity(0.08) : Color("CustomSecondary").opacity(0.1)))
                         .frame(width: 40, height: 40)
                     Image(systemName: icon)
-                        .foregroundColor(isSelected ? Color("CustomPrimary") : Color("CustomSecondary"))
+                        .foregroundColor(isSelected ? Color("CustomPrimary") : (isDark ? Color.white.opacity(0.7) : Color("CustomSecondary")))
                         .scaleEffect(isSelected ? 1.2 : 1.0)
                         .animation(.spring(), value: isSelected)
                 }
                 Text(label)
                     .font(.body)
-                    .foregroundColor(.primary)
+                    .foregroundColor(isDark ? .white : .primary)
                 Spacer()
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
@@ -106,13 +119,13 @@ public struct GoalToggle: View {
             .padding(.horizontal)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Color("CustomPrimary") : Color.purple.opacity(0.18), lineWidth: 2)
+                    .stroke(borderColor, lineWidth: 2)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(OnboardingGradients.cardBackground(for: .light))
+                            .fill(fillColor)
                     )
             )
-            .shadow(color: isSelected ? Color("CustomPrimary").opacity(0.15) : Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+            .shadow(color: shadowColor, radius: shadowRadius, x: 0, y: shadowY)
         }
         .buttonStyle(PlainButtonStyle())
     }
