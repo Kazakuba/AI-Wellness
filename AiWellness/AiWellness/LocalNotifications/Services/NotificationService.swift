@@ -8,12 +8,10 @@
 import UserNotifications
 import SwiftUI
 
-// Handeling local notifications
 class NotificationService: ObservableObject {
     static let shared = NotificationService()
     private let affirmationHistoryKey = "affirmationHistory"
     
-    // Request permission for notifications
     func requestPermission(completion: @escaping (Bool) -> Void) {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound,.badge]) { granted, _ in
             DispatchQueue.main.async {
@@ -21,23 +19,19 @@ class NotificationService: ObservableObject {
             }
         }
     }
-    // Check notification settings
     func checkNotificationAuthorization(completion: @escaping (Bool) -> Void) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             switch settings.authorizationStatus {
-                // Notifications fully allowed; Provisional notifications allowed; Temporary session-based authorization
             case .authorized, .provisional, .ephemeral:
                 completion(true)
-                // Notifications explicitly denied; User hasn't been asked for permission yet
             case .denied, .notDetermined:
                 completion(false)
-            @unknown default: // Catch any future unknown cases
+            @unknown default:
                 completion(false)
             }
         }
     }
     
-    // Enabling notifications
     func promptToEnableNotifications() {
         DispatchQueue.main.async {
             let alert = UIAlertController(
@@ -59,7 +53,6 @@ class NotificationService: ObservableObject {
         }
     }
     
-    // Scedule a notification for TimeCapsule
     func scheduleNotification(for note: TimeCapsuleNote, at date: Date, completion: @escaping (Result<Void, Error>) -> Void) {
         checkNotificationAuthorization { isAuthorized in
             guard isAuthorized else {
@@ -85,10 +78,7 @@ class NotificationService: ObservableObject {
             )
             
             let request = UNNotificationRequest(identifier: note.id.uuidString, content: content, trigger: trigger)
-            
-            //Removing any existing pending notification for this note
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [note.id.uuidString])
-            
             UNUserNotificationCenter.current().add(request) { error in
                 DispatchQueue.main.async {
                     if let error = error {
@@ -117,7 +107,7 @@ class NotificationService: ObservableObject {
             let request = UNNotificationRequest(
                 identifier: UUID().uuidString,
                 content: content,
-                trigger: nil // Send immediately
+                trigger: nil
             )
             
             UNUserNotificationCenter.current().add(request) { error in
@@ -138,9 +128,9 @@ class NotificationService: ObservableObject {
         
         var dateComponents = DateComponents()
         if frequency == "daily" {
-            dateComponents.hour = 9 // every day at 9 AM
+            dateComponents.hour = 9
         } else if frequency == "weekly" {
-            dateComponents.weekday = 2 // every Monday
+            dateComponents.weekday = 2
             dateComponents.hour = 9
         }
         
@@ -168,7 +158,7 @@ class NotificationService: ObservableObject {
         content.sound = .default
 
         var dateComponents = DateComponents()
-        dateComponents.hour = 9 // 9 AM daily
+        dateComponents.hour = 9
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         let request = UNNotificationRequest(identifier: "dailyAffirmationReminder", content: content, trigger: trigger)
@@ -189,7 +179,7 @@ class NotificationService: ObservableObject {
         content.sound = .default
 
         var dateComponents = DateComponents()
-        dateComponents.hour = 19 // 7 PM daily
+        dateComponents.hour = 19
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         let request = UNNotificationRequest(identifier: "streakReminder", content: content, trigger: trigger)
@@ -210,7 +200,7 @@ class NotificationService: ObservableObject {
         content.sound = .default
 
         var dateComponents = DateComponents()
-        dateComponents.hour = 20 // 8 PM daily
+        dateComponents.hour = 20
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         let request = UNNotificationRequest(identifier: "journalingReminder", content: content, trigger: trigger)
@@ -226,9 +216,7 @@ class NotificationService: ObservableObject {
     
     func sendPermissionConfirmationNotification() {
         let key = "confirmationNotificationSent"
-        
-        //Prevent sending it more than once
-        if UserDefaults.standard.bool(forKey: key) {
+            if UserDefaults.standard.bool(forKey: key) {
             print("Confirmation already sent. Skipping.")
             return
         }
@@ -241,7 +229,7 @@ class NotificationService: ObservableObject {
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: content,
-            trigger: nil // Send immediately
+            trigger: nil
         )
         
         UNUserNotificationCenter.current().add(request) { error in
@@ -249,7 +237,7 @@ class NotificationService: ObservableObject {
                 print("Failed to send confirmation: \(error)")
             } else {
                 print("Confirmation notification sent")
-                UserDefaults.standard.set(true, forKey: key) //Mark as sent
+                UserDefaults.standard.set(true, forKey: key)
             }
         }
     }
@@ -266,8 +254,8 @@ class NotificationService: ObservableObject {
             id: UUID(),
             text: text,
             date: date,
-            topic: nil,          // No topic from TimeCapsuleNote
-            isFavorite: false    // Default value
+            topic: nil,
+            isFavorite: false
         )
         
         history.append(newAffirmation)

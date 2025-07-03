@@ -40,7 +40,7 @@ struct DeliveryTimeView: View {
             }
         }
         .navigationTitle("Delivery Time")
-        .background(isDarkMode ? Color.black : Color.white)
+        .background(AppBackgroundGradient.main(isDarkMode))
         .scrollContentBackground(.hidden)
     }
 }

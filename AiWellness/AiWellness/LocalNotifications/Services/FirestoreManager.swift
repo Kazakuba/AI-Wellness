@@ -19,11 +19,10 @@ class FirestoreManager {
             "id": affirmation.id.uuidString,
             "text": affirmation.text,
             "date": Timestamp(date: affirmation.date),
-            "topic": affirmation.topic ?? "",           // optional handled
-            "isFavorite": affirmation.isFavorite        // store bool in Firestore
+            "topic": affirmation.topic ?? "",
+            "isFavorite": affirmation.isFavorite
         ]
-        
-        db.collection("affirmations")  // 👈 use plural
+        db.collection("affirmations")
             .document(affirmation.id.uuidString)
             .setData(data) { error in
                 if let error = error {
@@ -40,7 +39,6 @@ class FirestoreManager {
                 completion([])
                 return
             }
-            
             let affirmations: [Affirmation] = documents.compactMap { doc in
                 let data = doc.data()
                 guard
@@ -62,7 +60,6 @@ class FirestoreManager {
             completion(affirmations)
         }
     }
-    // Deleting saved affirmation from Firestore Database
     func deleteAffirmation(_ affirmation: Affirmation, completion: @escaping (Result<Void, Error>) -> Void) {
         db.collection("affirmations")
             .document(affirmation.id.uuidString)
@@ -76,24 +73,22 @@ class FirestoreManager {
     }
     
     func clearAllAffirmations(completion: @escaping (Result<Void, Error>) -> Void) {
-            let db = Firestore.firestore()
-            let affirmationsRef = db.collection("affirmations")
-
-            affirmationsRef.getDocuments { snapshot, error in
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-
-                let batch = db.batch()
-                snapshot?.documents.forEach { batch.deleteDocument($0.reference) }
-                batch.commit { err in
-                    if let err = err {
-                        completion(.failure(err))
-                    } else {
-                        completion(.success(()))
-                    }
+        let db = Firestore.firestore()
+        let affirmationsRef = db.collection("affirmations")
+        affirmationsRef.getDocuments { snapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            let batch = db.batch()
+            snapshot?.documents.forEach { batch.deleteDocument($0.reference) }
+            batch.commit { err in
+                if let err = err {
+                    completion(.failure(err))
+                } else {
+                    completion(.success(()))
                 }
             }
         }
+    }
 }

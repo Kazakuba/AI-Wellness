@@ -19,7 +19,6 @@ class DeliveryTimeViewModel: ObservableObject {
     private let timeKey = "DailyNoticifationTime"
     
     init () {
-        //Load saved time or use default 8:00 AM
         if let savedTime = UserDefaults.standard.object(forKey: timeKey) as? Date {
             self.selectedTime = savedTime
         } else {
@@ -62,7 +61,6 @@ class DeliveryTimeViewModel: ObservableObject {
     }
 }
 
-// Safely compute the next valid time
 extension Date {
     static func nextOccurence(of time: Date) -> Date? {
         let calendar = Calendar.current
