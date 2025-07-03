@@ -56,7 +56,6 @@ class AffirmationRepositoryImpl: AffirmationRepository {
     func saveAffirmation(_ affirmation: Affirmation) {
         let uid = GamificationManager.shared.getUserUID()
         persistence.saveAffirmation(affirmation, uid: uid)
-        // Checking if this calls FirestoreManager.shared.uploadAffirmation
         FirestoreManager.shared.uploadAffirmation(affirmation) { result in
             switch result {
             case .success():

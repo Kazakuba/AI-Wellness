@@ -1,4 +1,4 @@
-// Data layer: Google API service for affirmations (reference GeminiAPIService)
+// Data layer: Google API service for affirmations
 import Foundation
 
 class AffirmationAPIService {

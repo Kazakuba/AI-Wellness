@@ -24,6 +24,7 @@ struct GamifiedDashboardHeaderView: View {
                 Text("Level \(gamification.level)")
                     .font(.title2).bold()
                     .foregroundColor(isDarkMode ? .white : .black)
+                /*
                 Button(action: { showResetAlert = true }) {
                     Text("[X]")
                         .font(.caption)
@@ -59,6 +60,7 @@ struct GamifiedDashboardHeaderView: View {
                         .foregroundColor(.red)
                         .padding(.leading, 4)
                 }
+                 */
                 Spacer()
                 HStack(spacing: 6) {
                     // Animated flame icon

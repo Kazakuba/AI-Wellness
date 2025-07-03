@@ -1,4 +1,4 @@
-// Data layer: Local persistence for affirmations (UserDefaults for MVP)
+// Data layer: Local persistence for affirmations
 import Foundation
 
 class AffirmationPersistence {
@@ -44,7 +44,6 @@ class AffirmationPersistence {
         var topicMap = getTodayAffirmationTopicMap(uid: uid)
         if let topic = affirmation.topic {
             topicMap[topic] = (affirmation, Date())
-            // Encode as [String: [AffirmationOrDate]]
             let encodableMap: [String: [AffirmationOrDate]] = topicMap.mapValues { [AffirmationOrDate(affirmation: $0.0, date: nil), AffirmationOrDate(affirmation: nil, date: $0.1)] }
             if let data = try? JSONEncoder().encode(encodableMap) {
                 UserDefaults.standard.set(data, forKey: todayTopicKey(for: uid))
@@ -105,7 +104,6 @@ class AffirmationPersistence {
     private struct AffirmationOrDate: Codable {
         let affirmation: Affirmation?
         let date: Date?
-        // Explicit initializer for encoding
         init(affirmation: Affirmation?, date: Date?) {
             self.affirmation = affirmation
             self.date = date

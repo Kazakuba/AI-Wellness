@@ -1,4 +1,4 @@
-// Sample topics for the UI (can be loaded from API or local JSON)
+// Sample topics for the UI
 import Foundation
 
 struct AffirmationTopicsProvider {
