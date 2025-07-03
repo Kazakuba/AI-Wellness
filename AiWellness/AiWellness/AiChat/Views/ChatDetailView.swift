@@ -12,22 +12,6 @@ struct MessageBubble: View {
     @Environment(\.colorScheme) var colorScheme
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
 
-    var userGradient: LinearGradient {
-        LinearGradient(
-            gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.8)]),
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-    }
-    
-    var aiGradient: LinearGradient {
-        LinearGradient(
-            gradient: Gradient(colors: [Color.green, Color.green.opacity(0.8)]),
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-    }
-    
     private var formattedTimestamp: String {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
@@ -43,7 +27,7 @@ struct MessageBubble: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .foregroundColor(.white)
-                        .background(aiGradient)
+                        .background(ChatGradients.aiBubble)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                     
                     Text(formattedTimestamp)
@@ -60,7 +44,7 @@ struct MessageBubble: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .foregroundColor(.white)
-                        .background(userGradient)
+                        .background(ChatGradients.userBubble)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                     
                     Text(formattedTimestamp)
@@ -85,20 +69,9 @@ struct ChatDetailView: View {
     @Environment(\.dismiss) var dismiss
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
     
-    var gradient: LinearGradient {
-        LinearGradient(
-            gradient: Gradient(colors: isDarkMode ?
-                [Color.indigo, Color.black] :
-                [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]
-            ),
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-    }
-
     var body: some View {
         ZStack {
-            gradient.ignoresSafeArea()
+            ChatGradients.mainBackground(isDarkMode).ignoresSafeArea()
             
             VStack(spacing: 0) {
                 ScrollView {
@@ -119,7 +92,6 @@ struct ChatDetailView: View {
                     }
                 }
                 
-                // Message input field
                 HStack(spacing: 12) {
                     TextField("Type message here...", text: $messageText)
                         .padding(.horizontal, 12)
@@ -131,7 +103,6 @@ struct ChatDetailView: View {
                     Button(action: {
                         guard !messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
                         
-                        // --- AI Chat Starter achievement logic ---
                         let uid = GamificationManager.shared.getUserUID() ?? "default"
                         let chatKey = "ai_chat_starter_\(uid)"
                         let defaults = UserDefaults.standard
@@ -144,7 +115,6 @@ struct ChatDetailView: View {
                             GamificationManager.shared.save()
                         }
                         
-                        // --- AI Conversationalist badge logic ---
                         let aiConversationalistKey = "ai_conversationalist_sessions_\(uid)"
                         var completedSessions = defaults.integer(forKey: aiConversationalistKey)
                         completedSessions += 1

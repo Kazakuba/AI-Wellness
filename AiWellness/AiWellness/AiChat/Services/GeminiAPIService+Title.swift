@@ -1,11 +1,10 @@
 // GeminiAPIService+Title.swift
-// Extension for GeminiAPIService to generate chat titles
 
 import Foundation
 
 extension GeminiAPIService {
     func generateTitle(for message: String, completion: @escaping (Result<[String], Error>) -> Void) {
-        guard let url = URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBfgFc-qoRFmeeayvYqKYbH7yhoHanW9DM") else {
+        guard let url = URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=\(GeminiAPIService.shared.apiKey)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
             return
         }

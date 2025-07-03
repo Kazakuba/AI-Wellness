@@ -17,17 +17,6 @@ struct ChatListView: View {
     @StateObject private var confettiManager = ConfettiManager.shared
     @State private var path = NavigationPath()
 
-    var gradient: LinearGradient {
-        LinearGradient(
-            gradient: Gradient(colors: isDarkMode ?
-                               [Color.indigo, Color.black] :
-                                [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]
-                              ),
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-    }
-
     var body: some View {
         NavigationStack(path: $path) {
             VStack {
@@ -42,16 +31,7 @@ struct ChatListView: View {
                         .foregroundColor(isDarkMode ? .white : .black)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(
-                            LinearGradient(
-                                gradient: Gradient(colors: isDarkMode ?
-                                                   [Color.white.opacity(0.35), Color.white.opacity(0.25)] :
-                                                    [Color.white.opacity(0.45), Color.white.opacity(0.35)]
-                                                  ),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
+                        .background(ChatGradients.sectionBackground(isDarkMode))
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
                                 .stroke(
@@ -80,16 +60,7 @@ struct ChatListView: View {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
-                            .listRowBackground(
-                                LinearGradient(
-                                    gradient: Gradient(colors: isDarkMode ?
-                                                       [Color.white.opacity(0.3), Color.white.opacity(0.2)] :
-                                                        [Color.white.opacity(0.4), Color.white.opacity(0.3)]
-                                                      ),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
+                            .listRowBackground(ChatGradients.sectionBackground(isDarkMode))
                         }
                         .onDelete { deleteChat(at: $0, from: todayChats) }
                     }
@@ -100,16 +71,7 @@ struct ChatListView: View {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
-                            .listRowBackground(
-                                LinearGradient(
-                                    gradient: Gradient(colors: isDarkMode ?
-                                                       [Color.white.opacity(0.3), Color.white.opacity(0.2)] :
-                                                        [Color.white.opacity(0.4), Color.white.opacity(0.3)]
-                                                      ),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
+                            .listRowBackground(ChatGradients.sectionBackground(isDarkMode))
                         }
                         .onDelete { deleteChat(at: $0, from: sevenDayChats) }
                     }
@@ -120,16 +82,7 @@ struct ChatListView: View {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
-                            .listRowBackground(
-                                LinearGradient(
-                                    gradient: Gradient(colors: isDarkMode ?
-                                                       [Color.white.opacity(0.3), Color.white.opacity(0.2)] :
-                                                        [Color.white.opacity(0.4), Color.white.opacity(0.3)]
-                                                      ),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
+                            .listRowBackground(ChatGradients.sectionBackground(isDarkMode))
                         }
                         .onDelete { deleteChat(at: $0, from: thirtyDayChats) }
                     }
@@ -141,7 +94,7 @@ struct ChatListView: View {
                     LinearGradient(
                         gradient: Gradient(stops: [
                             .init(color: .black, location: 0.0),
-                            .init(color: .black, location: 0.9), // Adjust this value (e.g., 0.85) to control where the fade starts
+                            .init(color: .black, location: 0.9),
                             .init(color: .clear, location: 1.0)
                         ]),
                         startPoint: .top,
@@ -149,7 +102,7 @@ struct ChatListView: View {
                     )
                 )
             }
-            .background(gradient.ignoresSafeArea())
+            .background(ChatGradients.mainBackground(isDarkMode).ignoresSafeArea())
             .navigationBarHidden(true)
             .confettiCannon(trigger: $confettiManager.trigger, num: 40, confettis: confettiManager.confettis, colors: [.yellow, .green, .blue, .orange])
             .navigationDestination(for: Chat.self) { chat in

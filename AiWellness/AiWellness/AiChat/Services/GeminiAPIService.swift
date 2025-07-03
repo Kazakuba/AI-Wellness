@@ -2,7 +2,7 @@ import Foundation
 
 class GeminiAPIService {
     static let shared = GeminiAPIService()
-    private let apiKey = "AIzaSyBfgFc-qoRFmeeayvYqKYbH7yhoHanW9DM"
+    let apiKey = "AIzaSyBfgFc-qoRFmeeayvYqKYbH7yhoHanW9DM" // TODO: Move to environment/config for production
     private let baseURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
     private init() {}
@@ -17,7 +17,6 @@ class GeminiAPIService {
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        // Format chat history for the API request
         let historyParts = chatHistory.map { ["text": $0.content] }
         let body: [String: Any] = [
             "contents": [
@@ -70,6 +69,35 @@ class GeminiAPIService {
             }
         }
 
+        task.resume()
+    }
+
+    func ping(completion: @escaping (Bool) -> Void) {
+        guard let url = URL(string: "\(baseURL)?key=\(apiKey)") else {
+            completion(false)
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body: [String: Any] = [
+            "contents": [
+                ["parts": [["text": "ping"]]]
+            ]
+        ]
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+        } catch {
+            completion(false)
+            return
+        }
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                completion(true)
+            } else {
+                completion(false)
+            }
+        }
         task.resume()
     }
 }
