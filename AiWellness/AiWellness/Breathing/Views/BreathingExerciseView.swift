@@ -18,26 +18,17 @@ struct BreathingExerciseView: View {
     @State private var shouldStartAfterDismiss = false
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.safeAreaInsets) private var safeAreaInsets
-    
-    // Tab bar visibility control
     @Binding var tabBarHidden: Bool
-    
-    // Add this state variable near the top of the struct
     @State private var hideControlsTask: DispatchWorkItem? = nil
-    
-    // Initialize with default parameters for TabView usage
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
+    @StateObject private var confettiManager = ConfettiManager.shared
+
     init(tabBarHidden: Binding<Bool> = .constant(false)) {
         self._tabBarHidden = tabBarHidden
     }
     
-    // New property to control dark mode appearance
-    @AppStorage("isDarkMode") var isDarkMode: Bool = false
-    
-    @StateObject private var confettiManager = ConfettiManager.shared
-    
     var body: some View {
         ZStack {
-            // Background gradient
             (isDarkMode ?
                 LinearGradient(
                     gradient: Gradient(colors: [Color.indigo, Color.black]),
@@ -46,8 +37,8 @@ struct BreathingExerciseView: View {
                 ) :
                 LinearGradient(
                     gradient: Gradient(colors: [
-                        Color(red: 1.0, green: 0.85, blue: 0.75),  // Peach
-                        Color(red: 1.0, green: 0.72, blue: 0.58)   // Apricot
+                        Color(red: 1.0, green: 0.85, blue: 0.75),
+                        Color(red: 1.0, green: 0.72, blue: 0.58)
                     ]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -56,16 +47,12 @@ struct BreathingExerciseView: View {
             .edgesIgnoringSafeArea(.all)
 
             
-            // Loading overlay - show this immediately before anything else renders
             if showCustomizationSheet {
-                // Empty colored background to prevent seeing the animation view
                 ColorPalette.background.edgesIgnoringSafeArea(.all)
             } else {
                 VStack(spacing: 0) {
-                    // Top controls
                     if showControls {
                         HStack {
-                            // Back button
                             Button(action: {
                                 handleBackButton()
                             }) {
@@ -88,10 +75,8 @@ struct BreathingExerciseView: View {
                         .animation(.easeInOut, value: showControls)
                     }
                     
-                    // Safe area spacer to avoid instructions overlapping with top notch
                     Spacer().frame(height: 20)
                     
-                    // Guided text that appears when exercise starts
                     if showText {
                         Text(viewModel.currentInstructions)
                             .font(Typography.Font.body1)
@@ -107,18 +92,14 @@ struct BreathingExerciseView: View {
                             .transition(.opacity)
                             .animation(.easeInOut, value: showText)
                     } else if viewModel.isPlaying {
-                        // Show the countdown guide when main instructions are hidden
                         VStack(spacing: 8) {
-                            // Parse the text to separate the instruction from the number
                             let components = viewModel.countdownText.components(separatedBy: " ")
                             if components.count == 2 {
-                                // Instruction text (Inhale, Hold, Exhale)
                                 Text(components[0])
                                     .font(.system(size: 28, weight: .medium))
                                     .foregroundColor(viewModel.getColorForType(type: viewModel.selectedAnimation))
                                     .padding(.bottom, 5)
                                 
-                                // Countdown number with animation
                                 Text(components[1])
                                     .font(.system(size: 80, weight: .bold, design: .rounded))
                                     .foregroundColor(viewModel.getColorForType(type: viewModel.selectedAnimation))
@@ -126,9 +107,8 @@ struct BreathingExerciseView: View {
                                     .transaction { transaction in
                                         transaction.animation = .easeInOut(duration: 0.2)
                                     }
-                                    .id("countdown-\(components[1])") // Force animation on number change
+                                    .id("countdown-\(components[1])")
                                 
-                                // Visual phase indicator
                                 HStack(spacing: 15) {
                                     makePhaseIndicator(phase: .inhale, currentPhase: viewModel.currentPhase, color: viewModel.getColorForType(type: viewModel.selectedAnimation))
                                     
@@ -144,28 +124,24 @@ struct BreathingExerciseView: View {
                                 }
                                 .padding(.top, 10)
                             } else {
-                                // Fallback if parsing fails
                                 Text(viewModel.countdownText)
                                     .font(.system(size: 32, weight: .bold))
                                     .foregroundColor(viewModel.getColorForType(type: viewModel.selectedAnimation))
                             }
                         }
-                        .padding(.top, 100) // Add significant top padding to move it down
-                        .padding(.bottom, 30) // Reduced bottom padding
+                        .padding(.top, 100)
+                        .padding(.bottom, 30)
                         .transition(.opacity)
                     }
                     
                     Spacer()
                     
-                    // Animation view
                     animationView
                     
                     Spacer()
                     
-                    // Bottom controls
                     if showControls {
                         VStack(spacing: 24) {
-                            // Play/Pause button
                             Button(action: {
                                 if viewModel.isPlaying {
                                     viewModel.pause()
@@ -182,7 +158,6 @@ struct BreathingExerciseView: View {
                                     .shadow(color: Color.black.opacity(0.2), radius: 4, x: 0, y: 2)
                             }
                             
-                            // Time slider
                             VStack(spacing: 10) {
                                 HStack {
                                     Text(formatTime(viewModel.elapsedTime))
@@ -197,9 +172,7 @@ struct BreathingExerciseView: View {
                                 }
                                 
                                 Slider(value: $viewModel.elapsedTime, in: 0...viewModel.totalDuration, step: 1) { editing in
-                                    // Handle slider interaction
                                     if !editing {
-                                        // User has finished adjusting slider
                                         viewModel.seekToTime(viewModel.elapsedTime)
                                     }
                                 }
@@ -225,7 +198,6 @@ struct BreathingExerciseView: View {
         }
         .id("breathingExerciseView-\(shouldStartAfterDismiss ? "active" : "inactive")")
         .fullScreenCover(isPresented: $showCustomizationSheet, onDismiss: {
-            // Handle sheet dismissal
             if shouldStartAfterDismiss {
                 DispatchQueue.main.async {
                     startBreathingExercise()
@@ -234,14 +206,12 @@ struct BreathingExerciseView: View {
             }
         }) {
             CustomizationSheetView(viewModel: viewModel, onStart: {
-                // Mark that we should start the exercise after sheet dismissal
                 shouldStartAfterDismiss = true
             })
         }
         .onAppear {
             enterBreathingMode()
             
-            // Add notification observer for exercise completion
             NotificationCenter.default.addObserver(
                 forName: NSNotification.Name("BreathingExerciseComplete"),
                 object: nil,
@@ -251,32 +221,25 @@ struct BreathingExerciseView: View {
                     }
                 }
             
-            // Show customization sheet immediately when entering the view
             showCustomizationSheet = true
         }
         .onDisappear {
             exitBreathingMode(navigating: false)
             
-            // Clear all timers
             instructionsTimer?.invalidate()
             instructionsTimer = nil
             controlsTimer?.invalidate()
             controlsTimer = nil
             
-            // Remove notification observer
             NotificationCenter.default.removeObserver(self, name: NSNotification.Name("BreathingExerciseComplete"), object: nil)
         }
         .onChange(of: viewModel.isPlaying) { oldValue, newValue in
-            // Only reset the timer when isPlaying becomes true (don't reset when false)
             if newValue {
                 resetControlsTimer()
-                // Show instructions when starting to play
                 showText = true
                 startInstructionsTimer()
             } else {
-                // Keep controls visible when paused but don't reset timer
                 showControls = true
-                // Just invalidate timer without resetting
                 if let timer = controlsTimer {
                     timer.invalidate()
                     controlsTimer = nil
@@ -284,24 +247,18 @@ struct BreathingExerciseView: View {
             }
         }
         .onChange(of: viewModel.selectedAnimation) { oldValue, newValue in
-            // Show instructions when animation type changes
             showText = true
             startInstructionsTimer()
         }
         .confettiCannon(trigger: $confettiManager.trigger, num: 40, confettis: confettiManager.confettis, colors: [.yellow, .green, .blue, .orange])
     }
     
-    // Start instructions timer to hide instructions after a delay
     private func startInstructionsTimer() {
-        // Cancel previous timer if any
         instructionsTimer?.invalidate()
     }
     
-    // Handles back button action - separate from exitBreathingMode
     private func handleBackButton() {
-        // Instead of dismissing, show the customization sheet
         showCustomizationSheet = true
-        // Optionally, pause the exercise and reset state if needed
         viewModel.pause()
         viewModel.elapsedTime = 0
     }
@@ -316,60 +273,45 @@ struct BreathingExerciseView: View {
     }
     
     private func enterBreathingMode() {
-        // Hide tab bar
         tabBarHidden = true
         
-        // Reset controls and animation
         resetControlsTimer()
         showControls = true
         
-        // Show instructions
         showText = true
         startInstructionsTimer()
     }
     
     private func exitBreathingMode(navigating: Bool = true) {
-        // Show tab bar again
         tabBarHidden = false
         
-        // Reset the exercise
         viewModel.pause()
         viewModel.elapsedTime = 0
         
-        // Clear timers
         instructionsTimer?.invalidate()
         instructionsTimer = nil
         
-        // Navigate back if needed
         if navigating {
             presentationMode.wrappedValue.dismiss()
         }
     }
     
     private func resetControlsTimer() {
-        // Cancel any existing hide task
         hideControlsTask?.cancel()
         hideControlsTask = nil
         
-        // Only schedule hide if playing
         if viewModel.isPlaying {
-            // Create a new task
             let task = DispatchWorkItem {
-                // Dispatch back to main thread for UI update
                 DispatchQueue.main.async {
                     withAnimation(.easeOut(duration: 0.3)) {
                         self.showControls = false
-                        // Keep the text box for countdown instructions
-                        // Only hide the detailed instructions
                         self.showText = false
                     }
                 }
             }
             
-            // Store the task
             hideControlsTask = task
             
-            // Schedule the task after delay
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: task)
         }
     }
@@ -380,10 +322,8 @@ struct BreathingExerciseView: View {
         return String(format: "%d:%02d", minutes, seconds)
     }
     
-    // Animation view
     private var animationView: some View {
         ZStack {
-            // Main animation
             BreathingAnimationView(
                 animationType: viewModel.selectedAnimation,
                 isPlaying: viewModel.isPlaying,
@@ -394,14 +334,10 @@ struct BreathingExerciseView: View {
             )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .contentShape(Rectangle()) // Make the whole area tappable
+        .contentShape(Rectangle())
         .onTapGesture {
-            // Cancel any pending hide task
             hideControlsTask?.cancel()
             hideControlsTask = nil
-            
-            // Toggle controls visibility with direct animation
-            // This approach doesn't trigger state propagation that could affect the animation
             withAnimation(.easeOut(duration: 0.3)) {
                 showControls.toggle()
                 if showControls {
@@ -410,15 +346,12 @@ struct BreathingExerciseView: View {
                     showText = false
                 }
             }
-            
-            // Reset the auto-hide timer if controls are now visible
             if showControls {
                 resetControlsTimer()
             }
         }
     }
     
-    // Helper function to create phase indicators
     private func makePhaseIndicator(phase: BreathingPhase, currentPhase: BreathingPhase, color: Color) -> some View {
         Circle()
             .fill(phase == currentPhase ? color : Color.gray.opacity(0.3))
@@ -431,7 +364,6 @@ struct BreathingExerciseView: View {
     }
 }
 
-// Add SafeAreaInsets environment key for older iOS versions
 private struct SafeAreaInsetsKey: EnvironmentKey {
     static var defaultValue: EdgeInsets {
         EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
@@ -445,7 +377,6 @@ extension EnvironmentValues {
     }
 }
 
-// Preview
 #Preview {
     BreathingExerciseView()
 }

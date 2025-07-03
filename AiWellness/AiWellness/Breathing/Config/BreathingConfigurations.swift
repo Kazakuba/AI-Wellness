@@ -2,7 +2,6 @@ import SwiftUI
 
 // MARK: - Breathing Patterns
 struct BreathingPatterns {
-    // Breathing patterns by animation type
     static let patterns: [String: (inhale: Double, hold1: Double, exhale: Double, hold2: Double)] = [
         "Square": (inhale: 4, hold1: 4, exhale: 4, hold2: 4), // Box breathing
         "Circle": (inhale: 4, hold1: 0, exhale: 4, hold2: 0), // Equal breathing
@@ -108,7 +107,7 @@ struct AnimationVisuals {
         case "Energy":
             return Color.orange
         case "Focus":
-            return Color(red: 0.6, green: 0.1, blue: 0.3) // Dark pink/maroon
+            return Color(red: 0.6, green: 0.1, blue: 0.3)
         case "Wave":
             return Color.teal
         case "Spiral":

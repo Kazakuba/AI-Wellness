@@ -8,7 +8,6 @@ struct SquareAnimationView: View {
     
     var body: some View {
         ZStack {
-            // Background glow
             RoundedRectangle(cornerRadius: 25)
                 .fill(
                     RadialGradient(
@@ -26,7 +25,7 @@ struct SquareAnimationView: View {
                 .opacity(opacity * 0.6)
                 .blur(radius: 10)
             
-            // Main square with enhanced gradient
+            // Main square gradient
             RoundedRectangle(cornerRadius: 25)
                 .fill(
                     LinearGradient(
@@ -101,7 +100,6 @@ struct CircleAnimationView: View {
                 .opacity(opacity * 0.5)
                 .blur(radius: 5)
             
-            // Main circle with enhanced gradient
             Circle()
                 .fill(
                     RadialGradient(
@@ -135,7 +133,7 @@ struct CircleAnimationView: View {
                 )
                 .shadow(color: Color.purple.opacity(0.6), radius: 20, x: 0, y: 0)
             
-            // Inner circle with pulse effect
+            // Inner circle pulse
             Circle()
                 .fill(Color.white.opacity(0.2))
                 .scaleEffect(scaleFactor * 0.6)
@@ -158,7 +156,6 @@ struct TriangleAnimationView: View {
     
     var body: some View {
         ZStack {
-            // Outer glow
             TriangleShape()
                 .fill(
                     RadialGradient(
@@ -177,7 +174,6 @@ struct TriangleAnimationView: View {
                 .opacity(opacity * 0.4)
                 .blur(radius: 8)
             
-            // Main triangle with enhanced gradient
             TriangleShape()
                 .fill(
                     LinearGradient(
@@ -212,7 +208,6 @@ struct TriangleAnimationView: View {
                 )
                 .shadow(color: Color.green.opacity(0.5), radius: 15, x: 0, y: 0)
             
-            // Corner points
             ForEach(0..<3) { corner in
                 Circle()
                     .fill(Color.white.opacity(0.4))
@@ -237,7 +232,6 @@ struct CalmAnimationView: View {
     
     var body: some View {
         ZStack {
-            // Background mist effect
             ForEach(0..<8) { index in
                 Circle()
                     .fill(
@@ -260,7 +254,6 @@ struct CalmAnimationView: View {
                     .opacity(opacity * 0.4)
             }
             
-            // Main calm circle
             Circle()
                 .fill(
                     RadialGradient(
@@ -294,7 +287,6 @@ struct CalmAnimationView: View {
                 )
                 .shadow(color: Color(red: 0.2, green: 0.6, blue: 0.8).opacity(0.4), radius: 20, x: 0, y: 0)
             
-            // Floating particles
             ForEach(0..<6) { index in
                 Circle()
                     .fill(Color.white.opacity(0.3))
@@ -319,7 +311,6 @@ struct EnergyAnimationView: View {
     
     var body: some View {
         ZStack {
-            // Energy field background
             Circle()
                 .fill(
                     RadialGradient(
@@ -337,7 +328,6 @@ struct EnergyAnimationView: View {
                 .opacity(opacity * 0.5)
                 .blur(radius: 10)
             
-            // Central sun core
             Circle()
                 .fill(
                     RadialGradient(
@@ -371,7 +361,7 @@ struct EnergyAnimationView: View {
                 )
                 .shadow(color: Color.orange.opacity(0.6), radius: 25, x: 0, y: 0)
             
-            // Dynamic energy rays
+            // Dynamic rays
             ForEach(0..<12) { index in
                 RoundedRectangle(cornerRadius: 3)
                     .fill(
@@ -391,7 +381,6 @@ struct EnergyAnimationView: View {
                     .opacity(opacity * 0.7)
             }
             
-            // Inner energy core
             Circle()
                 .fill(Color.white.opacity(0.4))
                 .scaleEffect(scaleFactor * 0.4)
@@ -410,7 +399,6 @@ struct FocusAnimationView: View {
     
     var body: some View {
         ZStack {
-            // Neural network background
             ForEach(0..<8) { index in
                 Circle()
                     .fill(
@@ -433,7 +421,6 @@ struct FocusAnimationView: View {
                     .opacity(opacity * 0.3)
             }
             
-            // Core focus circle
             Circle()
                 .fill(
                     RadialGradient(
@@ -467,7 +454,6 @@ struct FocusAnimationView: View {
                 )
                 .shadow(color: Color(red: 0.6, green: 0.1, blue: 0.3).opacity(0.5), radius: 20, x: 0, y: 0)
             
-            // Neural connections with enhanced visuals
             ForEach(0..<6) { index in
                 EnhancedNeuralConnectionPath(
                     index: index, 
@@ -479,7 +465,6 @@ struct FocusAnimationView: View {
                 )
             }
             
-            // Focus center that responds to breathing
             Circle()
                 .fill(
                     RadialGradient(
@@ -515,7 +500,6 @@ struct WaveAnimationView: View {
     
     var body: some View {
         ZStack {
-            // Background ocean effect
             ForEach(0..<6) { index in
                 WaveShape(frequency: 3, amplitude: 0.1, phase: Double(index) * .pi / 3)
                     .fill(
@@ -535,7 +519,6 @@ struct WaveAnimationView: View {
                     .opacity(opacity * (0.8 - Double(index) * 0.1))
             }
             
-            // Main wave circle
             Circle()
                 .fill(
                     RadialGradient(
@@ -569,7 +552,6 @@ struct WaveAnimationView: View {
                 )
                 .shadow(color: Color.teal.opacity(0.5), radius: 20, x: 0, y: 0)
             
-            // Floating bubbles
             ForEach(0..<8) { index in
                 Circle()
                     .fill(
@@ -592,7 +574,6 @@ struct WaveAnimationView: View {
                     .opacity(opacity * 0.7)
             }
             
-            // Inner wave center
             Circle()
                 .fill(
                     RadialGradient(
@@ -622,7 +603,6 @@ struct SpiralAnimationView: View {
     
     var body: some View {
         ZStack {
-            // Background spiral field
             ForEach(0..<4) { index in
                 SpiralShape(turns: 2, startRadius: 10, endRadius: size/2)
                     .stroke(
@@ -643,7 +623,6 @@ struct SpiralAnimationView: View {
                     .opacity(opacity * (0.6 - Double(index) * 0.1))
             }
             
-            // Main spiral core
             Circle()
                 .fill(
                     RadialGradient(
@@ -677,7 +656,6 @@ struct SpiralAnimationView: View {
                 )
                 .shadow(color: Color.indigo.opacity(0.6), radius: 25, x: 0, y: 0)
             
-            // Spiral particles
             ForEach(0..<12) { index in
                 Circle()
                     .fill(
@@ -701,7 +679,6 @@ struct SpiralAnimationView: View {
                     .opacity(opacity * 0.8)
             }
             
-            // Inner spiral center
             Circle()
                 .fill(
                     RadialGradient(

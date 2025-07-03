@@ -10,7 +10,7 @@ struct CustomizationSheetView: View {
     @State private var filteredAnimations: [String] = []
     
     private let categories = ["All", "Stress Relief", "Sleep", "Energy", "Focus", "Beginner"]
-    private let durations = [60.0, 180.0, 300.0, 600.0] // 1, 3, 5, 10 minutes
+    private let durations = [60.0, 180.0, 300.0, 600.0]
     
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
     
@@ -21,7 +21,6 @@ struct CustomizationSheetView: View {
     }
     
     var body: some View {
-        // Navigation stack for iOS 16+
         NavigationView {
             customizationContent
                 .navigationBarTitleDisplayMode(.large)
@@ -42,7 +41,6 @@ struct CustomizationSheetView: View {
                             .foregroundColor(isDarkMode ? .white : .black)
                     },
                     trailing: Button("Start") {
-                        // Signal intent to start, then dismiss
                         onStart()
                         dismiss()
                     }
@@ -58,7 +56,6 @@ struct CustomizationSheetView: View {
             isDarkMode ? LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.black]), startPoint: .topLeading, endPoint: .bottomTrailing) : LinearGradient(gradient: Gradient(colors: [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]), startPoint: .topLeading, endPoint: .bottomTrailing)
         )
         .onAppear {
-            // Initialize with all animations
             filteredAnimations = viewModel.getThemesForCategory(selectedCategory)
         }
         .onDisappear {
@@ -66,23 +63,18 @@ struct CustomizationSheetView: View {
         }
     }
     
-    // Extract complex content to a separate property
     private var customizationContent: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 30) {
-                // Categories
                 categorySelector
                 
-                // Animation themes
                 Text("Select Theme")
                     .font(.system(size: 28, weight: .semibold))
                     .foregroundColor(isDarkMode ? .white : .black)
                     .padding(.horizontal)
                 
-                // Animation selection grid
                 themeGrid
                 
-                // Duration selection
                 Text("Exercise Duration")
                     .font(.system(size: 22, weight: .semibold))
                     .foregroundColor(isDarkMode ? .white : .black)
@@ -104,7 +96,6 @@ struct CustomizationSheetView: View {
                     ForEach(categories, id: \.self) { category in
                         Button(action: {
                             selectedCategory = category
-                            // Filter animations based on category
                             filteredAnimations = viewModel.getThemesForCategory(category)
                         }) {
                             Text(category)
@@ -147,7 +138,6 @@ struct CustomizationSheetView: View {
             viewModel.setAnimationForType(animation)
         }) {
             ZStack(alignment: .bottom) {
-                // Background with the theme's color
                 RoundedRectangle(cornerRadius: 16)
                     .fill(
                         LinearGradient(
@@ -170,7 +160,6 @@ struct CustomizationSheetView: View {
                             )
                     )
                 
-                // Animation icon in the center
                 VStack {
                     Spacer()
                     
@@ -182,7 +171,6 @@ struct CustomizationSheetView: View {
                     
                     Spacer()
                     
-                    // Theme name at the bottom
                     HStack {
                         Text(animation)
                             .font(.system(size: 22, weight: .semibold))
@@ -195,7 +183,6 @@ struct CustomizationSheetView: View {
                     }
                 }
                 
-                // Selection indicator
                 if viewModel.selectedAnimation == animation {
                     VStack {
                         HStack {
