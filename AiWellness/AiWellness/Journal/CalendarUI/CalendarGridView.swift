@@ -25,7 +25,7 @@ struct CalendarGridView: View {
             ForEach(days.indices, id: \.self) { index in
                 let day = days[index]
                 if day == 0 {
-                    Text("") // Empty cell for leading spaces
+                    Text("")
                 } else if let date = getDateForDay(day: day, offset: monthOffset) {
                     let hasContent = WritingDataManager.shared.hasContent(for: date)
                     let isCurrentDay = isToday(day: day, offset: monthOffset)
@@ -33,7 +33,7 @@ struct CalendarGridView: View {
                     Text("\(day)")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .padding(10)
-                        .background(isCurrentDay ? Color.red : Color.clear) // Red circle for today
+                        .background(isCurrentDay ? Color.red : Color.clear)
                         .clipShape(Circle())
                         .foregroundColor(
                             isCurrentDay ? Color.white :

@@ -37,7 +37,6 @@ struct WritingView: View {
     private var dateHeader: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(getFormattedDate(selectedDate))
-            //Make custom fonts
                 .font(.system(.title2, design: .serif))
                 .fontWeight(.medium)
                 .foregroundColor(.primary)
@@ -81,25 +80,21 @@ struct WritingView: View {
                 let defaults = UserDefaults.standard
                 var didCelebrate = false
                 
-                // Journal Initiate achievement logic
                 let journalKey = "journal_initiate_\(uid)"
                 let hasWrittenBefore = defaults.bool(forKey: journalKey)
                 if !hasWrittenBefore {
                     defaults.set(true, forKey: journalKey)
-                    // Unlock "Journal Initiate" achievement
                     if GamificationManager.shared.incrementAchievement("journal_initiate") {
                         didCelebrate = true
                     }
                 }
                 
-                // Journal Master badge logic
                 let journalMasterKey = "journal_master_entries_\(uid)"
                 var completedDates = Set(defaults.stringArray(forKey: journalMasterKey) ?? [])
                 let dateString = ISO8601DateFormatter().string(from: selectedDate)
                 if !completedDates.contains(dateString) {
                     completedDates.insert(dateString)
                     defaults.set(Array(completedDates), forKey: journalMasterKey)
-                    // Update Journal Master badge progress
                     if GamificationManager.shared.incrementBadge("journal_master") {
                         didCelebrate = true
                     }

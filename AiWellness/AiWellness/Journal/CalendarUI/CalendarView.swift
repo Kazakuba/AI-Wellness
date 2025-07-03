@@ -11,8 +11,8 @@ import LocalAuthentication
 
 struct CalendarView: View {
     @State private var currentMonthOffset = 0
-    @State private var isButtonDisabled = false // Prevent rapid presses
-    @State private var isManuallyChangingMonth = false // Track manual button usage
+    @State private var isButtonDisabled = false
+    @State private var isManuallyChangingMonth = false
     @State private var selectedDate: IdentifiableDate?
     @State private var isUnlocked = false
     @State private var showAuthFailedAlert = false
@@ -45,15 +45,14 @@ struct CalendarView: View {
 
     var body: some View {
         ZStack {
-            gradient.ignoresSafeArea()
+            AppBackgroundGradient.main(isDarkMode).ignoresSafeArea()
             VStack {
                 if selectedTab == 2 {
                     if isUnlocked {
-                        let monthRange = calculateMonthRange()
+                        let monthRange = CalendarViewHelpers.calculateMonthRange(today: today, futureMonthsToShow: futureMonthsToShow)
                         VStack(spacing: 10) {
-                            // Header with title and controls
                             HStack {
-                                Text(getMonthYear(for: currentMonthOffset))
+                                Text(CalendarViewHelpers.getMonthYear(for: currentMonthOffset, today: today))
                                     .font(Typography.Font.heading2)
                                     .foregroundColor(appStorageDarkMode ? .white : .black)
 
@@ -79,7 +78,6 @@ struct CalendarView: View {
                             }
                             .padding()
 
-                            // Scrollable calendar
                             GeometryReader { geometry in
                                 ScrollView(.vertical) {
                                     ScrollViewReader { proxy in
@@ -95,10 +93,10 @@ struct CalendarView: View {
                                                         onDateSelected: { date in
                                                             selectedDate = IdentifiableDate(date: date)
                                                         },
-                                                        isDarkMode: appStorageDarkMode // Pass dark mode state
+                                                        isDarkMode: appStorageDarkMode
                                                     )
-                                                    .frame(height: geometry.size.height / 3) // Adjust grid size
-                                                    .opacity(opacityForMonth(innerGeometry: innerGeometry, parentGeometry: geometry))
+                                                    .frame(height: geometry.size.height / 3)
+                                                    .opacity(CalendarViewHelpers.opacityForMonth(innerGeometry: innerGeometry, parentGeometry: geometry))
                                                     .id(offset)
                                                     .onAppear {
                                                         updateCurrentMonth(innerGeometry: innerGeometry, offset: offset, parentGeometry: geometry)
@@ -146,7 +144,6 @@ struct CalendarView: View {
                             WritingView(selectedDate: identifiableDate.date)
                         }
                     } else {
-                        // Placeholder view before authentication
                         VStack {
                             Image ("lockedScreen")
                                 .resizable()
@@ -159,24 +156,20 @@ struct CalendarView: View {
         }
         .onChange(of: selectedTab) {
             if selectedTab == 2 {
-                // User switched *to* the Calendar tab
                 if !isUnlocked {
                     authenticate()
                 }
             } else {
-                // User left the Calendar tab => lock it
                 isUnlocked = false
             }
         }
         .onChange(of: scenePhase) {
             switch scenePhase {
             case .active:
-                // If user returns to foreground *and* is on Calendar tab but not unlocked yet, authenticate
                 if selectedTab == 2 && !isUnlocked {
                     authenticate()
                 }
             case .inactive, .background:
-                // Lock only if user is on Calendar tab
                 if selectedTab == 2 {
                     isUnlocked = false
                 }
@@ -201,10 +194,9 @@ struct CalendarView: View {
             Text("We couldn't verify your identity. Please try again.")
         }
         .onAppear {
-            // Listen for user change to refresh notes
             journalUserChangeObserver = NotificationCenter.default.addObserver(forName: Notification.Name("journalUserDidChange"), object: nil, queue: .main) { _ in
-                selectedDate = nil // Dismiss any open note
-                currentMonthOffset = 0 // Reset to today
+                selectedDate = nil
+                currentMonthOffset = 0
             }
         }
         .onDisappear {
@@ -218,18 +210,13 @@ struct CalendarView: View {
         let context = LAContext()
         var error: NSError?
 
-        // Check if device supports Face ID, Touch ID, or passcode
         if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) {
             let reason = "Authenticate to access your calendar"
-
-            // Use deviceOwnerAuthentication to support biometrics + passcode fallback
             context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authenticationError in
                 DispatchQueue.main.async {
                     if success {
-                        // Unlock the view if authentication is successful
                         self.isUnlocked = true
                     } else {
-                        // Authentication failed
                         self.isUnlocked = false
                         self.selectedTab = 0
                         self.showAuthFailedAlert = true
@@ -237,7 +224,6 @@ struct CalendarView: View {
                 }
             }
         } else {
-            // Neither biometrics nor passcode available
             DispatchQueue.main.async {
                 self.isUnlocked = false
                 self.selectedTab = 0
@@ -246,39 +232,18 @@ struct CalendarView: View {
         }
     }
 
-    // Helper function to get the visible month and year
-    private func getMonthYear(for offset: Int) -> String {
-        let calendar = Calendar.autoupdatingCurrent
-        guard let visibleDate = calendar.date(byAdding: .month, value: offset, to: today) else { return "Invalid Date" }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter.string(from: visibleDate)
-    }
-
-    // Calculate opacity based on proximity to the center of the viewport
-    private func opacityForMonth(innerGeometry: GeometryProxy, parentGeometry: GeometryProxy) -> Double {
-        let centerY = parentGeometry.frame(in: .global).midY
-        let offsetY = abs(innerGeometry.frame(in: .global).midY - centerY)
-        let maxDistance = parentGeometry.size.height / 2
-        return max(0.3, 1 - (offsetY / maxDistance)) // Max opacity at center
-    }
-
-    // Update the current month based on which month is closest to the center
     private func updateCurrentMonth(innerGeometry: GeometryProxy, offset: Int, parentGeometry: GeometryProxy) {
         guard !isManuallyChangingMonth else { return }
 
         let centerY = parentGeometry.frame(in: .global).midY
         let viewMidY = innerGeometry.frame(in: .global).midY
-
         let threshold: CGFloat = parentGeometry.size.height / 4
 
-        // Only update if the month is within the center threshold
         if abs(viewMidY - centerY) < threshold, currentMonthOffset != offset {
             currentMonthOffset = offset
         }
     }
 
-    // Move to today
     private func moveToToday() {
         isManuallyChangingMonth = true
         withAnimation {
@@ -293,38 +258,28 @@ struct CalendarView: View {
 
     private func calculateMonthRange() -> ClosedRange<Int> {
         let calendar = Calendar.autoupdatingCurrent
-
-        // Calculate the difference in months between `today` and the earliest note date
         let earliestDate = earliestMonthWithNotes()
-
-        // Calculate the month difference and account for days
         let components = calendar.dateComponents([.year, .month, .day], from: earliestDate, to: today)
         var earliestOffset = (components.year ?? 0) * 12 + (components.month ?? 0)
-
-        // If the day of the earliestDate is after today's day, include the extra month
         if let earliestDay = calendar.dateComponents([.day], from: earliestDate).day,
            let todayDay = calendar.dateComponents([.day], from: today).day,
            earliestDay > todayDay {
             earliestOffset += 1
         }
 
-        // Return a range from the earliest offset to 6 months in the future
         return -earliestOffset...futureMonthsToShow
     }
 
-    // Change month by a specific offset
     private func changeMonth(by offset: Int) {
         let monthRange = calculateMonthRange()
         guard !isButtonDisabled else { return }
         let newOffset = currentMonthOffset + offset
-        // Prevent changing month outside of visible range
         guard newOffset >= monthRange.lowerBound && newOffset <= monthRange.upperBound else { return }
         isManuallyChangingMonth = true
-        isButtonDisabled = true // Disable button temporarily
+        isButtonDisabled = true
         withAnimation {
             currentMonthOffset = newOffset
         }
-        // Re-enable buttons after animation completes
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             isButtonDisabled = false
         }
