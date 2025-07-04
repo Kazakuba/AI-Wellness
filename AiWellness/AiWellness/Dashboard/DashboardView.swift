@@ -5,6 +5,7 @@
 //  Created by Kazakuba on 27. 12. 24.
 //
 
+// To fix arch
 import SwiftUI
 import FirebaseAuth
 import GoogleSignIn

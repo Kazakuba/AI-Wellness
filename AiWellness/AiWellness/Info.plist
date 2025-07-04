@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>GeminiAPIKey</key>
+	<string>$(GEMINI_API_KEY)</string>
 	<key>GIDClientID</key>
 	<string>382090415790-a99sjd1n0nm8je72src4283mqg1uplm4.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>

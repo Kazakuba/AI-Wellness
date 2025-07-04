@@ -2,7 +2,13 @@ import Foundation
 
 class GeminiAPIService {
     static let shared = GeminiAPIService()
-    let apiKey = "AIzaSyBfgFc-qoRFmeeayvYqKYbH7yhoHanW9DM" // TODO: Move to environment/config for production
+    let apiKey: String = {
+        if let key = Bundle.main.object(forInfoDictionaryKey: "GeminiAPIKey") as? String, !key.isEmpty {
+            return key
+        } else {
+            fatalError("GeminiAPIKey not set in Info.plist. Please configure it in your Info.plist and xcconfig file.")
+        }
+    }()
     private let baseURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
     private init() {}
