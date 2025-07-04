@@ -21,7 +21,7 @@ struct AppInfoView: View {
             }
         }
         .navigationTitle("App Info")
-        .background(AppBackgroundGradient.main(isDarkMode))
+        .background(isDarkMode ? Color.black : Color.white)
         .scrollContentBackground(.hidden)
         .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
