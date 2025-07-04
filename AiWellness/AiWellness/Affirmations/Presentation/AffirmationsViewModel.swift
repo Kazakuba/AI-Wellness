@@ -52,7 +52,6 @@ class AffirmationsViewModel: ObservableObject {
     
     func selectTopic(_ topic: AffirmationTopic) {
         selectedTopic = topic
-        // --- Explorer logic ---
         let uid = GamificationManager.shared.getUserUID() ?? "default"
         let explorerKey = "explorer_topics_\(uid)"
         let defaults = UserDefaults.standard
@@ -61,13 +60,11 @@ class AffirmationsViewModel: ObservableObject {
         let wasInserted = topics.insert(topicId).inserted
         if wasInserted {
             defaults.set(Array(topics), forKey: explorerKey)
-            // Update badge progress using milestone-based system
             if GamificationManager.shared.incrementBadge("explorer") {
                 ConfettiManager.shared.celebrate()
             }
             GamificationManager.shared.save()
         }
-        // Do NOT lock again when changing topic
         loadDailyAffirmationForTopic(topic)
     }
     
@@ -88,11 +85,9 @@ class AffirmationsViewModel: ObservableObject {
 
     func saveAffirmation(_ affirmation: Affirmation) {
         saveAffirmationUseCase.execute(affirmation)
-        // Unlock "First Affirmation" achievement if not already unlocked
         if GamificationManager.shared.incrementAchievement("first_affirmation") {
             ConfettiManager.shared.celebrate()
         }
-        // --- Collector logic ---
         let uid = GamificationManager.shared.getUserUID() ?? "default"
         let collectorKey = "collector_count_\(uid)"
         let collectorIdsKey = "collector_ids_\(uid)"
@@ -100,13 +95,11 @@ class AffirmationsViewModel: ObservableObject {
         var savedIds = Set(defaults.stringArray(forKey: collectorIdsKey) ?? [])
         let affirmationId = affirmation.id.uuidString
         
-        // Only increment if this is a new save (not already saved)
         if !savedIds.contains(affirmationId) {
             savedIds.insert(affirmationId)
             defaults.set(Array(savedIds), forKey: collectorIdsKey)
             let count = savedIds.count
             defaults.set(count, forKey: collectorKey)
-            // Update badge progress using milestone-based system
             if GamificationManager.shared.incrementBadge("collector") {
                 ConfettiManager.shared.celebrate()
             }

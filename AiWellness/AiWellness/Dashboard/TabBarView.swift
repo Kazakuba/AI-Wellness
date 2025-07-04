@@ -55,7 +55,6 @@ struct TabBarView: View {
                         }
                         .tag(4)
 
-                    // Empty view for breathing tab - the actual view will be shown as overlay
                     Color.clear
                         .tabItem {
                             Image(systemName: "lungs.fill")
@@ -66,7 +65,6 @@ struct TabBarView: View {
                 .toolbarBackground(.hidden, for: .tabBar)
                 .opacity(tabBarHidden ? 0 : 1)
 
-                // Show BreathingExerciseView directly when breathing tab is selected
                 if selectedTab == 3 {
                     BreathingExerciseView(tabBarHidden: $tabBarHidden)
                         .transition(.opacity)
@@ -75,7 +73,6 @@ struct TabBarView: View {
                         }
                 }
             }
-            //tabbarAccent
             .accentColor(isDarkMode ? .white : Color("TextPrimary"))
             .background(Color("BackgroundRows").edgesIgnoringSafeArea(.all))
         }

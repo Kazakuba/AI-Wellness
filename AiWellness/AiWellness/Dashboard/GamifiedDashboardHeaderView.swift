@@ -14,7 +14,6 @@ struct GamifiedDashboardHeaderView: View {
     @State private var confettiTrigger: Int = 0
     @State private var lastCelebratedLevel: Int = 1
     @State private var animateGradient = false
-    // Placeholder values for now
     var level: Int = 3
     var currentXP: Int = 120
     var nextLevelXP: Int = 200
@@ -60,17 +59,16 @@ struct GamifiedDashboardHeaderView: View {
                         .foregroundColor(.red)
                         .padding(.leading, 4)
                 }
-                 
+
                 Spacer()
                 HStack(spacing: 6) {
-                    // Animated flame icon
                     Gradients.dashboardFlameGradient
-                    .frame(width: 28, height: 28)
-                    .mask(
-                        Image(systemName: "flame.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    )
+                        .frame(width: 28, height: 28)
+                        .mask(
+                            Image(systemName: "flame.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        )
                     Text("\(dailyStreak) days")
                         .font(.headline)
                         .foregroundColor(isDarkMode ? .white : .black)
@@ -84,7 +82,7 @@ struct GamifiedDashboardHeaderView: View {
             }
             .padding(.horizontal, 8)
             .padding(.bottom, 13)
-            // XP Progress Bar
+
             XPProgressBar(currentXP: gamification.xp, nextLevelXP: gamification.level * 100)
         }
         .padding()
@@ -108,7 +106,6 @@ struct GamifiedDashboardHeaderView: View {
                 lastCelebratedLevel = gamification.level
                 defaults.set(lastCelebratedLevel, forKey: lastLevelKey)
             }
-            // Animate only the streak badge, speed depends on streak
             let speed = max(0.5, 3.0 - Double(dailyStreak) * 0.1)
             withAnimation(Animation.linear(duration: speed).repeatForever(autoreverses: true)) {
                 animateGradient.toggle()
@@ -140,42 +137,38 @@ struct GamifiedDashboardHeaderView: View {
                 streak += 1
             } else if days > 1 {
                 streak = 1
-            } // else days == 0, already opened today
-        } else {
-            streak = 1
-        }
-        defaults.set(today, forKey: lastDateKey)
-        defaults.set(streak, forKey: streakKey)
-        dailyStreak = streak
-    }
-}
-
-struct XPProgressBar: View {
-    var currentXP: Int
-    var nextLevelXP: Int
-    @AppStorage("isDarkMode") var isDarkMode: Bool = false
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            ZStack(alignment: .leading) {
-                Capsule()
-                    .fill(Color.gray.opacity(0.5))
-                    .frame(height: 14)
-                Capsule()
-                    .fill(LinearGradient(gradient: Gradient(colors: [Color(red: 1.0, green: 0.65, blue: 0.4),
-                                                                     Color(red: 1.0, green: 0.45, blue: 0.4)]), startPoint: .leading, endPoint: .trailing))
-                    .frame(width: CGFloat(currentXP) / CGFloat(nextLevelXP) * 220, height: 14)
-                    .animation(.easeInOut, value: currentXP)
+            } else {
+                streak = 1
             }
-            HStack {
-                Text("XP: \(currentXP)/\(nextLevelXP)")
-                    .font(.caption)
-                    .foregroundColor(isDarkMode ? .white : .black)
-                Spacer()
-            }
+            defaults.set(today, forKey: lastDateKey)
+            defaults.set(streak, forKey: streakKey)
+            dailyStreak = streak
         }
     }
-}
 
-#Preview {
-    GamifiedDashboardHeaderView()
+    struct XPProgressBar: View {
+        var currentXP: Int
+        var nextLevelXP: Int
+        @AppStorage("isDarkMode") var isDarkMode: Bool = false
+        var body: some View {
+            VStack(alignment: .leading, spacing: 4) {
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.gray.opacity(0.5))
+                        .frame(height: 14)
+                    Capsule()
+                        .fill(LinearGradient(gradient: Gradient(colors: [Color(red: 1.0, green: 0.65, blue: 0.4),
+                                                                         Color(red: 1.0, green: 0.45, blue: 0.4)]), startPoint: .leading, endPoint: .trailing))
+                        .frame(width: CGFloat(currentXP) / CGFloat(nextLevelXP) * 220, height: 14)
+                        .animation(.easeInOut, value: currentXP)
+                }
+                HStack {
+                    Text("XP: \(currentXP)/\(nextLevelXP)")
+                        .font(.caption)
+                        .foregroundColor(isDarkMode ? .white : .black)
+                    Spacer()
+                }
+            }
+        }
+    }
 }

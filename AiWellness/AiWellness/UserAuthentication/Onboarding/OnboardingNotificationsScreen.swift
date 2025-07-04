@@ -46,7 +46,6 @@ struct OnboardingNotificationsScreen: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 24)
                     .fill(Gradients.onboardingCardBackground(colorScheme: colorScheme))
-                // Animated gradient overlay
                 RoundedRectangle(cornerRadius: 24)
                     .fill(Gradients.onboardingAnimatedOverlay(animateGradient: animateGradient))
                     .blendMode(.plusLighter)

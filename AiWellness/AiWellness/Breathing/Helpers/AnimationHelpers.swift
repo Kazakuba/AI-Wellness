@@ -98,15 +98,7 @@ struct EnhancedNeuralConnectionPath: View {
             
             EnhancedConnectionPath(index: index, size: size, scale: scale, rotation: rotation)
                 .stroke(
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color(red: 0.8, green: 0.2, blue: 0.4).opacity(0.8 * opacity),
-                            Color(red: 0.9, green: 0.3, blue: 0.5).opacity(0.6 * opacity),
-                            Color(red: 0.8, green: 0.2, blue: 0.4).opacity(0.4 * opacity)
-                        ]),
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    ),
+                    Gradients.enhancedNeuralConnectionGradient(opacity: opacity),
                     lineWidth: 3
                 )
             
@@ -203,7 +195,6 @@ struct EnhancedConnectionNode: View {
                 .scaleEffect(nodeScale)
                 .blur(radius: 2)
             
-            // Main node
             Circle()
                 .fill(
                     RadialGradient(

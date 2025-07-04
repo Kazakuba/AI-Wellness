@@ -20,7 +20,6 @@ class ConfettiManager: ObservableObject {
     private init() {}
 
     func celebrate() {
-        // Pick a random confetti type set
         if let random = allConfettiTypes.randomElement() {
             confettis = random
         }

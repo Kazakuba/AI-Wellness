@@ -1,7 +1,5 @@
 import SwiftUI
 
-// Gradients moved to Gradients.swift
-
 public func featureIcon(_ systemName: String, _ label: String) -> some View {
     VStack(spacing: 8) {
         Image(systemName: systemName)

@@ -84,15 +84,7 @@ struct ChatListView: View {
                 .background(Color.clear)
                 .foregroundColor(.white)
                 .mask(
-                    LinearGradient(
-                        gradient: Gradient(stops: [
-                            .init(color: .black, location: 0.0),
-                            .init(color: .black, location: 0.9),
-                            .init(color: .clear, location: 1.0)
-                        ]),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
+                    Gradients.listMask
                 )
             }
             .background(Gradients.aiChatMainBackground(isDarkMode: isDarkMode).ignoresSafeArea())

@@ -23,7 +23,6 @@ struct TertiaryButton: View {
     }
 }
 
-// Example Usage
 struct TertiaryButton_Previews: PreviewProvider {
     static var previews: some View {
         TertiaryButton(title: "Learn More") {

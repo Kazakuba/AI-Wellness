@@ -1,6 +1,5 @@
 // CalendarGridView.swift
 // AiWellness
-// Extracted from CalendarView.swift
 
 import SwiftUI
 

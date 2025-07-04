@@ -55,7 +55,6 @@ struct DashboardView: View {
                 WeeklyRecapView()
                     .padding(.bottom, 12)
             }
-            // Lottie Animation Overlay
             if showTimeCapsuleAnimation {
                 Color.black.opacity(0.4).ignoresSafeArea()
                 VStack {
@@ -64,7 +63,6 @@ struct DashboardView: View {
                         .playing()
                         .frame(width: 300, height: 300)
                         .onAppear {
-                            // Adjust the delay to match your animation's duration
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                                 withAnimation {
                                     showTimeCapsuleAnimation = false
@@ -81,7 +79,6 @@ struct DashboardView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIDevice.deviceDidShakeNotification)) { _ in
-            // Only respond to shake when dashboard tab is active
             if isActiveTab && !showTimeCapsuleAnimation && !showTimeCapsule {
                 HapticManager.strongLongHaptic()
                 showTimeCapsuleAnimation = true
@@ -112,15 +109,12 @@ private struct WelcomeText: View {
     
     func fetchUserName() {
         if let currentUser = Auth.auth().currentUser {
-            // Firebase Auth user
             let fullName = currentUser.displayName ?? currentUser.email ?? "User"
             userName = extractFirstName(from: fullName).capitalized
         } else if let googleUser = GIDSignIn.sharedInstance.currentUser {
-            // Google Sign-In user
             let fullName = googleUser.profile?.name ?? "User"
             userName = extractFirstName(from: fullName).capitalized
         } else {
-            // Fallback
             userName = "User"
         }
     }

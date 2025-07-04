@@ -23,14 +23,12 @@ class SavedAffirmationViewModel: ObservableObject {
         self.getSavedAffirmationsUseCase = GetSavedAffirmationsUseCase(repository: repository)
         loadSavedAffirmations()
         
-        // Automatically filter as searchText changes (optional, you can also filter in view)
         $searchText
             .sink { _ in
                 self.objectWillChange.send()
             }
             .store(in: &cancellables)
         
-        // Listen for account/user changes
         NotificationCenter.default.addObserver(self, selector: #selector(reloadOnUserChange), name: .journalUserDidChange, object: nil)
     }
 
@@ -38,7 +36,6 @@ class SavedAffirmationViewModel: ObservableObject {
         loadSavedAffirmations()
     }
 
-    // Computed property for filtered affirmations based on searchText
     var filteredAffirmations: [Affirmation] {
         if searchText.isEmpty {
             return savedAffirmations.sorted { $0.date > $1.date }
@@ -67,13 +64,10 @@ class SavedAffirmationViewModel: ObservableObject {
         }
     }
     
-    //Deleting saved affirmation
     func deleteAffirmation(_ affirmation: Affirmation) {
         let uid = GamificationManager.shared.getUserUID()
-        // Delete locally
         persistence.deleteAffirmation(affirmation, uid: uid)
         
-        // Delete in Firestore
         FirestoreManager.shared.deleteAffirmation(affirmation) { result in
             switch result {
             case .success():
@@ -83,7 +77,6 @@ class SavedAffirmationViewModel: ObservableObject {
             }
         }
         
-        // Update local list
         savedAffirmations = persistence.getSavedAffirmations(uid: uid)
     }
     
@@ -96,10 +89,8 @@ class SavedAffirmationViewModel: ObservableObject {
     
     func clearAllAffirmations() {
         let uid = GamificationManager.shared.getUserUID()
-        // Clear local storage
         persistence.clearAllAffirmations(uid: uid)
 
-        // Clear Firestore
         FirestoreManager.shared.clearAllAffirmations { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -111,8 +102,6 @@ class SavedAffirmationViewModel: ObservableObject {
                 }
             }
         }
-
-        // Update local list
         savedAffirmations.removeAll()
     }
 }

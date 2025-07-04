@@ -23,8 +23,8 @@ struct ToggleRow: View {
                 .frame(width: 30, height: 30)
                 .background(Color(.tertiarySystemFill))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
-                .scaleEffect(iconScale) // Apply scale effect
-                .animation(.spring(response: 0.3, dampingFraction: 0.5), value: isOn) // Animate when toggled
+                .scaleEffect(iconScale)
+                .animation(.spring(response: 0.3, dampingFraction: 0.5), value: isOn)
 
             Toggle(title, isOn: $isOn)
                 .foregroundColor(isDarkMode ? .white : .black)
@@ -39,7 +39,3 @@ struct ToggleRow: View {
         .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
     }
 }
-
-//#Preview {
-//    ToggleRow()
-//}

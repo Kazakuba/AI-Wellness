@@ -10,22 +10,12 @@ struct SquareAnimationView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 25)
                 .fill(
-                    RadialGradient(
-                        gradient: Gradient(colors: [
-                            Color.blue.opacity(0.8),
-                            Color.blue.opacity(0.4),
-                            Color.blue.opacity(0.1)
-                        ]),
-                        center: .center,
-                        startRadius: 5,
-                        endRadius: size/1.2
-                    )
+                    Gradients.breathingSquareBackgroundRadialGradient(size: size)
                 )
                 .scaleEffect(scaleFactor * 1.1)
                 .opacity(opacity * 0.6)
                 .blur(radius: 10)
             
-            // Main square gradient
             RoundedRectangle(cornerRadius: 25)
                 .fill(Gradients.breathingSquareMainGradient())
                 .scaleEffect(scaleFactor)
@@ -41,7 +31,6 @@ struct SquareAnimationView: View {
                 )
                 .shadow(color: Color.blue.opacity(0.5), radius: 15, x: 0, y: 0)
             
-            // Corner accents
             ForEach(0..<4) { corner in
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.white.opacity(0.3))
@@ -65,7 +54,6 @@ struct CircleAnimationView: View {
     
     var body: some View {
         ZStack {
-            // Outer glow ring
             Circle()
                 .stroke(
                     LinearGradient(
@@ -109,7 +97,6 @@ struct CircleAnimationView: View {
                 )
                 .shadow(color: Color.purple.opacity(0.6), radius: 20, x: 0, y: 0)
             
-            // Inner circle pulse
             Circle()
                 .fill(Color.white.opacity(0.2))
                 .scaleEffect(scaleFactor * 0.6)
@@ -306,7 +293,6 @@ struct EnergyAnimationView: View {
                 )
                 .shadow(color: Color.orange.opacity(0.6), radius: 25, x: 0, y: 0)
             
-            // Dynamic rays
             ForEach(0..<12) { index in
                 RoundedRectangle(cornerRadius: 3)
                     .fill(Gradients.breathingEnergyRayGradient())

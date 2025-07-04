@@ -33,14 +33,11 @@ class AffirmationPersistence {
         }
     }
     
-    // Save today's affirmation for a topic
     func saveTodayAffirmation(_ affirmation: Affirmation, uid: String?) {
-        // Save for legacy single-topic
         if let data = try? JSONEncoder().encode(affirmation) {
             UserDefaults.standard.set(data, forKey: todayKey(for: uid))
             UserDefaults.standard.set(Date(), forKey: todayDateKey(for: uid))
         }
-        // Save for per-topic
         var topicMap = getTodayAffirmationTopicMap(uid: uid)
         if let topic = affirmation.topic {
             topicMap[topic] = (affirmation, Date())
@@ -51,7 +48,6 @@ class AffirmationPersistence {
         }
     }
 
-    // Get today's affirmation for a topic
     func getTodayAffirmation(for topic: String?, uid: String?) -> Affirmation? {
         guard let topic = topic else { return getTodayAffirmation(uid: uid) }
         let topicMap = getTodayAffirmationTopicMap(uid: uid)
@@ -61,7 +57,6 @@ class AffirmationPersistence {
         return nil
     }
 
-    // Get today's affirmation (legacy single-topic support)
     func getTodayAffirmation(uid: String?) -> Affirmation? {
         guard let date = UserDefaults.standard.object(forKey: todayDateKey(for: uid)) as? Date,
               Calendar.current.isDateInToday(date),
@@ -72,7 +67,6 @@ class AffirmationPersistence {
         return affirmation
     }
 
-    // Helper: get topic map from UserDefaults
     private func getTodayAffirmationTopicMap(uid: String?) -> [String: (Affirmation, Date)] {
         guard let data = UserDefaults.standard.data(forKey: todayTopicKey(for: uid)),
               let raw = try? JSONDecoder().decode([String: [AffirmationOrDate]].self, from: data) else {
@@ -87,7 +81,6 @@ class AffirmationPersistence {
         return result
     }
     
-    //Deleting saved affirmation locally
     func deleteAffirmation(_ affirmation: Affirmation, uid: String?) {
         var affirmations = getSavedAffirmations(uid: uid)
         if let index = affirmations.firstIndex(of: affirmation) {
@@ -100,7 +93,6 @@ class AffirmationPersistence {
         UserDefaults.standard.removeObject(forKey: savedKey(for: uid))
     }
 
-    // Helper struct for decoding
     private struct AffirmationOrDate: Codable {
         let affirmation: Affirmation?
         let date: Date?

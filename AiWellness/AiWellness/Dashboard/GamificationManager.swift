@@ -18,10 +18,10 @@ struct Badge: Identifiable, Codable, Equatable {
     let title: String
     let systemImage: String
     let description: String
-    var level: Int // 0 = locked, 1 = bronze, 2 = silver, 3 = gold
+    var level: Int
     var progress: Int
     var goal: Int
-    var milestones: [Int]? // Optional: milestone thresholds for each level
+    var milestones: [Int]?
 }
 
 // MARK: - Gamification Manager
@@ -37,7 +37,6 @@ class GamificationManager: ObservableObject {
     private let levelKey = "gamification_level"
     private let userKey = "gamification_user_uid"
     
-    // XP values for each achievement/badge (can be customized)
     private let achievementXP: [String: Int] = [
         "first_affirmation": 20,
         "shake_it_up": 15,
@@ -57,7 +56,6 @@ class GamificationManager: ObservableObject {
         "ai_conversationalist": 25
     ]
     
-    // XP needed per level (simple formula: 100 * level)
     private func xpForNextLevel() -> Int { 50 * level }
 
     // MARK: - Initialization
@@ -97,7 +95,6 @@ class GamificationManager: ObservableObject {
                 if ach.progress >= ach.goal {
                     ach.isUnlocked = true
                     addXP(achievementXP[id] ?? 10)
-                    // Special: update title for hidden achievement
                     if id == "hidden_time_capsule" {
                         ach.title = "Time Travel"
                     }
@@ -129,7 +126,6 @@ class GamificationManager: ObservableObject {
                     break
                 }
             }
-            // Cap level at 3 (gold)
             if badge.level > 3 { badge.level = 3 }
             badges[idx] = badge
             save()
@@ -137,18 +133,14 @@ class GamificationManager: ObservableObject {
         return didLevelUp
     }
     
-    // Special method for consistency badge that tracks streak value
     func updateConsistencyBadge(streak: Int) {
         if let idx = badges.firstIndex(where: { $0.id == "consistency" }) {
             var badge = badges[idx]
 
-            // Set progress to current streak
             badge.progress = streak
             
-            // Check if we should level up based on milestones
             let milestones = badge.milestones ?? [3, 7, 30]
 
-            // Determine what level this streak should be
             var targetLevel = 0
             for (i, milestone) in milestones.enumerated() {
                 if streak >= milestone {
@@ -156,7 +148,6 @@ class GamificationManager: ObservableObject {
                 }
             }
 
-            // Only level up if we're going to a higher level
             if targetLevel > badge.level {
                 badge.level = targetLevel
                 addXP(badgeXP["consistency"] ?? 10)
@@ -167,7 +158,6 @@ class GamificationManager: ObservableObject {
         }
     }
     
-    // Public method to get badge XP
     func getBadgeXP(for id: String) -> Int {
         return badgeXP[id] ?? 10
     }
@@ -185,7 +175,6 @@ class GamificationManager: ObservableObject {
         }
         if level > oldLevel {
             if let idx = badges.firstIndex(where: { $0.id == "level_up" }) {
-                // Award badge at level 2, 5, 10 (bronze, silver, gold)
                 let newLevel = level
                 var badge = badges[idx]
                 if (badge.level < 1 && newLevel >= 2) || (badge.level < 2 && newLevel >= 5) || (badge.level < 3 && newLevel >= 10) {
@@ -201,7 +190,6 @@ class GamificationManager: ObservableObject {
     }
     
     // MARK: - User UID Storage
-    // Call this after login, before showing any gamification UI.
     func setUser(uid: String) {
         UserDefaults.standard.set(uid, forKey: userKey)
         load()
@@ -227,7 +215,6 @@ class GamificationManager: ObservableObject {
         let uid = getUserUID() ?? "default"
         let defaults = UserDefaults.standard
         
-        // Reset all achievement flags
         defaults.removeObject(forKey: "shake_it_up_\(uid)")
         defaults.removeObject(forKey: "journal_initiate_\(uid)")
         defaults.removeObject(forKey: "ai_chat_starter_\(uid)")

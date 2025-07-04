@@ -17,7 +17,6 @@ struct CustomDivider: View {
     }
 }
 
-// Example Usage:
 struct CustomDivider_Previews: PreviewProvider {
     static var previews: some View {
         VStack {

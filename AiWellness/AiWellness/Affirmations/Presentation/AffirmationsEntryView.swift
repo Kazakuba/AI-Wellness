@@ -1,4 +1,4 @@
-// Entry point for Affirmations tab, launches the main AffirmationsView
+// Entry point for Affirmations tab
 import SwiftUI
 import ConfettiSwiftUI
 

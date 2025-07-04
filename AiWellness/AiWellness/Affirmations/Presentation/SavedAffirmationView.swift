@@ -14,7 +14,6 @@ struct SavedAffirmationView: View {
         NavigationView {
             Group {
                 if viewModel.isLoading {
-                    // Show spinner centered when loading
                     VStack {
                         Spacer()
                         ProgressView("Syncing with cloud…")
@@ -22,7 +21,6 @@ struct SavedAffirmationView: View {
                         Spacer()
                     }
                 } else {
-                    // Show your List when not loading
                     List {
                         ForEach(viewModel.filteredAffirmations) { affirmation in
                             VStack(alignment: .leading, spacing: 8) {

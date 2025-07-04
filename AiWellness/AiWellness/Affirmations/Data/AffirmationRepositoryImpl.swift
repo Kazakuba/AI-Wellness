@@ -16,23 +16,19 @@ class AffirmationRepositoryImpl: AffirmationRepository {
     
     func fetchDailyAffirmation(completion: @escaping (Result<Affirmation, Error>) -> Void, topic: String? = nil) {
         let uid = GamificationManager.shared.getUserUID()
-        // Check if today's affirmation is cached for the topic
         if let cached = persistence.getTodayAffirmation(for: topic, uid: uid) {
             completion(.success(cached))
             return
         }
-        // Otherwise, fetch from API, ensuring uniqueness
         let previousAffirmations = persistence.getSavedAffirmations(uid: uid).filter { $0.topic == topic }
         func fetchUniqueAffirmation(retry: Int = 0) {
             apiService.fetchAffirmation(completion: { result in
                 switch result {
                 case .success(let affirmation):
-                    // Ensure uniqueness for this topic
                     if previousAffirmations.contains(where: { $0.text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == affirmation.text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }) {
                         if retry < 5 {
                             fetchUniqueAffirmation(retry: retry + 1)
                         } else {
-                            // Give up after 5 tries, return anyway
                             self.persistence.saveTodayAffirmation(affirmation, uid: uid)
                             completion(.success(affirmation))
                         }
@@ -48,7 +44,6 @@ class AffirmationRepositoryImpl: AffirmationRepository {
         fetchUniqueAffirmation()
     }
     
-    // Protocol conformance: keep this for protocol
     func fetchDailyAffirmation(completion: @escaping (Result<Affirmation, Error>) -> Void) {
         fetchDailyAffirmation(completion: completion, topic: nil)
     }

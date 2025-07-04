@@ -26,7 +26,6 @@ struct PrimaryButton: View {
     }
 }
 
-// Example Usage
 struct PrimaryButtonExample: View {
     var body: some View {
         PrimaryButton(title: "Submit") {

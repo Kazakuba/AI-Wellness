@@ -1,3 +1,11 @@
+//
+//  AppBackgroundGradient.swift
+//  AiWellness
+//
+//  Created by Kazakuba on 4. 7. 2025..
+//
+
+
 import SwiftUI
 
 public struct AppBackgroundGradient {

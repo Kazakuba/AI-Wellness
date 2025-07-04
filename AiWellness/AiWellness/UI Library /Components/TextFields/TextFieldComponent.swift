@@ -25,7 +25,6 @@ struct TextFieldComponent: View {
     }
 }
 
-// Example Usage:
 struct TextFieldComponent_Previews: PreviewProvider {
     @State static var inputText: String = ""
 

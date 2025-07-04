@@ -314,4 +314,41 @@ struct Gradients {
             endPoint: .bottomTrailing
         )
     }
+    
+    static var listMask: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(stops: [
+                .init(color: .black, location: 0.0),
+                .init(color: .black, location: 0.9),
+                .init(color: .clear, location: 1.0)
+            ]),
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+    
+    static func breathingSquareBackgroundRadialGradient(size: CGFloat) -> RadialGradient {
+        RadialGradient(
+            gradient: Gradient(colors: [
+                Color.blue.opacity(0.8),
+                Color.blue.opacity(0.4),
+                Color.blue.opacity(0.1)
+            ]),
+            center: .center,
+            startRadius: 5,
+            endRadius: size/1.2
+        )
+    }
+    
+    static func enhancedNeuralConnectionGradient(opacity: Double) -> LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: [
+                Color(red: 0.8, green: 0.2, blue: 0.4).opacity(0.8 * opacity),
+                Color(red: 0.9, green: 0.3, blue: 0.5).opacity(0.6 * opacity),
+                Color(red: 0.8, green: 0.2, blue: 0.4).opacity(0.4 * opacity)
+            ]),
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+    }
 } 

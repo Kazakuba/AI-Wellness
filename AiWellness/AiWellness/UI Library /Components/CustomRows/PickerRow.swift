@@ -29,7 +29,7 @@ struct PickerRow: View {
             
             Text(title)
                 .foregroundColor(isDarkMode ? .white : .black)
-            Picker("", selection: $selection) { // Empty label to avoid duplicate title
+            Picker("", selection: $selection) {
                 ForEach(options, id: \.self) { option in
                     Text(option)
                         .foregroundColor(isDarkMode ? .white : .black)
@@ -47,7 +47,3 @@ struct PickerRow: View {
     }
 
 }
-
-//#Preview {
-//    PickerRow(icon: <#String#>, title: <#String#>, selection: <#Binding<String>#>, options: <#[String]#>, color: <#Color#>)
-//}

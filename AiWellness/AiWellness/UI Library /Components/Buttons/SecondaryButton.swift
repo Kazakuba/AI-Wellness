@@ -29,7 +29,6 @@ struct SecondaryButton: View {
     }
 }
 
-// Example Usage:
 struct SecondaryButton_Previews: PreviewProvider {
     static var previews: some View {
         SecondaryButton(title: "Cancel") {

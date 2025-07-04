@@ -6,7 +6,6 @@ struct OnboardingView: View {
     let totalSteps = 5
     let onFinish: () -> Void
     
-    // Step 3: Goals
     @State private var selectedGoals: Set<String> = []
     let goals = [
         ("heart.fill", "Build a daily self-love habit"),
@@ -16,14 +15,12 @@ struct OnboardingView: View {
         ("waveform.path.ecg", "Reduce anxiety")
     ]
     
-    // Step 4: Notifications
     @State private var dailyAffirmation = false
     @State private var streaks = false
     @State private var journaling = false
     
     var body: some View {
         ZStack {
-            // Adaptive gradient background
             Gradients.onboardingMainBackground(colorScheme: colorScheme)
             .ignoresSafeArea()
             

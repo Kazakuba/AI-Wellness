@@ -14,17 +14,15 @@ struct BadgesHorizontalScrollView: View {
         )
     }
     
-    // Badge color based on level
     private func badgeColor(for level: Int) -> Color {
         switch level {
-        case 1: return .orange // Bronze
-        case 2: return .gray // Silver
-        case 3: return .yellow // Gold
-        default: return isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5) // Locked
+        case 1: return .orange
+        case 2: return .gray
+        case 3: return .yellow
+        default: return isDarkMode ? .white.opacity(0.5) : .black.opacity(0.5)
         }
     }
     
-    // Badge level text
     private func badgeLevelText(for level: Int) -> String {
         switch level {
         case 1: return "Bronze"
@@ -34,7 +32,6 @@ struct BadgesHorizontalScrollView: View {
         }
     }
 
-    // Helper to get the next milestone for a badge
     private func nextMilestone(for badge: Badge) -> Int {
         let milestones = badge.milestones ?? [badge.goal]
         let idx = min(badge.level, milestones.count - 1)
@@ -104,7 +101,6 @@ struct BadgesHorizontalScrollView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 16)
                     
-                    // Level Up! badge: show milestone progress
                     if badge.id == "level_up" {
                         let milestones = [2, 5, 10, 20, 100]
                         let currentLevel = gamification.level

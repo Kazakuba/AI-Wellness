@@ -1,4 +1,4 @@
-// MotionManager for shake detection (UIKit integration)
+// MotionManager for shake detection
 import Foundation
 import CoreMotion
 import Combine
@@ -19,10 +19,10 @@ class MotionManager: ObservableObject {
             guard let self = self, let data = data else { return }
             let acceleration = data.acceleration
             let magnitude = sqrt(acceleration.x * acceleration.x + acceleration.y * acceleration.y + acceleration.z * acceleration.z)
-            if magnitude > 2.3 { // Shake threshold
+            if magnitude > 2.3 {
                 let now = Date()
                 if let last = self.lastShakeDate, now.timeIntervalSince(last) < 1.0 {
-                    return // Prevent multiple triggers
+                    return
                 }
                 self.lastShakeDate = now
                 self.didShake = true

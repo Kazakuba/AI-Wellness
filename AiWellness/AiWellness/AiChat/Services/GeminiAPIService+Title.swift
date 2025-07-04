@@ -44,7 +44,6 @@ extension GeminiAPIService {
                    let parts = content["parts"] as? [[String: Any]],
                    let text = parts.first?["text"] as? String {
                     print("[DEBUG] Gemini raw title response: \(text)")
-                    // Try to extract JSON array from text, even if extra text is present
                     if let start = text.firstIndex(of: "["), let end = text.lastIndex(of: "]") {
                         let jsonArrayString = String(text[start...end])
                         if let titlesData = jsonArrayString.data(using: .utf8),

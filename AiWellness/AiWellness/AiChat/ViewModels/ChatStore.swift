@@ -17,7 +17,6 @@ class ChatStore: ObservableObject {
     private init() {
         loadChatsFromUserDefaults()
 
-        // Observe changes in Firebase Auth
         authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             guard let self = self else { return }
             if user == nil {

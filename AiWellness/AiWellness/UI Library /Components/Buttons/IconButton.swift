@@ -27,15 +27,11 @@ struct IconButton: View {
                 }
             }
             .foregroundColor(ColorPalette.CustomPrimary)
-            //.padding(.horizontal, 12)
-            //.padding(.vertical, 8)
-            //.background(ColorPalette.surface)
             .cornerRadius(8)
         }
     }
 }
 
-// Example Usage
 struct IconButton_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 16) {

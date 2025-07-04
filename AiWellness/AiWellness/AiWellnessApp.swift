@@ -18,7 +18,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         FirebaseApp.configure()
         return true
     }
-    //For handling taps on notifications
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
@@ -44,11 +43,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         completionHandler()
     }
     
-    // Show notifications even when app is in the foreground
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.banner, .sound, .badge])  // This forces it to appear
+        completionHandler([.banner, .sound, .badge])
     }
     
     func application(_ app: UIApplication, open url: URL, options option: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -71,11 +69,9 @@ struct AiWellnessApp: App {
         UITabBar.appearance().tintColor = UIColor.white
         UITabBar.appearance().unselectedItemTintColor = UIColor(white: 1.0, alpha: 0.6)
 
-        // Set initial navigation bar tint color based on isDarkMode
         let isDarkMode = UserDefaults.standard.bool(forKey: "isDarkMode")
         UINavigationBar.appearance().tintColor = isDarkMode ? .white : .black
 
-        // Listen for changes to isDarkMode and update navigation bar tint color
         NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { _ in
             let isDarkMode = UserDefaults.standard.bool(forKey: "isDarkMode")
             UINavigationBar.appearance().tintColor = isDarkMode ? .white : .black
@@ -87,8 +83,8 @@ struct AiWellnessApp: App {
     var body: some Scene {
         WindowGroup {
             AppRootView()
-                .environmentObject(SettingsViewModel(authService: AuthenticationService()))  // Share ViewModel across views
-                .environmentObject(appState) // sharing with entire app
+                .environmentObject(SettingsViewModel(authService: AuthenticationService()))
+                .environmentObject(appState)
         }
     }
     

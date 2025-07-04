@@ -9,7 +9,6 @@ struct WeeklyRecapView: View {
     @State private var showFullRecap = false
     @ObservedObject private var chatStore = ChatStore.shared
     
-    // Helper to get start of week
     private var weekStart: Date {
         Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date())) ?? Date()
     }
@@ -17,23 +16,18 @@ struct WeeklyRecapView: View {
         Calendar.current.date(byAdding: .day, value: 7, to: weekStart) ?? Date()
     }
     
-    // XP gained this week (always calculate fresh)
     private var xpThisWeek: Int {
         gamification.xp
     }
-    // Current streak (always calculate fresh)
     private var currentStreak: Int {
         gamification.badges.first(where: { $0.id == "consistency" })?.progress ?? 0
     }
-    // New badges unlocked this week (always calculate fresh)
     private var newBadges: [Badge] {
         gamification.badges.filter { $0.level > 0 }
     }
-    // Affirmations saved this week (always calculate fresh)
     private var affirmationsThisWeek: Int {
         savedAffirmations.savedAffirmations.filter { $0.date >= weekStart && $0.date < weekEnd }.count
     }
-    // Breathing sessions this week (using timestamps if available, else fallback to count)
     private var breathingSessionsThisWeek: Int {
         let uid = gamification.getUserUID() ?? "default"
         let key = "breathwork_pro_sessions_timestamps_\(uid)"
@@ -41,12 +35,10 @@ struct WeeklyRecapView: View {
            let timestamps = try? JSONDecoder().decode([Date].self, from: data) {
             return timestamps.filter { $0 >= weekStart && $0 < weekEnd }.count
         } else {
-            // fallback: just show total count if no timestamps
             let count = UserDefaults.standard.integer(forKey: "breathwork_pro_sessions_\(uid)")
             return count
         }
     }
-    // Journal entries this week (always calculate fresh)
     private var journalEntriesThisWeek: Int {
         guard let uid = gamification.getUserUID() else { return 0 }
         let entries = WritingDataManager.shared
@@ -54,14 +46,12 @@ struct WeeklyRecapView: View {
             .filter { $0.key >= weekStart && $0.key < weekEnd && !$0.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         return entries.count
     }
-    // AI chats/messages this week (always calculate fresh)
     private var aiChatsThisWeek: Int {
         chatStore.chats.flatMap { chat in
             chat.messages.filter { $0.timestamp >= weekStart && $0.timestamp < weekEnd && $0.sender == "Me" }
         }.count
     }
     
-    // Unique icon colors for each stat (light/dark mode)
     private func iconColor(for stat: String) -> Color {
         switch stat {
         case "star.fill": return isDarkMode ? Color.yellow : Color.orange
@@ -102,7 +92,6 @@ struct WeeklyRecapView: View {
         return arr
     }
     
-    // Dashboard gradient for card backgrounds
     var dashboardGradient: LinearGradient {
         Gradients.dashboardCardBackground(isDarkMode: isDarkMode)
     }
@@ -239,7 +228,6 @@ struct FullWeeklyRecapSheet: View {
         df.dateStyle = .medium
         return df
     }
-    // Dashboard gradient
     var dashboardGradient: LinearGradient {
         LinearGradient(
             gradient: Gradient(colors: isDarkMode ? [Color.indigo, Color.black] : [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]),

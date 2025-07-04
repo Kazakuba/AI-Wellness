@@ -1,3 +1,0 @@
-// Gradients moved to UI Library /Colors/Gradients.swift
-
-// ... existing code ... 

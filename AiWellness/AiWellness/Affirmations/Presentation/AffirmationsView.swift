@@ -57,26 +57,12 @@ struct AffirmationsView: View {
                                 .padding(.horizontal, 32)
                                 .padding(.vertical, 16)
                                 .background(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: isDarkMode ?
-                                                           [Color.indigo, Color.black] :
-                                                            [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]
-                                                          ),
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
+                                    Gradients.unlockButtonBackground(isDarkMode: isDarkMode)
                                 )
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 24)
                                         .stroke(
-                                            LinearGradient(
-                                                gradient: Gradient(colors: isDarkMode ?
-                                                                   [Color.white.opacity(0.5), Color.indigo.opacity(0.3)] :
-                                                                    [Color.white.opacity(0.5), Color.orange.opacity(0.3)]
-                                                                 ),
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            ),
+                                            Gradients.unlockButtonBorder(isDarkMode: isDarkMode),
                                             lineWidth: 1.5
                                         )
                                 )
@@ -114,7 +100,6 @@ struct AffirmationsView: View {
                                let rootVC = windowScene.windows.first?.rootViewController {
                                 av.completionWithItemsHandler = { activityType, completed, returnedItems, error in
                                     guard completed else { return }
-                                    // --- Sharing logic ---
                                     let uid = GamificationManager.shared.getUserUID() ?? "default"
                                     let shareKey = "sharing_is_caring_count_\(uid)"
                                     let defaults = UserDefaults.standard
@@ -178,7 +163,6 @@ struct AffirmationsView: View {
                 }
             }
             .onAppear {
-                // Always lock on tab open (not on topic change)
                 viewModel.isLocked = true
             }
             .onChange(of: motionManager.didShake) { _, didShake in
@@ -213,7 +197,6 @@ struct AffirmationsView: View {
                 ConfettiManager.shared.celebrate()
             }
         }
-        // --- Streak logic ---
         let uid = GamificationManager.shared.getUserUID() ?? "default"
         let streakKey = "affirmation_streak_\(uid)"
         let lastDateKey = "affirmation_streak_last_\(uid)"
@@ -221,7 +204,6 @@ struct AffirmationsView: View {
         let today = Calendar.current.startOfDay(for: Date())
         let lastDate = defaults.object(forKey: lastDateKey) as? Date
 
-        // --- Prevent multiple updates on the same day ---
         if let last = lastDate, Calendar.current.isDate(last, inSameDayAs: today) {
             return
         }
@@ -231,25 +213,20 @@ struct AffirmationsView: View {
         if let last = lastDate {
             let days = Calendar.current.dateComponents([.day], from: last, to: today).day ?? 0
             if days == 1 {
-                // Consecutive day
                 streak += 1
             } else if days > 1 {
-                // Gap in streak, reset to 1
                 streak = 1
             }
         } else {
-            // First time ever
             streak = 1
         }
         
         defaults.set(today, forKey: lastDateKey)
         defaults.set(streak, forKey: streakKey)
         
-        // Update consistency badge progress using the proper increment method
         GamificationManager.shared.updateConsistencyBadge(streak: streak)
         GamificationManager.shared.save()
 
-        // 🎉 Trigger confetti
         ConfettiManager.shared.celebrate()
     }
 }
