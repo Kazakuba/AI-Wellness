@@ -34,7 +34,6 @@ struct ArchivedNotesView: View {
                     }
                 }
                 
-                //Remove All Archived Notes button
                 if !viewModel.archivedNotes.isEmpty {
                     Button(role: .destructive) {
                         viewModel.deleteAllArchivedNotes()
@@ -77,12 +76,12 @@ struct ArchivedNotesView: View {
         TimeCapsuleNote(
             id: UUID(),
             content: "This is a past note from the time capsule.",
-            unlockDate: Date().addingTimeInterval(-86400) // 1 day ago
+            unlockDate: Date().addingTimeInterval(-86400)
         ),
         TimeCapsuleNote(
             id: UUID(),
             content: "Another inspirational note from the past.",
-            unlockDate: Date().addingTimeInterval(-604800) // 1 week ago
+            unlockDate: Date().addingTimeInterval(-604800)
         )
     ]
     return ArchivedNotesView(viewModel: viewModel)

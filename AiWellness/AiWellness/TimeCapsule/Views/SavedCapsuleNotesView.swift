@@ -57,7 +57,6 @@ struct SavedCapsuleNotesView: View {
 
 #Preview {
     let mockViewModel = TimeCapsuleViewModel()
-    // Optionally add mock data:
     mockViewModel.savedNotes = [
         TimeCapsuleNote(id: UUID(), content: "Mock Note 1", unlockDate: Date().addingTimeInterval(3600)),
         TimeCapsuleNote(id: UUID(), content: "Mock Note 2", unlockDate: Date().addingTimeInterval(7200))

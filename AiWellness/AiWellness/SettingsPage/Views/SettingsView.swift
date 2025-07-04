@@ -12,7 +12,6 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
-                // Search Bar at the very top
                 Section {
                     CustomSearchBar(
                         text: $searchText,
@@ -24,14 +23,12 @@ struct SettingsView: View {
                     .listSectionSpacing(50)
                 }
 
-                // Account Row below search
                 if let user = viewModel.user, isMatch(searchText: searchText, text: user.name + " " + user.email) {
                     accountRow(user: user)
                 } else if searchText.isEmpty {
                     accountRow(user: viewModel.user)
                 }
 
-                // Preferences Section
                 Section(header: Text("Preferences").foregroundColor(dynamicTextColor)) {
                     ToggleRow(icon: "moon.fill", title: "Dark Mode", isOn: $viewModel.isDarkMode, color: .indigo)
                     ToggleRow(icon: "bell.fill", title: "Enable Notifications", isOn: $viewModel.notificationsEnabled, color: .orange)
@@ -47,7 +44,6 @@ struct SettingsView: View {
                     }
                 }
 
-                // About & Support
                 Section(header: isMatch(searchText: searchText, text: "About & Support") ? Text("About & Support").foregroundColor(dynamicTextColor) : nil) {
                     if isMatch(searchText: searchText, text: "GitHub") {
                         Button(action: {
@@ -72,7 +68,6 @@ struct SettingsView: View {
                     }
                 }
 
-                // Log Out
                 Section {
                     if isMatch(searchText: searchText, text: "Log Out") {
                         Button(action: {
@@ -201,7 +196,7 @@ struct SettingsView: View {
 }
 
 extension Color {
-    static let customSystemGray6 = Color(red: 242 / 255, green: 242 / 255, blue: 247 / 255) // Matches systemGray6
+    static let customSystemGray6 = Color(red: 242 / 255, green: 242 / 255, blue: 247 / 255)
 }
 
 #Preview {

@@ -13,7 +13,6 @@ struct SupportView: View {
     
     var body: some View {
         List {
-            // Legal & Help Section
             Section(header: Text("Legal & Help").foregroundColor(isDarkMode ? .white : .black)) {
                 Button(action: {
                     if let url = URL(string: "https://www.google.com") {
@@ -41,7 +40,6 @@ struct SupportView: View {
                 .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
             }
             
-            // User Engagement Section
             Section(header: Text("User Engagement").foregroundColor(isDarkMode ? .white : .black)) {
                 Button("Submit Feedback / Report an Issue") {
                     viewModel.sendFeedbackEmail()

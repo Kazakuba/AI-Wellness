@@ -7,7 +7,6 @@
 
 import Foundation
 
-// Defining TimeCapsuleNote model
 struct TimeCapsuleNote: Codable, Identifiable, Equatable {
     let id: UUID
     let content: String

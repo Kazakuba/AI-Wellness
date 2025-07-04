@@ -7,14 +7,12 @@
 
 import Foundation
 
-//A service which handles data persistence using UserDefaults
 class PersistenceService {
     static var shared = PersistenceService()
     private let noteKey = "timeCapsuleNotes"
     private let archivedNoteKey = "archivedTimeCapsuleNotes"
     
     
-    // Saving single note into the array of notes
     func saveNote(note: TimeCapsuleNote) throws {
         let encoder = JSONEncoder()
         do {
@@ -27,7 +25,6 @@ class PersistenceService {
         }
     }
     
-    //Fetch saved notes
     func fetchNote() throws -> [TimeCapsuleNote] {
         guard let savedData = UserDefaults.standard.data(forKey: noteKey) else {
             return []
@@ -40,13 +37,11 @@ class PersistenceService {
         }
     }
     
-    //Reseting memory of UserDefaults for noteKey
     func resetNotesStorage() {
         UserDefaults.standard.removeObject(forKey: noteKey)
         print("Cleared saved notes from UserDefaults")
     }
     
-    //Deleting just one note
     func deleteNote(withId id: UUID) throws {
         var notes = try fetchNote()
         notes.removeAll { $0.id == id }
@@ -77,22 +72,17 @@ class PersistenceService {
         UserDefaults.standard.set(data, forKey: archivedNoteKey)
     }
     
-    //
     func clearArchivedNotes() {
         UserDefaults.standard.removeObject(forKey: archivedNoteKey)
     }
     
-    // Move expired notes to archive and remove from active notes
     func archiveExpiredNotes(_ expired: [TimeCapsuleNote]) throws {
-        // Append to existing archived notes
         var archived = try fetchArchivedNotes()
         archived.append(contentsOf: expired)
         
-        // Save updated archive
         let archivedData = try JSONEncoder().encode(archived)
         UserDefaults.standard.set(archivedData, forKey: archivedNoteKey)
         
-        // Remove expired notes from current notes
         var currentNotes = try fetchNote()
         currentNotes.removeAll { expired.contains($0) }
         
@@ -100,7 +90,6 @@ class PersistenceService {
         UserDefaults.standard.set(activeData, forKey: noteKey)
     }
     
-    //Deleting archieved note  bu swiping
     func deleteArchivedNote(withId id: UUID) throws {
         var archived = try fetchArchivedNotes()
         archived.removeAll { $0.id == id }
@@ -109,7 +98,6 @@ class PersistenceService {
         UserDefaults.standard.set(data, forKey: archivedNoteKey)
     }
     
-    //Clearing all archived notes
     func clearAllArchivedNotes() throws {
         UserDefaults.standard.removeObject(forKey: archivedNoteKey)
     }

@@ -8,14 +8,12 @@
 import SwiftUI
 import UserNotifications
 
-//Logic for TimeCapsuleView
-//@Observable
 class TimeCapsuleViewModel: ObservableObject {
     @Published var noteContent: String = ""
     @Published var selectedTimeframe: String = "1 Month"
     @Published var errorMessage: String?
     @Published var showNotificationPrompt: Bool = false
-    @Published var savedNotes: [TimeCapsuleNote] = [] // Stored fetched notes
+    @Published var savedNotes: [TimeCapsuleNote] = []
     @Published var showSavedNotes = false
     @Published var noteToPresent: TimeCapsuleNote? = nil
     @Published var showUnlockedNote = false
@@ -29,23 +27,18 @@ class TimeCapsuleViewModel: ObservableObject {
     
     init() {}
     
-    //Saving note
     func saveNote() -> Bool {
-        //Checking if the note content is empty
         guard !noteContent.isEmpty else {
             errorMessage = "Please enter a note."
             HapticManager.trigger(.error)
             return false
         }
-        //Create the note with a unique ID
         let note = TimeCapsuleNote(
             id: UUID(),
             content: noteContent,
             unlockDate: calculateUnlockDate()
         )
-        
-        //Save the note using PersistenceService
-        do {
+            do {
             try persistanceService.saveNote(note: note)
             noteContent = ""
             fetchNote()
@@ -78,9 +71,9 @@ class TimeCapsuleViewModel: ObservableObject {
                     self.notificationService.sendPermissionConfirmationNotification()
                     self.showNotificationPrompt = false
                 case .notDetermined:
-                    self.requestNotificationPermissionAndSchedule() // Will ask for permission
+                    self.requestNotificationPermissionAndSchedule()
                 case .denied, .ephemeral:
-                    self.showNotificationPrompt = true // Suggest enabling in settings
+                    self.showNotificationPrompt = true
                 @unknown default:
                     self.showNotificationPrompt = true
                 }
@@ -88,18 +81,15 @@ class TimeCapsuleViewModel: ObservableObject {
         }
     }
 
-    // Fetching saved notes
     func fetchNote() {
         do {
             savedNotes = try persistanceService.fetchNote()
-            // archiveExpiredNotes() // Do not auto-archive, keep all notes in main list
         } catch {
             errorMessage = "Failed to fetch notes: \(error.localizedDescription)"
             savedNotes = []
         }
     }
     
-    //Fetching archived notes
     func fetchArchivedNotes() {
         do {
             archivedNotes = try persistanceService.fetchArchivedNotes()
@@ -108,7 +98,6 @@ class TimeCapsuleViewModel: ObservableObject {
         }
     }
 
-    //For deleting just one note
     func deleteNote(_ note: TimeCapsuleNote) {
         do {
             try persistanceService.deleteNote(withId: note.id)
@@ -118,7 +107,6 @@ class TimeCapsuleViewModel: ObservableObject {
         }
     }
     
-    //Deleting one archived note
     func deleteArchivedNote(_ note: TimeCapsuleNote) {
         do {
             var archived = try persistanceService.fetchArchivedNotes()
@@ -131,7 +119,6 @@ class TimeCapsuleViewModel: ObservableObject {
         }
     }
     
-    //Deleting all archived notes
     func deleteAllArchivedNotes() {
         do {
             try persistanceService.overwriteArchivedNotes([])
@@ -142,7 +129,6 @@ class TimeCapsuleViewModel: ObservableObject {
         }
     }
     
-    //To move expired notes to archive
     func archiveExpiredNotes() {
         let now = Date()
         let expiredNotes = savedNotes.filter { $0.unlockDate < now }
@@ -158,7 +144,6 @@ class TimeCapsuleViewModel: ObservableObject {
         }
     }
     
-    //Ask permission for sending notification
     func requestNotificationPermissionAndSchedule() {
         notificationService.requestPermission { granted in
             DispatchQueue.main.async {
@@ -173,16 +158,13 @@ class TimeCapsuleViewModel: ObservableObject {
         }
     }
     
-    //Checking current nitification status - handles whether to schedule a notification or prompt the user after saving a note
     func checkNotificationAuthorizationAndPromptIfNeeded() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             DispatchQueue.main.async {
                 switch settings.authorizationStatus {
                 case .authorized, .provisional:
-                    // Notifications are allowed → don't show the prompt
                     self.showNotificationPrompt = false
                 case .notDetermined, .denied, .ephemeral:
-                    // Notifications are not allowed → show the prompt
                     self.showNotificationPrompt = true
                 @unknown default:
                     self.showNotificationPrompt = true
@@ -206,7 +188,6 @@ class TimeCapsuleViewModel: ObservableObject {
         }
     }
     
-    //Also checking notification status but for only one reason - dismissing the notification prompt if the user has granted permission
     func checkNotificationAuthorizationAndDismissIfGranted() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             DispatchQueue.main.async {
@@ -217,13 +198,11 @@ class TimeCapsuleViewModel: ObservableObject {
         }
     }
     
-    //Clearing all saved notes both active and archived, and then reloads the list
     func resetNotesStorage() {
         persistanceService.resetNotesStorage()
         fetchNote()
     }
     
-    //Calculating how far in the future to lock the time capsule note
     private func calculateUnlockDate() -> Date {
         let timeIntervals: [String: TimeInterval] = [
             "1 Month": 60 * 60 * 24 * 30,
