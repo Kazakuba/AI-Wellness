@@ -46,7 +46,6 @@ struct OnboardingGoalsScreen: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 24)
                         .fill(OnboardingGradients.cardBackground(for: colorScheme))
-                    // Animated gradient overlay
                     RoundedRectangle(cornerRadius: 24)
                         .fill(
                             LinearGradient(

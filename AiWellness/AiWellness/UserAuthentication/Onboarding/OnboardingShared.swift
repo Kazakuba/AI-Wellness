@@ -34,7 +34,6 @@ struct OnboardingGradients {
     }
 }
 
-// Shared feature icon
 public func featureIcon(_ systemName: String, _ label: String) -> some View {
     VStack(spacing: 8) {
         Image(systemName: systemName)
@@ -50,7 +49,6 @@ public func featureIcon(_ systemName: String, _ label: String) -> some View {
     .frame(width: 90)
 }
 
-// Shared benefit row
 public func benefitRow(_ systemName: String, _ text: String) -> some View {
     HStack(spacing: 16) {
         ZStack {
@@ -66,7 +64,6 @@ public func benefitRow(_ systemName: String, _ text: String) -> some View {
     .frame(maxWidth: .infinity, alignment: .leading)
 }
 
-// Shared goal toggle
 public struct GoalToggle: View {
     public let icon: String
     public let label: String
@@ -131,7 +128,6 @@ public struct GoalToggle: View {
     }
 }
 
-// Shared colored toggle style
 public struct ColoredToggleStyle: ToggleStyle {
     public init() {}
     public func makeBody(configuration: Configuration) -> some View {

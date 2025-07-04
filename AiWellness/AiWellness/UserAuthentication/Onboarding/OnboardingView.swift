@@ -39,7 +39,6 @@ struct OnboardingView: View {
             )
             .ignoresSafeArea()
             
-            // Decorative shapes for visual interest
             Circle()
                 .fill(Color("CustomPrimary").opacity(0.1))
                 .frame(width: 200, height: 200)
@@ -69,7 +68,6 @@ struct OnboardingView: View {
                 .animation(.easeInOut, value: currentStep)
                 .frame(maxHeight: .infinity)
                 
-                // Step indicator
                 HStack(spacing: 10) {
                     ForEach(0..<totalSteps, id: \.self) { idx in
                         Circle()
@@ -85,7 +83,6 @@ struct OnboardingView: View {
                 }
                 .padding(.vertical, 8)
                 
-                // Navigation
                 HStack {
                     Button(action: { if currentStep > 0 { currentStep -= 1 } }) {
                         Text("Back")
@@ -96,8 +93,8 @@ struct OnboardingView: View {
                             .background(
                                 LinearGradient(
                                     gradient: Gradient(colors: [
-                                        Color(red: 0.63, green: 0.35, blue: 1.0), // Rich purple
-                                        Color(red: 1.0, green: 0.65, blue: 0.4)    // Rich orange
+                                        Color(red: 0.63, green: 0.35, blue: 1.0),
+                                        Color(red: 1.0, green: 0.65, blue: 0.4)
                                     ]),
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
@@ -158,7 +155,6 @@ struct OnboardingView: View {
     }
     
     private func completeOnboarding() {
-        // Save notification preferences
         UserDefaults.standard.set(dailyAffirmation, forKey: "dailyAffirmationEnabled")
         UserDefaults.standard.set(streaks, forKey: "streaksEnabled")
         UserDefaults.standard.set(journaling, forKey: "journalingEnabled")
@@ -174,7 +170,6 @@ struct OnboardingView: View {
     }
 }
 
-// Preview
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingView(onFinish: {})

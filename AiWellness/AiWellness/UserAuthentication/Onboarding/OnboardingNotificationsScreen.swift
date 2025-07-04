@@ -71,7 +71,6 @@ struct OnboardingNotificationsScreen: View {
         let center = UNUserNotificationCenter.current()
 
         if !isEnabled {
-            // Unscheduling is simple
             let identifier: String
             switch type {
             case "dailyAffirmation": identifier = "dailyAffirmationReminder"
@@ -83,20 +82,16 @@ struct OnboardingNotificationsScreen: View {
             return
         }
 
-        // Scheduling requires checking permissions
         center.getNotificationSettings { settings in
             switch settings.authorizationStatus {
             case .authorized, .provisional, .ephemeral:
-                // Permission already granted
                 schedule(type: type)
 
             case .notDetermined:
-                // Request permission for the first time
                 NotificationService.shared.requestPermission { granted in
                     if granted {
                         schedule(type: type)
                     } else {
-                        // User denied permission, so toggle back off
                         DispatchQueue.main.async {
                             toggleBinding(for: type, to: false)
                         }
@@ -104,7 +99,6 @@ struct OnboardingNotificationsScreen: View {
                 }
             
             case .denied:
-                // Permission was previously denied. Prompt to go to settings.
                 DispatchQueue.main.async {
                     NotificationService.shared.promptToEnableNotifications()
                     toggleBinding(for: type, to: false)

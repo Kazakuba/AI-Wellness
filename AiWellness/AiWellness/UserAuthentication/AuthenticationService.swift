@@ -14,7 +14,6 @@ class AuthenticationService: ObservableObject {
     @Published var isAuthenticated: Bool = false
     @Published var user: User? {
         didSet {
-            // Notify journal to refresh notes if user changes
             NotificationCenter.default.post(name: .journalUserDidChange, object: nil)
         }
     }
@@ -43,21 +42,18 @@ class AuthenticationService: ObservableObject {
             return
         }
 
-        // Get the rootViewController
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let rootViewController = windowScene.windows.first?.rootViewController else {
             print("Unable to access root view controller.")
             return
         }
 
-        // Google Sign-In
         GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { result, error in
             if let error = error {
                 print("Error during Google Sign-In: \(error.localizedDescription)")
                 return
             }
 
-            // Extract user token
             guard let user = result?.user,
                   let idToken = user.idToken?.tokenString else {
                 print("Failed to get Google user or tokens.")
@@ -65,14 +61,12 @@ class AuthenticationService: ObservableObject {
             }
             let accessToken = user.accessToken.tokenString
 
-            // Authenticate with Firebase
             let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
 
             Auth.auth().signIn(with: credential) { authResult, error in
                 if let error = error as NSError? {
                     let errorMessage: String
 
-                    // Map Firebase error codes to user-friendly messages
                     if let errorCode = AuthErrorCode(rawValue: error.code) {
                         switch errorCode {
                         case .networkError:
@@ -94,7 +88,6 @@ class AuthenticationService: ObservableObject {
 
                     print("Firebase authentication error: \(error.localizedDescription)")
 
-                    // Show an alert to the user
                     DispatchQueue.main.async {
                         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                            let window = scene.windows.first {
@@ -106,17 +99,14 @@ class AuthenticationService: ObservableObject {
                 } else {
                     print("Signed in with Google: \(authResult?.user.email ?? "No Email")")
 
-                    // Update authentication state
                     DispatchQueue.main.async {
                         self.isAuthenticated = true
-                        // Set gamification user UID after successful sign in
                         if let uid = authResult?.user.uid {
                             GamificationManager.shared.setUser(uid: uid)
                         }
                     }
                 }
             }
-            // Update user data after login
             self.checkAuthentication()
         }
     }
@@ -131,7 +121,6 @@ class AuthenticationService: ObservableObject {
     }
 }
 
-// User model
 struct User {
     var profileImageURL: String?
     var name: String

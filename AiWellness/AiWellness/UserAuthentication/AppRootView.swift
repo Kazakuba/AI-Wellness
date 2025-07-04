@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct AppRootView: View {
-    @StateObject var authService = AuthenticationService() // Shared service
+    @StateObject var authService = AuthenticationService()
     @State private var showOnboarding = false
     
     var body: some View {
@@ -53,7 +53,6 @@ struct AppRootView: View {
     }
     
     func checkAuthStatus() {
-        // Check Firebase auth status
         if Auth.auth().currentUser != nil {
             authService.isAuthenticated = true
         }

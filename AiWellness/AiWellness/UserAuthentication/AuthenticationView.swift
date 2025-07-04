@@ -29,20 +29,16 @@ struct AuthenticationView: View {
                     .frame(width: 300, height: 300)
                     .padding(.bottom, 20)
 
-                //Welcome text
                 WelcomeSign()
 
-                //Some motivational quote for an app
                 MotivationalWelcomeText()
 
-                //Buttons for login
                 VStack(spacing: 15) {
                     AuthenticationSignInButton(image: "globe", text: "Continue with Google", action: viewModel.googleSignIn)
                 }
                 .padding(.horizontal, 5)
                 .padding(.bottom, 8)
 
-                //Terms and Conditions and Privacy Policy
                 TermsAndConditionsAndPrivacyPolice()
                     .padding(.horizontal, 8)
                     .padding(.top, 8)
@@ -65,10 +61,6 @@ extension Color {
         #endif
         return (Double(r), Double(g), Double(b))
     }
-}
-
-#Preview {
-    AuthenticationView(viewModel: AuthenticationViewModel(autheticationService: AuthenticationService()))
 }
 
 private struct WelcomeSign: View {

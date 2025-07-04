@@ -17,7 +17,6 @@ struct OnboardingConfirmationScreen: View {
                 .padding(.top, 32)
 
             VStack(alignment: .leading, spacing: 24) {
-                // Goals Section
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Your goals:")
                         .font(.headline)
@@ -47,7 +46,6 @@ struct OnboardingConfirmationScreen: View {
                 Divider()
                     .background(Color("CustomSecondary").opacity(0.3))
 
-                // Notifications Section
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Notifications:")
                         .font(.headline)
@@ -76,7 +74,6 @@ struct OnboardingConfirmationScreen: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 24)
                         .fill(OnboardingGradients.cardBackground(for: colorScheme))
-                    // Animated gradient overlay
                     RoundedRectangle(cornerRadius: 24)
                         .fill(
                             LinearGradient(
