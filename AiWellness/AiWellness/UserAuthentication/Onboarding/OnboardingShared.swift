@@ -1,38 +1,6 @@
 import SwiftUI
 
-// MARK: - Gradient Styles
-struct OnboardingGradients {
-    static let peachBackground = LinearGradient(
-        colors: [
-            Color("onboardingGradient").opacity(0.1),
-            Color("onboardingGradient2").opacity(0.15)
-        ],
-        startPoint: .topTrailing,
-        endPoint: .bottom
-    )
-    
-    static func cardBackground(for colorScheme: ColorScheme) -> LinearGradient {
-        if colorScheme == .dark {
-            return LinearGradient(
-                colors: [
-                    Color(.secondarySystemBackground).opacity(0.95),
-                    Color("CustomPrimary").opacity(0.08)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        } else {
-            return LinearGradient(
-                colors: [
-                    Color.white.opacity(0.95),
-                    Color("CustomPrimary").opacity(0.1)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        }
-    }
-}
+// Gradients moved to Gradients.swift
 
 public func featureIcon(_ systemName: String, _ label: String) -> some View {
     VStack(spacing: 8) {

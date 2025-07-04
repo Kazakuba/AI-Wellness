@@ -29,21 +29,7 @@ struct BreathingExerciseView: View {
     
     var body: some View {
         ZStack {
-            (isDarkMode ?
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.indigo, Color.black]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                ) :
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        Color(red: 1.0, green: 0.85, blue: 0.75),
-                        Color(red: 1.0, green: 0.72, blue: 0.58)
-                    ]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
+            Gradients.dashboardMainBackground(isDarkMode: isDarkMode)
             .edgesIgnoringSafeArea(.all)
 
             

@@ -27,14 +27,7 @@ struct DashboardView: View {
     let isActiveTab: Bool
 
     var gradient: LinearGradient {
-        LinearGradient(
-            gradient: Gradient(colors: isDarkMode ?
-                               [Color.indigo, Color.black] :
-                                [Color(red: 1.0, green: 0.85, blue: 0.75), Color(red: 1.0, green: 0.72, blue: 0.58)]
-                              ),
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
+        Gradients.dashboardMainBackground(isDarkMode: isDarkMode)
     }
 
     var body: some View {

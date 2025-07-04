@@ -104,14 +104,7 @@ struct WeeklyRecapView: View {
     
     // Dashboard gradient for card backgrounds
     var dashboardGradient: LinearGradient {
-        LinearGradient(
-            gradient: Gradient(colors: isDarkMode ?
-                [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
-                [Color(red: 1.0, green: 0.6, blue: 0.4), Color(red: 1.0, green: 0.8, blue: 0.6)]
-            ),
-            startPoint: .topTrailing,
-            endPoint: .bottom
-        )
+        Gradients.dashboardCardBackground(isDarkMode: isDarkMode)
     }
     
     var body: some View {

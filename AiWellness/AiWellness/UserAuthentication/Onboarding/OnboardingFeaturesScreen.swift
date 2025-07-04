@@ -26,15 +26,9 @@ struct OnboardingFeaturesScreen: View {
         .background(
             ZStack {
                 RoundedRectangle(cornerRadius: 24)
-                    .fill(OnboardingGradients.cardBackground(for: colorScheme))
+                    .fill(Gradients.onboardingCardBackground(colorScheme: colorScheme))
                 RoundedRectangle(cornerRadius: 24)
-                    .fill(
-                        LinearGradient(
-                            gradient: Gradient(colors: [Color.purple.opacity(0.18), Color("CustomPrimary").opacity(0.12), Color.purple.opacity(0.18)]),
-                            startPoint: animateGradient ? .topLeading : .bottomTrailing,
-                            endPoint: animateGradient ? .bottomTrailing : .topLeading
-                        )
-                    )
+                    .fill(Gradients.onboardingAnimatedOverlay(animateGradient: animateGradient))
                     .blendMode(.plusLighter)
                     .opacity(0.7)
                     .animation(Animation.linear(duration: 5.0).repeatForever(autoreverses: true), value: animateGradient)

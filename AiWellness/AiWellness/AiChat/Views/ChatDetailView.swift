@@ -27,7 +27,7 @@ struct MessageBubble: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .foregroundColor(.white)
-                        .background(ChatGradients.aiBubble)
+                        .background(Gradients.aiChatAIBubble)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                     
                     Text(formattedTimestamp)
@@ -44,7 +44,7 @@ struct MessageBubble: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .foregroundColor(.white)
-                        .background(ChatGradients.userBubble)
+                        .background(Gradients.aiChatUserBubble)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                     
                     Text(formattedTimestamp)
@@ -71,7 +71,7 @@ struct ChatDetailView: View {
     
     var body: some View {
         ZStack {
-            ChatGradients.mainBackground(isDarkMode).ignoresSafeArea()
+            Gradients.aiChatMainBackground(isDarkMode: isDarkMode).ignoresSafeArea()
             
             VStack(spacing: 0) {
                 ScrollView {

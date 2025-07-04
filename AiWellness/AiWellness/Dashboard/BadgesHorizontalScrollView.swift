@@ -81,16 +81,7 @@ struct BadgesHorizontalScrollView: View {
                             .frame(width: 90, height: 90)
                             .background(
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(
-                                        LinearGradient(
-                                            gradient: Gradient(colors: isDarkMode ?
-                                                [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
-                                                [Color(red: 1.0, green: 0.6, blue: 0.4), Color(red: 1.0, green: 0.8, blue: 0.6)]
-                                            ),
-                                            startPoint: animateGradient ? .topLeading : .topTrailing,
-                                            endPoint: animateGradient ? .bottomTrailing : .bottom
-                                        )
-                                    )
+                                    .fill(Gradients.dashboardCardBackground(isDarkMode: isDarkMode, animate: animateGradient))
                                     .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
                             )
                         }

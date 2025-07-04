@@ -64,11 +64,7 @@ struct GamifiedDashboardHeaderView: View {
                 Spacer()
                 HStack(spacing: 6) {
                     // Animated flame icon
-                    LinearGradient(
-                        gradient: Gradient(colors: [Color.orange, Color.yellow, Color.red]),
-                        startPoint: animateGradient ? .topLeading : .topTrailing,
-                        endPoint: animateGradient ? .bottomTrailing : .bottom
-                    )
+                    Gradients.dashboardFlameGradient
                     .frame(width: 28, height: 28)
                     .mask(
                         Image(systemName: "flame.fill")
@@ -82,16 +78,7 @@ struct GamifiedDashboardHeaderView: View {
                 .padding(8)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(
-                            LinearGradient(
-                                gradient: Gradient(colors: isDarkMode ?
-                                    [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
-                                    [Color(red: 1.0, green: 0.6, blue: 0.4), Color(red: 1.0, green: 0.8, blue: 0.6)]
-                                ),
-                                startPoint: animateGradient ? .topLeading : .topTrailing,
-                                endPoint: animateGradient ? .bottomTrailing : .bottom
-                            )
-                        )
+                        .fill(Gradients.dashboardCardBackground(isDarkMode: isDarkMode, animate: animateGradient))
                         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
                 )
             }
@@ -103,16 +90,7 @@ struct GamifiedDashboardHeaderView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 20)
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(colors: isDarkMode ?
-                            [Color.indigo.opacity(0.5), Color.black.opacity(0.5)] :
-                            [Color(red: 1.0, green: 0.6, blue: 0.4), Color(red: 1.0, green: 0.8, blue: 0.6)]
-                        ),
-                        startPoint: .topTrailing,
-                        endPoint: .bottom
-                    )
-                )
+                .fill(Gradients.dashboardCardBackground(isDarkMode: isDarkMode))
                 .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
         )
         .padding(.horizontal)

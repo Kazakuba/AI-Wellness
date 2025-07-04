@@ -31,18 +31,11 @@ struct ChatListView: View {
                         .foregroundColor(isDarkMode ? .white : .black)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(ChatGradients.sectionBackground(isDarkMode))
+                        .background(Gradients.aiChatSectionBackground(isDarkMode: isDarkMode))
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
                                 .stroke(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: isDarkMode ?
-                                                           [Color.white.opacity(0.5), Color.white.opacity(0.3)] :
-                                                            [Color.white.opacity(0.6), Color.white.opacity(0.4)]
-                                                          ),
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    ),
+                                    Gradients.aiChatSectionBackground(isDarkMode: isDarkMode, opacity: isDarkMode ? 0.5 : 0.6),
                                     lineWidth: 1.5
                                 )
                         )
@@ -60,7 +53,7 @@ struct ChatListView: View {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
-                            .listRowBackground(ChatGradients.sectionBackground(isDarkMode))
+                            .listRowBackground(Gradients.aiChatSectionBackground(isDarkMode: isDarkMode))
                         }
                         .onDelete { deleteChat(at: $0, from: todayChats) }
                     }
@@ -71,7 +64,7 @@ struct ChatListView: View {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
-                            .listRowBackground(ChatGradients.sectionBackground(isDarkMode))
+                            .listRowBackground(Gradients.aiChatSectionBackground(isDarkMode: isDarkMode))
                         }
                         .onDelete { deleteChat(at: $0, from: sevenDayChats) }
                     }
@@ -82,7 +75,7 @@ struct ChatListView: View {
                                 Text(chat.title)
                                     .foregroundColor(isDarkMode ? .white : .black)
                             }
-                            .listRowBackground(ChatGradients.sectionBackground(isDarkMode))
+                            .listRowBackground(Gradients.aiChatSectionBackground(isDarkMode: isDarkMode))
                         }
                         .onDelete { deleteChat(at: $0, from: thirtyDayChats) }
                     }
@@ -102,7 +95,7 @@ struct ChatListView: View {
                     )
                 )
             }
-            .background(ChatGradients.mainBackground(isDarkMode).ignoresSafeArea())
+            .background(Gradients.aiChatMainBackground(isDarkMode: isDarkMode).ignoresSafeArea())
             .navigationBarHidden(true)
             .confettiCannon(trigger: $confettiManager.trigger, num: 40, confettis: confettiManager.confettis, colors: [.yellow, .green, .blue, .orange])
             .navigationDestination(for: Chat.self) { chat in

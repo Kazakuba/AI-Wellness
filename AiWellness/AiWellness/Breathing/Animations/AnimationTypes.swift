@@ -27,30 +27,13 @@ struct SquareAnimationView: View {
             
             // Main square gradient
             RoundedRectangle(cornerRadius: 25)
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color.blue.opacity(0.9),
-                            Color.cyan.opacity(0.7),
-                            Color.blue.opacity(0.5)
-                        ]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                .fill(Gradients.breathingSquareMainGradient())
                 .scaleEffect(scaleFactor)
                 .opacity(opacity)
                 .overlay(
                     RoundedRectangle(cornerRadius: 25)
                         .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.white.opacity(0.8),
-                                    Color.cyan.opacity(0.6)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
+                            Gradients.breathingSquareStrokeGradient(),
                             lineWidth: 3
                         )
                         .scaleEffect(scaleFactor * 1.02)
@@ -118,14 +101,7 @@ struct CircleAnimationView: View {
                 .overlay(
                     Circle()
                         .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.white.opacity(0.8),
-                                    Color.pink.opacity(0.6)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
+                            Gradients.breathingCircleStrokeGradient(),
                             lineWidth: 3
                         )
                         .scaleEffect(scaleFactor * 1.05)
@@ -175,31 +151,14 @@ struct TriangleAnimationView: View {
                 .blur(radius: 8)
             
             TriangleShape()
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color.green.opacity(0.9),
-                            Color.mint.opacity(0.7),
-                            Color.green.opacity(0.5)
-                        ]),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
+                .fill(Gradients.breathingTriangleMainGradient())
                 .scaleEffect(scaleFactor)
                 .rotationEffect(Angle(degrees: rotation))
                 .opacity(opacity)
                 .overlay(
                     TriangleShape()
                         .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.white.opacity(0.8),
-                                    Color.mint.opacity(0.6)
-                                ]),
-                                startPoint: .top,
-                                endPoint: .bottom
-                            ),
+                            Gradients.breathingTriangleStrokeGradient(),
                             lineWidth: 3
                         )
                         .scaleEffect(scaleFactor * 1.02)
@@ -272,14 +231,7 @@ struct CalmAnimationView: View {
                 .overlay(
                     Circle()
                         .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.white.opacity(0.7),
-                                    Color(red: 0.4, green: 0.7, blue: 0.9).opacity(0.5)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
+                            Gradients.breathingCalmStrokeGradient(),
                             lineWidth: 2
                         )
                         .scaleEffect(scaleFactor * 1.05)
@@ -346,14 +298,7 @@ struct EnergyAnimationView: View {
                 .overlay(
                     Circle()
                         .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.white.opacity(0.9),
-                                    Color.yellow.opacity(0.7)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
+                            Gradients.breathingEnergyStrokeGradient(),
                             lineWidth: 3
                         )
                         .scaleEffect(scaleFactor * 1.05)
@@ -364,17 +309,7 @@ struct EnergyAnimationView: View {
             // Dynamic rays
             ForEach(0..<12) { index in
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.orange.opacity(0.8),
-                                Color.yellow.opacity(0.6),
-                                Color.orange.opacity(0.3)
-                            ]),
-                            startPoint: .center,
-                            endPoint: .trailing
-                        )
-                    )
+                    .fill(Gradients.breathingEnergyRayGradient())
                     .frame(width: 6, height: size/2.5 * scaleFactor)
                     .offset(y: -size/5 * scaleFactor)
                     .rotationEffect(Angle(degrees: Double(index) * 30 + rotation))
@@ -439,14 +374,7 @@ struct FocusAnimationView: View {
                 .overlay(
                     Circle()
                         .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.white.opacity(0.8),
-                                    Color(red: 0.8, green: 0.2, blue: 0.4).opacity(0.6)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
+                            Gradients.breathingFocusStrokeGradient(),
                             lineWidth: 3
                         )
                         .scaleEffect(scaleFactor * 1.05)
@@ -502,17 +430,7 @@ struct WaveAnimationView: View {
         ZStack {
             ForEach(0..<6) { index in
                 WaveShape(frequency: 3, amplitude: 0.1, phase: Double(index) * .pi / 3)
-                    .fill(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.teal.opacity(0.3 * opacity),
-                                Color.blue.opacity(0.2 * opacity),
-                                Color.clear
-                            ]),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
+                    .fill(Gradients.breathingWaveGradient(opacity: opacity))
                     .frame(width: size * 1.5, height: size * 1.5)
                     .scaleEffect(scaleFactor * (1.0 + Double(index) * 0.1))
                     .rotationEffect(Angle(degrees: rotation * 0.5))
@@ -537,14 +455,7 @@ struct WaveAnimationView: View {
                 .overlay(
                     Circle()
                         .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.white.opacity(0.8),
-                                    Color.cyan.opacity(0.6)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
+                            Gradients.breathingWaveStrokeGradient(),
                             lineWidth: 3
                         )
                         .scaleEffect(scaleFactor * 1.05)
@@ -606,15 +517,7 @@ struct SpiralAnimationView: View {
             ForEach(0..<4) { index in
                 SpiralShape(turns: 2, startRadius: 10, endRadius: size/2)
                     .stroke(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.indigo.opacity(0.4 * opacity),
-                                Color.purple.opacity(0.2 * opacity),
-                                Color.clear
-                            ]),
-                            startPoint: .center,
-                            endPoint: .trailing
-                        ),
+                        Gradients.breathingSpiralStrokeGradient(opacity: opacity),
                         lineWidth: 4
                     )
                     .frame(width: size, height: size)
@@ -641,14 +544,7 @@ struct SpiralAnimationView: View {
                 .overlay(
                     Circle()
                         .stroke(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                                    Color.white.opacity(0.8),
-                                    Color.purple.opacity(0.6)
-                                ]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
+                            Gradients.breathingSpiralCircleStrokeGradient(),
                             lineWidth: 3
                         )
                         .scaleEffect(scaleFactor * 1.05)

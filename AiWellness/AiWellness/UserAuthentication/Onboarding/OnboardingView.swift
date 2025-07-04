@@ -24,19 +24,7 @@ struct OnboardingView: View {
     var body: some View {
         ZStack {
             // Adaptive gradient background
-            LinearGradient(
-                colors: colorScheme == .dark ? [
-                    Color("CustomPrimary").opacity(0.18),
-                    Color("CustomSecondary").opacity(0.15),
-                    Color(.systemBackground).opacity(0.95)
-                ] : [
-                    Color("CustomPrimary").opacity(0.15),
-                    Color("CustomSecondary").opacity(0.1),
-                    Color.white.opacity(0.8)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            Gradients.onboardingMainBackground(colorScheme: colorScheme)
             .ignoresSafeArea()
             
             Circle()
@@ -91,14 +79,7 @@ struct OnboardingView: View {
                             .padding(.horizontal, 28)
                             .padding(.vertical, 14)
                             .background(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [
-                                        Color(red: 0.63, green: 0.35, blue: 1.0),
-                                        Color(red: 1.0, green: 0.65, blue: 0.4)
-                                    ]),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ).opacity(currentStep > 0 ? 0.95 : 0.3)
+                                Gradients.onboardingButtonGradient.opacity(currentStep > 0 ? 0.95 : 0.3)
                             )
                             .cornerRadius(12)
                             .shadow(color: currentStep > 0 ? Color.purple.opacity(0.18) : .clear, radius: 6, x: 0, y: 2)
@@ -113,14 +94,7 @@ struct OnboardingView: View {
                                 .padding(.horizontal, 28)
                                 .padding(.vertical, 14)
                                 .background(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [
-                                            Color(red: 0.63, green: 0.35, blue: 1.0),
-                                            Color(red: 1.0, green: 0.65, blue: 0.4)
-                                        ]),
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    ).opacity(0.95)
+                                    Gradients.onboardingButtonGradient.opacity(0.95)
                                 )
                                 .cornerRadius(12)
                                 .shadow(color: Color.purple.opacity(0.18), radius: 6, x: 0, y: 2)
@@ -133,14 +107,7 @@ struct OnboardingView: View {
                                 .padding(.horizontal, 28)
                                 .padding(.vertical, 14)
                                 .background(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [
-                                            Color(red: 0.63, green: 0.35, blue: 1.0),
-                                            Color(red: 1.0, green: 0.65, blue: 0.4)
-                                        ]),
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    ).opacity(0.95)
+                                    Gradients.onboardingButtonGradient.opacity(0.95)
                                 )
                                 .cornerRadius(12)
                                 .shadow(color: Color.purple.opacity(0.18), radius: 6, x: 0, y: 2)
