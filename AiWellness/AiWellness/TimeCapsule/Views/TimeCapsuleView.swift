@@ -21,7 +21,6 @@ struct TimeCapsuleView: View {
     @State private var lockedCountdown: String = ""
     @State private var countdownTimer: Timer? = nil
 
-    // Helper to dismiss keyboard
     private func dismissKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
@@ -100,7 +99,6 @@ struct TimeCapsuleView: View {
                     HapticManager.trigger(.success)
                 }
             }
-            // Sheet for note (locked or unlocked)
             .sheet(item: $selectedNote, onDismiss: {
                 countdownTimer?.invalidate()
                 countdownTimer = nil
@@ -268,7 +266,6 @@ struct TimeCapsuleView: View {
     
     private var actions: some View { EmptyView() }
     
-    // Helper for time remaining string
     private func timeRemainingString(until date: Date) -> String {
         let now = Date()
         let interval = Int(date.timeIntervalSince(now))
