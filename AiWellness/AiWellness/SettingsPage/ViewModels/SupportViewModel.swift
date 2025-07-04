@@ -11,18 +11,18 @@ class SupportViewModel: ObservableObject {
     
     // correct email adress later !
     func sendFeedbackEmail() {
-           let email = "support@yourapp.com"
-           if let url = URL(string: "mailto:\(email)") {
-               UIApplication.shared.open(url)
-           }
-       }
-       // correct url adress later !
-       func rateApp() {
-           if let url = URL(string: "itms-apps://itunes.apple.com/app/idYOUR_APP_ID?action=write-review") {
-               UIApplication.shared.open(url)
-           }
-       }
-       
+        let email = "support@yourapp.com"
+        if let url = URL(string: "mailto:\(email)") {
+            UIApplication.shared.open(url)
+        }
+    }
+    // correct url adress later !
+    func rateApp() {
+        if let url = URL(string: "itms-apps://itunes.apple.com/app/idYOUR_APP_ID?action=write-review") {
+            UIApplication.shared.open(url)
+        }
+    }
+    
     func shareApp() {
         let text = "Check out this amazing app: [App Store Link]"
         let activityVC = UIActivityViewController(activityItems: [text], applicationActivities: nil)

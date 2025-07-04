@@ -8,24 +8,40 @@ struct ManageNotificationsView: View {
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
 
     var body: some View {
-        Form {
-            Section(header: Text("Notification Preferences")) {
-                Toggle("Receive your daily affirmation", isOn: $dailyAffirmation)
-                    .onChange(of: dailyAffirmation) { _, newValue in
-                        scheduleNotifications(for: "dailyAffirmation", isEnabled: newValue)
-                    }
-
-                Toggle("Stay on track with your streaks", isOn: $streaks)
-                    .onChange(of: streaks) { _, newValue in
-                        scheduleNotifications(for: "streaks", isEnabled: newValue)
-                    }
-
-                Toggle("Helpful nudges for journaling or reflection", isOn: $journaling)
-                    .onChange(of: journaling) { _, newValue in
-                        scheduleNotifications(for: "journaling", isEnabled: newValue)
-                    }
+        List {
+            Section(header: Text("Notification Preferences").foregroundColor(isDarkMode ? .white : .black)) {
+                Toggle(isOn: $dailyAffirmation) {
+                    Text("Receive your daily affirmation")
+                        .foregroundColor(isDarkMode ? .white : .black)
+                }
+                .tint(.green)
+                .onChange(of: dailyAffirmation) { _, newValue in
+                    scheduleNotifications(for: "dailyAffirmation", isEnabled: newValue)
+                }
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
+                Toggle(isOn: $streaks) {
+                    Text("Stay on track with your streaks")
+                        .foregroundColor(isDarkMode ? .white : .black)
+                }
+                .tint(.green)
+                .onChange(of: streaks) { _, newValue in
+                    scheduleNotifications(for: "streaks", isEnabled: newValue)
+                }
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
+                Toggle(isOn: $journaling) {
+                    Text("Helpful nudges for journaling or reflection")
+                        .foregroundColor(isDarkMode ? .white : .black)
+                }
+                .tint(.green)
+                .onChange(of: journaling) { _, newValue in
+                    scheduleNotifications(for: "journaling", isEnabled: newValue)
+                }
+                .listRowBackground(isDarkMode ? Color(red: 35/255, green: 35/255, blue: 38/255) : Color.customSystemGray6)
             }
         }
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(isDarkMode ? Color.black : Color.white)
         .navigationTitle("Manage Notifications")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
@@ -34,10 +50,8 @@ struct ManageNotificationsView: View {
         .tint(isDarkMode ? .white : .black)
     }
 
-
     private func scheduleNotifications(for type: String, isEnabled: Bool) {
         let center = UNUserNotificationCenter.current()
-
         if !isEnabled {
             let identifier: String
             switch type {
@@ -49,7 +63,6 @@ struct ManageNotificationsView: View {
             center.removePendingNotificationRequests(withIdentifiers: [identifier])
             return
         }
-
         center.getNotificationSettings { settings in
             DispatchQueue.main.async {
                 switch settings.authorizationStatus {

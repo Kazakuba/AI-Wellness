@@ -34,7 +34,6 @@ struct DangerZoneView: View {
                 .alert("Are you 100% sure?", isPresented: $showDeleteAccountAlert2) {
                     Button("Cancel", role: .cancel) {}
                     Button("Yes", role: .destructive) {
-                        // Sign out, delete data and go to login page
                         let uid = GamificationManager.shared.getUserUID()
                         Auth.auth().currentUser?.delete(completion: { _ in })
                         try? Auth.auth().signOut()
@@ -45,7 +44,7 @@ struct DangerZoneView: View {
                         }
                         UserDefaults.standard.synchronize()
                         NotificationCenter.default.post(name: Notification.Name("UserDidLogout"), object: nil)
-                        dismiss() // Dismiss DangerZoneView
+                        dismiss()
                     }
                 } message: {
                     Text("This will delete your account and all saved data.")

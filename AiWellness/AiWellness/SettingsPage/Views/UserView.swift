@@ -24,7 +24,6 @@ struct UserView: View {
                     .frame(width: 50, height: 50)
                     .clipShape(Circle())
                     
-                    
                     VStack(alignment: .leading) {
                         Text(user.name)
                             .font(.headline)

@@ -31,18 +31,15 @@ class SettingsViewModel: ObservableObject {
             }
             return
         }
-
         let fetchedUser = User(
             profileImageURL: firebaseUser.photoURL?.absoluteString,
             name: firebaseUser.displayName ?? "Unknown User",
             email: firebaseUser.email ?? "Unknown Email"
         )
-
         DispatchQueue.main.async {
             self.user = fetchedUser
         }
     }
-    
     
     func googleSignOut() {
         authService.googleSignOut()

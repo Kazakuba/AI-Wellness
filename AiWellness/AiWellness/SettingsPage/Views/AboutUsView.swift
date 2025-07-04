@@ -21,7 +21,7 @@ struct AboutUsView: View {
             }
         }
         .navigationTitle("About us")
-        .background(isDarkMode ? Color.black : Color.white)
+        .background(AppBackgroundGradient.main(isDarkMode))
         .scrollContentBackground(.hidden)
         .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)

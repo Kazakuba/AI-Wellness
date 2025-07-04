@@ -61,7 +61,7 @@ struct SupportView: View {
             }
         }
         .navigationTitle("Support & Feedback")
-        .background(isDarkMode ? Color.black : Color.white)
+        .background(AppBackgroundGradient.main(isDarkMode))
         .scrollContentBackground(.hidden)
         .toolbarBackground(isDarkMode ? Color.black : Color.white, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
@@ -76,7 +76,6 @@ struct SupportView: View {
         .tint(isDarkMode ? .white : .black)
     }
 }
-
 
 #Preview {
     SupportView()
